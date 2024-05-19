@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   safe_allocate.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/18 12:02:24 by yakazdao         ###   ########.fr       */
+/*   Created: 2024/05/18 10:59:17 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/05/18 15:26:41 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-int main(int argc, char **argv, char **env)
+void *allocate(char *type, size_t size)
 {
-	t_prog	prog;
-	
- 	(void)argc;
-    (void)argv;
-    (void)env;
-	
-	prog.line_rd = readline("minishell: ");
-	parssing(&prog);
-	
+	type = (char *)malloc (sizeof(char) * size + 1);
+	if (!type)
+	{
+		ft_error("Error : malloc fialed to allocate memory\n");
+	}
+	return (type);
 }
