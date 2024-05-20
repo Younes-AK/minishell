@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/18 12:02:24 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:35:09 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,14 @@ int main(int argc, char **argv, char **env)
 	
 	prog.line_rd = readline("minishell: ");
 	parssing(&prog);
+	
+	// ===> still tockenization
+	char **tokens = ft_tokenize(prog.line_rd);
+	int i = 0;
+	while (tokens[i])
+	{
+		printf("%s \n",tokens[i]);
+		i++;
+	}
 	
 }

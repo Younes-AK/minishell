@@ -6,17 +6,39 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 12:50:59 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/19 10:13:26 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:34:08 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool is_operator(char c)
+
+bool valid_patterns(char *str)
 {
-	return (c == '|' || c == '>' || c == '<');
+	printf("** %s **\n", str);
+	if (!ft_strncmp(str, ">", ft_strlen(str)) || !ft_strncmp(str, "<", ft_strlen(str))
+		|| !ft_strncmp(str, ">>", ft_strlen(str)) || !ft_strncmp(str, "<<", ft_strlen(str))
+		|| !ft_strncmp(str, ">|", ft_strlen(str)) || !ft_strncmp(str, "|>", ft_strlen(str))
+		|| !ft_strncmp(str, "|<", ft_strlen(str)) || !ft_strncmp(str, "|>|", ft_strlen(str))
+		|| !ft_strncmp(str, "|<|", ft_strlen(str)) || !ft_strncmp(str, "|", ft_strlen(str)))
+		return (true);
+	return (false);
 }
- 
+void check_valid_patterns(char **str)
+{
+	int i;
+	
+	i=0;
+	while(str[i])
+	{
+		if(is_operator(str[i][0]))
+		{
+			if (valid_patterns(str[i]) == false)
+				ft_error("minishell : syntax error\n");
+		}
+		i++;
+	}
+}
 bool check_quotes(t_prog *p)
 {
 	int d_qout_count;
@@ -28,9 +50,9 @@ bool check_quotes(t_prog *p)
 	s_qout_count = 0;
 	while (p->line_rd[i])
 	{
-		if (p->line_rd[i] == '\'')
+		if (p->line_rd[i] == QOUTE)
 			s_qout_count++;
-		if (p->line_rd[i] == '\"')
+		if (p->line_rd[i] == DOUBLE_QUOTE)
 			d_qout_count++;
 		i++;
 	}
@@ -48,11 +70,11 @@ void ft_add_spaces(t_prog *p, int len)
 	{
         if (is_operator(p->line_rd[i])) 
 		{
-            if (p->line_rd[i - 1] != ' ' && p->line_rd[i - 1] != '<' && p->line_rd[i - 1] != '>') 
-                p->cmd_line[j++] = ' ';
+            if (p->line_rd[i - 1] != WHITE_SPACE && !is_operator(p->line_rd[i - 1])) 
+                p->cmd_line[j++] = WHITE_SPACE;
             p->cmd_line[j++] = p->line_rd[i];
-            if (p->line_rd[i + 1] != ' '  && p->line_rd[i + 1] != '<' && p->line_rd[i + 1] != '>')
-                p->cmd_line[j++] = ' ';
+            if (p->line_rd[i + 1] != WHITE_SPACE  && !is_operator(p->line_rd[i + 1]))
+                p->cmd_line[j++] = WHITE_SPACE;
         }
 		else
             p->cmd_line[j++] = p->line_rd[i];
@@ -60,26 +82,29 @@ void ft_add_spaces(t_prog *p, int len)
     }
     p->cmd_line[j] = '\0';
 }
+
 void parssing(t_prog *p)
 {
 	int i;
 	int len;
-	
+
 	i = 0;
 	len = 0;
+	// counting the line read to add spaces [injection spaces]
 	while (p->line_rd[i] && is_whaitspace(p->line_rd[i]))
 		i++;
 	while (p->line_rd[i++])
 	{
 		if (is_operator(p->line_rd[i]))
 		{
-			if (p->line_rd[i - 1] != ' ' && (p->line_rd[i - 1] != '<' && p->line_rd[i - 1] != '>'))
+			if (p->line_rd[i - 1] != WHITE_SPACE && !is_operator(p->line_rd[i - 1]))
 				len++;
-			if (p->line_rd[i + 1] != ' ' && (p->line_rd[i + 1] != '<' && p->line_rd[i + 1] != '>'))
+			if (p->line_rd[i + 1] != WHITE_SPACE && !is_operator(p->line_rd[i + 1]))
 				len++;
 		}
 		len++;
 	}
 	ft_add_spaces(p, len);
+	p->patterns = ft_split(p->cmd_line, ' ');
+	check_valid_patterns(p->patterns);
 }
-// "echo     "hello  $USER " > file | grep h |cat << eof | cat >> file | echo 'done'"

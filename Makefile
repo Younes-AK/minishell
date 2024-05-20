@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/15 11:16:08 by yakazdao          #+#    #+#              #
-#    Updated: 2024/05/18 13:03:37 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/05/20 11:39:19 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,10 @@ MAND_SRC =  main.c \
 			functions/ft_strncmp.c \
 			functions/ft_strchr.c \
 			functions/ft_substr.c \
-			utils/is_whaitspace.c \
+			utils/help_func.c \
 			utils/safe_allocate.c \
 			utils/ft_errors.c \
-			parssing.c 
+			parssing.c utils/ft_tokenize.c
 MAND_OBJ = $(MAND_SRC:.c=.o)
 
 $(NAME): $(MAND_OBJ)
