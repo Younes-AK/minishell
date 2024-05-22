@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 12:50:59 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/20 16:34:08 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/22 10:58:36 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 bool valid_patterns(char *str)
 {
-	printf("** %s **\n", str);
 	if (!ft_strncmp(str, ">", ft_strlen(str)) || !ft_strncmp(str, "<", ft_strlen(str))
 		|| !ft_strncmp(str, ">>", ft_strlen(str)) || !ft_strncmp(str, "<<", ft_strlen(str))
 		|| !ft_strncmp(str, ">|", ft_strlen(str)) || !ft_strncmp(str, "|>", ft_strlen(str))
 		|| !ft_strncmp(str, "|<", ft_strlen(str)) || !ft_strncmp(str, "|>|", ft_strlen(str))
-		|| !ft_strncmp(str, "|<|", ft_strlen(str)) || !ft_strncmp(str, "|", ft_strlen(str)))
+		|| !ft_strncmp(str, "|<|", ft_strlen(str)) || !ft_strncmp(str, "|", ft_strlen(str))
+		|| !ft_strncmp(str, "|>>", ft_strlen(str)) || !ft_strncmp(str, "|<<", ft_strlen(str)))
 		return (true);
 	return (false);
 }
@@ -34,7 +34,10 @@ void check_valid_patterns(char **str)
 		if(is_operator(str[i][0]))
 		{
 			if (valid_patterns(str[i]) == false)
-				ft_error("minishell : syntax error\n");
+			{
+				write(2, "minishell : syntax error\n", 26);
+				return;
+			}
 		}
 		i++;
 	}
@@ -64,13 +67,16 @@ void ft_add_spaces(t_prog *p, int len)
     int j = 0;
     
     if (!check_quotes(p))
-        ft_error("Error \n");
-    p->cmd_line = allocate(p->cmd_line, len);
+    {
+		write(2, "minishell : syntax error\n", 26);
+		return;
+	}
+    p->cmd_line = allocate(sizeof(p->cmd_line), len);
     while (p->line_rd[i] && j < len) 
 	{
         if (is_operator(p->line_rd[i])) 
 		{
-            if (p->line_rd[i - 1] != WHITE_SPACE && !is_operator(p->line_rd[i - 1])) 
+            if (p->line_rd[i - 1] != WHITE_SPACE && !is_operator(p->line_rd[i - 1]))
                 p->cmd_line[j++] = WHITE_SPACE;
             p->cmd_line[j++] = p->line_rd[i];
             if (p->line_rd[i + 1] != WHITE_SPACE  && !is_operator(p->line_rd[i + 1]))
@@ -97,6 +103,8 @@ void parssing(t_prog *p)
 	{
 		if (is_operator(p->line_rd[i]))
 		{
+			if (p->line_rd[i] == PIPE_LINE)
+				p->pipe_nbr++;
 			if (p->line_rd[i - 1] != WHITE_SPACE && !is_operator(p->line_rd[i - 1]))
 				len++;
 			if (p->line_rd[i + 1] != WHITE_SPACE && !is_operator(p->line_rd[i + 1]))
@@ -107,4 +115,5 @@ void parssing(t_prog *p)
 	ft_add_spaces(p, len);
 	p->patterns = ft_split(p->cmd_line, ' ');
 	check_valid_patterns(p->patterns);
+	free_allocation(p->patterns);
 }

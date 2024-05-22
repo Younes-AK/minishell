@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   safe_allocate.c                                    :+:      :+:    :+:   */
+/*   ft_errors_free.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/18 10:59:17 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/18 15:26:41 by yakazdao         ###   ########.fr       */
+/*   Created: 2024/05/18 11:02:03 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/05/21 09:30:56 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void *allocate(char *type, size_t size)
+void ft_error(char *msg)
 {
-	type = (char *)malloc (sizeof(char) * size + 1);
-	if (!type)
-	{
-		ft_error("Error : malloc fialed to allocate memory\n");
-	}
-	return (type);
+	write(2, msg, ft_strlen(msg));
+	exit(EXIT_FAILURE);
+}
+
+void free_allocation(char **var)
+{
+	int	i;
+	
+	i = 0;
+	while(var[i])
+		free(var[i++]);
+	free(var);
 }

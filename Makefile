@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/15 11:16:08 by yakazdao          #+#    #+#              #
-#    Updated: 2024/05/20 11:39:19 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/05/21 13:11:44 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,12 @@ MAND_SRC =  main.c \
 			functions/ft_strncmp.c \
 			functions/ft_strchr.c \
 			functions/ft_substr.c \
+			functions/ft_lstnew_bonus.c \
+			functions/ft_lstadd_back_bonus.c \
+			functions/ft_lstclear_bonus.c \
 			utils/help_func.c \
-			utils/safe_allocate.c \
-			utils/ft_errors.c \
-			parssing.c utils/ft_tokenize.c
+			utils/ft_errors_free.c \
+			parssing.c utils/tokenization.c
 MAND_OBJ = $(MAND_SRC:.c=.o)
 
 $(NAME): $(MAND_OBJ)

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_tokenize.c                                      :+:      :+:    :+:   */
+/*   tokenization.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 11:37:17 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/20 11:46:52 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:10:44 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,3 +92,27 @@ char **ft_tokenize(const char *s) //       < file | echo "hello world" > outfile
     array[i] = NULL;
     return array;
 }
+
+
+
+void tokenization(t_prog *p, t_tokens *list)
+{
+	int i;
+	int j;
+	int len = 0;
+	i = 0;
+	j = 0; 
+ 
+	p->tokens = ft_tokenize(p->line_rd);
+	if (p->tokens[0])
+	{
+		int pos = 0;
+		list = allocate(sizeof(t_tokens), p->pipe_nbr + 1);
+		while (i < p->pipe_nbr + 1)
+		{
+			len = get_nbr_words(p->line_rd, &pos);
+			i++;
+		}
+	}
+}
+// ls -l | wc -l > file

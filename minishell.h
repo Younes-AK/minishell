@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/20 16:22:46 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/22 15:23:49 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@
 #include <string.h>
 typedef struct s_tokens
 {
-	char	**tokens;
-	int		nbr_tokens;
+	char **commands;
+	char **redirections;
+	struct s_tokens *next;
 }	t_tokens;
 
-typedef enum e_token
+typedef enum e_operators
 {
 	PIPE_LINE = '|',
 	REDIR_IN = '<',
@@ -42,7 +43,7 @@ typedef enum e_token
 	ENV = '$',
 	HERE_DOC,
 	DREDIR_OUT,
-}	t_token;
+}	t_operators;
  
 
 typedef struct s_prog
@@ -50,6 +51,9 @@ typedef struct s_prog
 	char *line_rd;
 	char *cmd_line;
 	char **patterns;
+	char **tokens;
+	int	pipe_nbr;
+
 }	t_prog;
 
 int			ft_memcmp(const void *s1, const void *s2, size_t n);
@@ -65,8 +69,12 @@ char		**ft_split(char const *s, char c);
 bool 		is_whaitspace(char c);
 bool 		is_operator(char c);
 void		parssing(t_prog *p);
-void		*allocate(char *type, size_t size);
+void		*allocate(size_t element_size, size_t length);
 void 		ft_error(char *msg);
+void		tokenization(t_prog *p, t_tokens *t);
 char 		**ft_tokenize(const char *s);
-
+void		free_allocation(char **var);
+int			get_nbr_words(const char *line, int *pos);
+void		ft_lstadd_back(t_tokens **lst, t_tokens *new);
+t_tokens	*ft_lstnew(void *cmdline ,char *type, int i, int j, int lenght);
 #endif
