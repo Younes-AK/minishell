@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/15 11:16:08 by yakazdao          #+#    #+#              #
-#    Updated: 2024/05/21 13:11:44 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/05/24 01:29:10 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,22 +16,19 @@ Flags = -Wall -Werror -Wextra
 NAME = minishell
 RM = rm -rf
 MAND_SRC =  main.c \
-			functions/ft_memcmp.c \
 			functions/ft_split.c \
 			functions/ft_strlen.c \
 			functions/ft_strjoin.c \
 			functions/ft_strdup.c \
-			functions/ft_strlcat.c \
-			functions/ft_strlcpy.c \
-			functions/ft_strncmp.c \
+			functions/ft_strcmp.c \
 			functions/ft_strchr.c \
 			functions/ft_substr.c \
-			functions/ft_lstnew_bonus.c \
-			functions/ft_lstadd_back_bonus.c \
 			functions/ft_lstclear_bonus.c \
-			utils/help_func.c \
-			utils/ft_errors_free.c \
-			parssing.c utils/tokenization.c
+		 	minishell_utils/errors_free.c \
+		 	minishell_utils/help_func.c \
+			lexer.c \
+		 	minishell_utils/help_func2.c
+			
 MAND_OBJ = $(MAND_SRC:.c=.o)
 
 $(NAME): $(MAND_OBJ)
