@@ -6,28 +6,17 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:12:48 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/24 01:23:41 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/27 14:35:09 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-bool is_whait_spaces(char c)
+void _init(int ac, char **av, char **env)
 {
-	return (c >= 9 && c <= 13);
-}
-bool is_str_spaces(char *line)
-{
-	int i;
-	
-	i = 0;
-	while (line[i])
-	{
-		if (!is_whait_spaces(line[i]))
-			return (false);
-		i++;
-	}
-	return (true);
+	(void)ac;
+	(void)av;
+	(void)env;
 }
 
 void *safe_allocation(size_t size, size_t lenght)
@@ -40,30 +29,44 @@ void *safe_allocation(size_t size, size_t lenght)
 	return (ptr);
 }
 
-t_list *init_list() 
+t_list *init_list()
 {
-    t_list *list = malloc(sizeof(t_list));
-    list->head = NULL;
-    list->tail = NULL;
-    list->size = 0;
-    return list;
+	t_list *list;
+
+	list = safe_allocation(sizeof(t_list), 1);
+	list->head = NULL;
+	list->tail = NULL;
+	list->size = 0;
+	return (list);
 }
 
-void append_element(t_list *list, const char *content, int len, t_token type, t_state state)
+void append_node(t_list *list, char *content, int len, t_token type)
 {
-    t_node *new_elem = malloc(sizeof(t_node));
-    new_elem->content = strndup(content, len);
-    new_elem->len = len;
-    new_elem->type = type;
-    new_elem->state = state;
-    new_elem->next = NULL;
-
-    if (list->tail) {
-        list->tail->next = new_elem;
-    } else {
-        list->head = new_elem;
+	t_node *new_node;
+	new_node = safe_allocation(sizeof(t_node), 1);
+	new_node->content = ft_strndup(content, len);
+	new_node->len = len;
+	new_node->type = type;
+	new_node->next = NULL;
+	if (list->tail)
+		list->tail->next = new_node;
+	else
+		list->head = new_node;
+	list->tail = new_node;
+	list->size++;
+}
+void free_list(t_list *list) 
+{
+    t_node *curr;
+    t_node *next;
+	
+	curr = list->head;
+    while (curr) 
+	{
+        next = curr->next;
+        free(curr->content);
+        free(curr);
+        curr = next;
     }
-
-    list->tail = new_elem;
-    list->size++;
+    free(list);
 }

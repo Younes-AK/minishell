@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:17:24 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/23 12:08:20 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/26 13:15:44 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int strcmp(const char *str1, const char *str2)
+int ft_strcmp(const char *str1, const char *str2)
 {
     while (*str1 && (*str1 == *str2)) {
         str1++;

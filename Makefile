@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/15 11:16:08 by yakazdao          #+#    #+#              #
-#    Updated: 2024/05/24 01:29:10 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/05/27 10:14:04 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,13 +20,13 @@ MAND_SRC =  main.c \
 			functions/ft_strlen.c \
 			functions/ft_strjoin.c \
 			functions/ft_strdup.c \
+			functions/ft_strndup.c \
 			functions/ft_strcmp.c \
 			functions/ft_strchr.c \
 			functions/ft_substr.c \
-			functions/ft_lstclear_bonus.c \
 		 	minishell_utils/errors_free.c \
 		 	minishell_utils/help_func.c \
-			lexer.c \
+			parssing.c lexer.c \
 		 	minishell_utils/help_func2.c
 			
 MAND_OBJ = $(MAND_SRC:.c=.o)

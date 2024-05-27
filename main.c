@@ -6,21 +6,27 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/24 01:34:20 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/27 14:35:23 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+
+void f()
+{
+	system("leaks minishell");
+}
+
+
 int main(int ac, char **av, char **env)
 {
-	(void)ac;
-	(void)av;
-	(void)env;
-	
 	t_prog vars;
+	
+	_init(ac, av, env);
 	while (true)
 	{
+		vars.list = init_list();
 		vars.r_line = readline("[minishell]~> ");
 		if (!vars.r_line)
 			error_msg("Error\n");
@@ -28,20 +34,11 @@ int main(int ac, char **av, char **env)
 		// 	return (1);
 		if (ft_strlen(vars.r_line) > 0)
 			add_history(vars.r_line);
-			
-		t_list *lexer_results = init_list();
-		lexing(lexer_results, vars.r_line);
-
- 
-    	t_node *current = lexer_results->head;
-    	while (current) {
-       		printf("Token: |%s| Type: |%d| State: |%d|\n", current->content, current->type, current->state);
-        	current = current->next;
-    	}
-
+		if(parssing(&vars))
+			lexer(&vars, vars.list);
 		free(vars.r_line);
-	}
+		free_list(vars.list);
+    }
 }
-
 
 // ls -l > fil | wc -l > file | echo "dd hfhfh"

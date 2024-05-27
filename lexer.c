@@ -5,101 +5,65 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/24 00:49:10 by yakazdao         ###   ########.fr       */
+/*   Created: 2024/05/26 10:27:37 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/05/27 15:07:37 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void handle_special_char(t_list *list, const char **input, const char **start, int *token_len, t_state *state) 
+
+void tokenize_word(int *len, char *line, t_list *list, char *type)
 {
-    if (**input == ' ') 
+	if (!ft_strcmp(type, "WORD") && *line == '$')
 	{
-        if (*token_len > 0) 
-		{
-            tokenize_word(list, *start, *token_len, *state);
-            *token_len = 0;
-        }
-        tokenize_whitespace(list, *input, 1, *state);
-    } 
-	else 
+		append_node(list, line, *len, ENV);
+	}
+	else if (!ft_strcmp(type, "WORD"))
 	{
-        if (**input == '|') 
-		{
-            if (*token_len > 0) 
-			{
-                tokenize_word(list, *start, *token_len, *state);
-                *token_len = 0;
-            }
-            tokenize_single_char(list, **input, PIPE_LINE, *state);
-        } 
-		else if (**input == '<') 
-		{
-            if (*token_len > 0) 
-			{
-                tokenize_word(list, *start, *token_len, *state);
-                *token_len = 0;
-            }
-            tokenize_single_char(list, **input, REDIR_IN, *state);
-        } 
-		else if (**input == '>')
-		{
-            if (*token_len > 0) 
-			{
-                tokenize_word(list, *start, *token_len, *state);
-                *token_len = 0;
-            }
-            tokenize_single_char(list, **input, REDIR_OUT, *state);
-        }
-    }
-    (*input)++;
+		append_node(list, line, *len, WORD);
+	}
+	else if (!ft_strcmp(type, "WHITE_SPACE"))
+		append_node(list, " ", 1, WHITE_SPACE);
+	*len = 0;
 }
 
-void handle_quote(t_list *list, const char **input, t_state *state) 
+void tokenize_operator(t_list *list, char c)
 {
-    if (**input == '\'') 
-	{
-        if (*state == DEFAULT)
-            *state = IN_SQUOTE;
-        else if (*state == IN_SQUOTE)
-            *state = DEFAULT;
-        tokenize_single_char(list, **input, QUOTE, *state);
-    } 
-	else if (**input == '\"') 
-	{
-        if (*state == DEFAULT)
-            *state = IN_DQUOTE;
-        else if (*state == IN_DQUOTE)
-            *state = DEFAULT;
-        tokenize_single_char(list, **input, DOUBLE_QUOTE, *state);
-    }
-    (*input)++;
+	if (c == '>')
+		append_node(list, ">", 1, REDIR_OUT);
+	else if (c == '<')
+		append_node(list, "<", 1, REDIR_IN);
+	else if (c == '|')
+		append_node(list, "|", 1, PIPE_LINE);
 }
-
-
-
-
-void lexing(t_list *list, const char *input)
+bool lexer(t_prog *p, t_list *list)
 {
-    t_state state = DEFAULT;
-    const char *start = input;
-    int token_len = 0;
-
-    while (*input) 
+	int len;
+	char *start;
+	char *original_cmd_line;
+	
+	original_cmd_line = p->cmd_line;	
+	len = 0;
+	start = p->cmd_line;
+	while (*p->cmd_line)
 	{
-        if (is_special_char(*input))
-            handle_special_char(list, &input, &start, &token_len, &state);
-        else if (is_quote(*input))
-            handle_quote(list, &input, &state);
-        else 
+		if (!is_whait_spaces(*p->cmd_line) && !is_operator(*p->cmd_line) && !is_quote(*p->cmd_line))
+			len++;
+		if (is_whait_spaces(*p->cmd_line))
 		{
-            if (token_len == 0)
-                start = input;
-            token_len++;
-            input++;
-        }
-    }
-    if (token_len > 0)
-        tokenize_word(list, start, token_len, state);
+			if (len > 0)
+				tokenize_word(&len, start, list, "WORD");
+			tokenize_word(&len, start, list, "WHITE_SPACE");
+		}
+		else if(is_operator(*p->cmd_line))
+			tokenize_operator(list, *p->cmd_line);
+		p->cmd_line++;
+		if (len == 0)
+			start = p->cmd_line;
+	}
+	if (len > 0)
+		tokenize_word(&len, start, list, "WORD");
+	free(original_cmd_line);
+	return (true);
 }
