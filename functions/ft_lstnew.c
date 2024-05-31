@@ -1,31 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 16:01:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/29 10:35:30 by yakazdao         ###   ########.fr       */
+/*   Created: 2023/11/15 14:21:43 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/05/29 11:32:21 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strchr(const char *s, int c)
+t_env	*ft_lstnew(char *key, char *value)
 {
-	while (*s)
-	{
-		if (*s == (char)c)
-		{
-			return ((char *)s);
-		}
-		s++;
-	}
-	if ((char)c == '\0')
-	{
-		return ((char *)s);
-	}
-	return (NULL);
-}
+	t_env	*new;
 
+	new = (t_env *)malloc(sizeof(t_env));
+	if (!new)
+		return (NULL);
+	new->key = key;
+	new->value = value;
+	new->next = NULL;
+	return (new);
+}

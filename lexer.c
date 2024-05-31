@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 10:27:37 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/27 15:07:37 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/30 20:12:51 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,47 +23,78 @@ void tokenize_word(int *len, char *line, t_list *list, char *type)
 	{
 		append_node(list, line, *len, WORD);
 	}
-	else if (!ft_strcmp(type, "WHITE_SPACE"))
-		append_node(list, " ", 1, WHITE_SPACE);
+	// else if (!ft_strcmp(type, "WHITE_SPACE"))
+	// 	append_node(list, " ", 1, WHITE_SPACE);
 	*len = 0;
 }
 
-void tokenize_operator(t_list *list, char c)
+void tokenize_operator(t_list *list, char **c)
 {
-	if (c == '>')
-		append_node(list, ">", 1, REDIR_OUT);
-	else if (c == '<')
-		append_node(list, "<", 1, REDIR_IN);
-	else if (c == '|')
-		append_node(list, "|", 1, PIPE_LINE);
+    if (**c == '>' && *(*c + 1) == '>')
+    {
+        append_node(list, ">>", 2, REDIR_APPEND);
+        (*c)++;
+    }
+    else if (**c == '<' && *(*c + 1) == '<')
+    {
+        append_node(list, "<<", 2, REDIR_HEREDOC);
+        (*c)++;
+    }
+    else if (**c == '>')
+        append_node(list, ">", 1, REDIR_OUT);
+    else if (**c == '<')
+        append_node(list, "<", 1, REDIR_IN);
+    else if (**c == '|')
+        append_node(list, "|", 1, PIPE_LINE);
 }
-bool lexer(t_prog *p, t_list *list)
+
+
+void lexer(t_prog *p, t_list *list) 
 {
-	int len;
-	char *start;
-	char *original_cmd_line;
-	
-	original_cmd_line = p->cmd_line;	
-	len = 0;
-	start = p->cmd_line;
-	while (*p->cmd_line)
+    int len = 0;
+    char *start;
+    char *original_cmd_line = p->cmd_line;
+    bool in_quotes = false;
+    char current_quote = '\0';
+    start = p->cmd_line;
+    while (*p->cmd_line) 
 	{
-		if (!is_whait_spaces(*p->cmd_line) && !is_operator(*p->cmd_line) && !is_quote(*p->cmd_line))
-			len++;
-		if (is_whait_spaces(*p->cmd_line))
+        if (is_quote(*p->cmd_line))
 		{
-			if (len > 0)
-				tokenize_word(&len, start, list, "WORD");
-			tokenize_word(&len, start, list, "WHITE_SPACE");
-		}
-		else if(is_operator(*p->cmd_line))
-			tokenize_operator(list, *p->cmd_line);
-		p->cmd_line++;
-		if (len == 0)
-			start = p->cmd_line;
-	}
-	if (len > 0)
-		tokenize_word(&len, start, list, "WORD");
-	free(original_cmd_line);
-	return (true);
+            if (in_quotes && *p->cmd_line == current_quote)
+			{
+                in_quotes = false;
+                current_quote = '\0';
+            } 
+			else if (!in_quotes) 
+			{
+                in_quotes = true;
+                current_quote = *p->cmd_line;
+            }
+            len++;
+        }
+		else if (in_quotes)
+            len++;
+        else if (!is_whait_spaces(*p->cmd_line) && !is_operator(*p->cmd_line))
+            len++;
+        else if (is_whait_spaces(*p->cmd_line)) 
+		{
+            if (len > 0)
+                tokenize_word(&len, start, list, "WORD");
+          // tokenize_word(&len, start, list, "WHITE_SPACE");
+        } 
+		else if (is_operator(*p->cmd_line)) 
+		{
+            if (len > 0)
+                tokenize_word(&len, start, list, "WORD");
+            tokenize_operator(list, &p->cmd_line);
+        }
+        p->cmd_line++;
+        if (len == 0)
+            start = p->cmd_line;
+    }
+    if (len > 0)
+        tokenize_word(&len, start, list, "WORD");
+    free(original_cmd_line);
 }
+// 

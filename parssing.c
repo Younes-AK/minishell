@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/27 11:07:02 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/31 10:13:46 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int count(char *line)
 	len = 0;
 	while (line[i] && is_whait_spaces(line[i]))
 		i++;
-	while (line[i++])
+	while (line[i])
 	{
 		if (is_operator(line[i]))
 		{
@@ -50,6 +50,7 @@ int count(char *line)
 				len++;
 		}
 		len++;
+		i++;
 	}
 	return (len);
 }
@@ -64,7 +65,7 @@ char *inject_spaces(char *input)
 	while(is_whait_spaces(*input))
     	input++;
 	while (input[i++])
-		if  (is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]))
+		if  (input[i + 1] && is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]))
 			j++;
 	p = safe_allocation(sizeof(char), ft_strlen(input) - j + 1);
 	i = 0;
@@ -87,7 +88,6 @@ bool add_spaces(t_prog *p, int len)
 {    
     int i = 0;
     int j = 0;
-	
 	if (*p->d == '|' || p->d[ft_strlen(p->d) - 1] == '|')
 	{
 		write(2, "Error \n", 7);
@@ -98,10 +98,10 @@ bool add_spaces(t_prog *p, int len)
 	{
         if (is_operator(p->d[i]))
 		{
-            if (p->d[i - 1] != ' ' && !is_operator(p->d[i - 1]))
+            if (i != 0 && p->d[i - 1] != ' ' && !is_operator(p->d[i - 1])) // test: >>ls
                 p->cmd_line[j++] = ' ';
             p->cmd_line[j++] = p->d[i];
-            if (p->d[i + 1] != ' '  && !is_operator(p->d[i + 1]))
+            if (p->d[i + 1] != ' '  && !is_operator(p->d[i + 1]) && p->d[i + 1])
                 p->cmd_line[j++] = ' ';
         }
 		else
@@ -111,7 +111,6 @@ bool add_spaces(t_prog *p, int len)
     p->cmd_line[j] = '\0';
 	return (true);
 }
-
 bool parssing(t_prog *p)
 {
 	int len;
