@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/31 10:13:49 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:29:16 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ typedef struct s_node
     t_token type;
     struct s_node *next;
 } t_node;
-typedef struct s_list 
+typedef struct s_tokenze 
 {
     t_node *head;
     t_node *tail;
     int size;
-} t_list;
+} t_tokenze;
 
 
 typedef struct s_env
@@ -59,14 +59,29 @@ typedef struct s_env
 	char *value;
 	struct s_env *next;
 }	t_env;
+
+typedef struct s_exec_list
+{
+	char **cmd;
+	char **redir;
+	int	 fd_in;
+	int  fd_out;
+	struct s_exec_list *next;
+}	t_exec_list;
+
 typedef struct s_prog
 {
-	char	*r_line;
-	int		tokens_len;
-	char 	*cmd_line;
-	char	*d;
-	t_env	*env_list;
-	t_list *list;
+	char		*r_line;
+	int			tokens_len;
+	char 		*cmd_line;
+	char		*d;
+	t_tokenze	*list_tok;
+	t_env		*env_list;
+	t_exec_list	*exec_list;
+	
+	int nbr_cmd;
+	int nbr_redir;
+	int nbr_pipe;
 }	t_prog;
 
  
@@ -79,23 +94,24 @@ int			ft_strcmp(const char *str1, const char *str2);
 char	 	*ft_substr(const char *s, unsigned int start, size_t len);
 char		**ft_split(char const *s, char c);
 char		*ft_strndup(const char *str, int len);
+void		ft_lstadd_back(t_env **lst, t_env *new);
+t_env		*ft_lstnew(char *key, char *value);
 
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
 bool		is_str_spaces(char *line);
-t_list 		*init_list();
+t_tokenze 	*init_list();
 
-void		append_node(t_list *list, char *content, int len, t_token type);
+void		append_node(t_tokenze *list, char *content, int len, t_token type);
 bool		is_operator(char c);
 bool		is_quote(char c);
 
 void		*safe_allocation(size_t size, size_t lenght);
 bool		parssing(t_prog *p);
-void		lexer(t_prog *p, t_list *list);
-void		free_list(t_list *list);
+void		lexer(t_prog *p, t_tokenze *list);
+void		free_list(t_tokenze *list);
 void		_init(int ac, char **av, char **env);
 bool		parser(t_prog *p, char **env);
-void		ft_lstadd_back(t_env **lst, t_env *new);
-t_env		*ft_lstnew(char *key, char *value);
 void		free_double_ptr(char **str);
+void		append(t_exec_list **lst, t_exec_list *new);
 #endif

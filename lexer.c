@@ -6,14 +6,14 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 10:27:37 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/30 20:12:51 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/01 11:59:56 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 
-void tokenize_word(int *len, char *line, t_list *list, char *type)
+void tokenize_word(int *len, char *line, t_tokenze *list, char *type)
 {
 	if (!ft_strcmp(type, "WORD") && *line == '$')
 	{
@@ -28,7 +28,7 @@ void tokenize_word(int *len, char *line, t_list *list, char *type)
 	*len = 0;
 }
 
-void tokenize_operator(t_list *list, char **c)
+void tokenize_operator(t_tokenze *list, char **c, t_prog *p)
 {
     if (**c == '>' && *(*c + 1) == '>')
     {
@@ -45,11 +45,14 @@ void tokenize_operator(t_list *list, char **c)
     else if (**c == '<')
         append_node(list, "<", 1, REDIR_IN);
     else if (**c == '|')
+	{
         append_node(list, "|", 1, PIPE_LINE);
+		p->nbr_pipe++;
+	}
 }
 
 
-void lexer(t_prog *p, t_list *list) 
+void lexer(t_prog *p, t_tokenze *list) 
 {
     int len = 0;
     char *start;
@@ -87,7 +90,7 @@ void lexer(t_prog *p, t_list *list)
 		{
             if (len > 0)
                 tokenize_word(&len, start, list, "WORD");
-            tokenize_operator(list, &p->cmd_line);
+            tokenize_operator(list, &p->cmd_line, p);
         }
         p->cmd_line++;
         if (len == 0)

@@ -6,18 +6,100 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:36:11 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/31 11:31:17 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/01 18:25:07 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// void	append(t_exec_list **lst, t_exec_list *new)
+// {
+// 	t_exec_list	*list;
+	
+// 	if (!lst || !new)
+// 		return ;
+// 	if (*lst == NULL)
+// 	{
+// 		*lst = new;
+// 		return ;
+// 	}
+// 	list = *lst;
+// 	while (list->next != NULL)
+// 		list = list->next;
+// 	list->next = new;
+// }
+// void append_exec_list(t_prog *p, int index)
+// {
+// 	t_node *iter;
+// 	t_exec_list *node;
+// 	int i = 0;
+// 	int j = 0;
+// 	iter = p->list_tok->head;
+// 	node = safe_allocation(sizeof(t_exec_list), 1);  
+// 	node->cmd = safe_allocation(sizeof(char *), p->nbr_cmd + 1); 
+// 	node->redir = safe_allocation(sizeof(char *), p->nbr_redir + 1);  
+// 	while (i < index)
+// 	{
+// 		while (iter && iter->type != PIPE_LINE)
+// 			iter = iter->next;
+// 		if (iter && iter->type == PIPE_LINE)
+// 			iter = iter->next;
+// 		i++;
+// 	}
+// 	// printf("bef -> %s\n", iter->content);
+// 	// printf("-> %s\n", iter->content); 
+	
+// 	i = 0;
+// 	while (iter  && iter->type != PIPE_LINE)
+// 	{
+// 		if (iter->type == WORD)
+// 			node->cmd[i++] = ft_strdup(iter->content);
+// 		else
+// 			node->redir[j++] = ft_strdup(iter->content);
+// 		iter = iter->next;
+// 	}
+// 	node->cmd[i] = NULL;
+// 	node->redir[j] = NULL;
+// 	append(&p->exec_list, node);
+// }
+
+void _init_exec_list(t_prog *p) // ls -l >>fil | wc -l > file | echo "dd hfhfh" | ew | pwd
+{
+	t_node *iter;
+	int i = 0;
+	if (!p->list_tok->head)
+		return;
+	iter = p->list_tok->head;
+	if (iter)
+	{
+		while(i < p->nbr_pipe + 1)
+		{
+			p->nbr_cmd = 0;
+			p->nbr_redir = 0;
+			while (iter && iter->type != PIPE_LINE)
+			{
+				if (iter->type == WORD)
+					p->nbr_cmd++;
+				else
+					p->nbr_redir++;
+				iter = iter->next;
+			}
+			append_exec_list(p, i);
+			if (iter)
+			{
+				iter = iter->next;
+			}
+			i++;
+		}
+	}
+} 
+
 bool check_syntax(t_prog *p)
 {
 	t_node *iter;
-	iter = p->list->head;
-	if (p->list->tail->type == REDIR_HEREDOC || p->list->tail->type == REDIR_APPEND
-		|| p->list->tail->type == REDIR_IN || p->list->tail->type == REDIR_OUT)
+	iter = p->list_tok->head;
+	if (p->list_tok->tail->type == REDIR_HEREDOC || p->list_tok->tail->type == REDIR_APPEND
+		|| p->list_tok->tail->type == REDIR_IN || p->list_tok->tail->type == REDIR_OUT)
 		return (false);
 	while (iter)
     {
@@ -63,6 +145,9 @@ bool parser(t_prog *p, char **env)
 	}
 	else
 	{
+		_init_exec_list(p);
+		//expand();
 		return (true);
 	}
 }
+//ret_value = WEXITSTATUS(&status)

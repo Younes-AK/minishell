@@ -6,24 +6,21 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/05/30 18:04:34 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/06/01 17:10:17 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
-SANITIZE_FLAGS = -fsanitize=thread
-FLAGS = -Wall -Werror -Wextra $(SANITIZE_FLAGS)
+FLAGS = -Wall -Werror -Wextra -g
 NAME = minishell
 RM = rm -rf
 
-# Define ANSI color codes
 COLOR_RESET   = \033[0m
 COLOR_RED     = \033[31m
 COLOR_GREEN   = \033[32m
 COLOR_YELLOW  = \033[33m
 COLOR_BOLD    = \033[1m
 
-# Source and object files
 MAND_SRC = main.c \
             functions/ft_split.c \
             functions/ft_strlen.c \
@@ -44,7 +41,7 @@ MAND_OBJ = $(MAND_SRC:.c=.o)
 
 $(NAME): $(MAND_OBJ)
 	@echo "$(COLOR_YELLOW)Compiling... Please wait.$(COLOR_RESET)"
-	@$(CC) $(MAND_OBJ) -lreadline -o $(NAME) $(SANITIZE_FLAGS)
+	@$(CC) $(MAND_OBJ) -lreadline -o $(NAME)
 	@echo "$(COLOR_GREEN)✅ Done$(COLOR_RESET)"
 
 all: $(NAME)

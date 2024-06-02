@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 00:35:47 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/27 14:22:05 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/01 15:09:46 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,22 @@ bool is_str_spaces(char *line)
 	}
 	return (true);
 }
+
+// void	append(t_exec_list **lst, t_exec_list *new)
+// {
+// 	t_exec_list	*list;
+	
+// 	if (!lst || !new)
+// 		return ;
+// 	if (*lst == NULL)
+// 	{
+// 		*lst = new;
+// 		return ;
+// 	}
+// 	list = *lst;
+// 	while (list->next != NULL)
+// 		list = list->next;
+// 	list->next = new;
+// }
 
  

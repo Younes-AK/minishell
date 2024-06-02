@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:12:48 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/27 14:35:09 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/05/31 14:33:10 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,18 @@ void *safe_allocation(size_t size, size_t lenght)
 	return (ptr);
 }
 
-t_list *init_list()
+t_tokenze *init_list()
 {
-	t_list *list;
+	t_tokenze *list;
 
-	list = safe_allocation(sizeof(t_list), 1);
+	list = safe_allocation(sizeof(t_tokenze), 1);
 	list->head = NULL;
 	list->tail = NULL;
 	list->size = 0;
 	return (list);
 }
 
-void append_node(t_list *list, char *content, int len, t_token type)
+void append_node(t_tokenze *list, char *content, int len, t_token type)
 {
 	t_node *new_node;
 	new_node = safe_allocation(sizeof(t_node), 1);
@@ -55,7 +55,7 @@ void append_node(t_list *list, char *content, int len, t_token type)
 	list->tail = new_node;
 	list->size++;
 }
-void free_list(t_list *list) 
+void free_list(t_tokenze *list) 
 {
     t_node *curr;
     t_node *next;
