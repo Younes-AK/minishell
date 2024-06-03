@@ -24,4 +24,5 @@ t_env	*ft_lstnew(char *key, char *value)
 	new->next = NULL;
 	return (new);
 }
+ 
 

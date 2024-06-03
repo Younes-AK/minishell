@@ -12,107 +12,92 @@
 
 #include "minishell.h"
 
-// void	append(t_exec_list **lst, t_exec_list *new)
-// {
-// 	t_exec_list	*list;
-	
-// 	if (!lst || !new)
-// 		return ;
-// 	if (*lst == NULL)
-// 	{
-// 		*lst = new;
-// 		return ;
-// 	}
-// 	list = *lst;
-// 	while (list->next != NULL)
-// 		list = list->next;
-// 	list->next = new;
-// }
-// void append_exec_list(t_prog *p, int index)
-// {
-// 	t_node *iter;
-// 	t_exec_list *node;
-// 	int i = 0;
-// 	int j = 0;
-// 	iter = p->list_tok->head;
-// 	node = safe_allocation(sizeof(t_exec_list), 1);  
-// 	node->cmd = safe_allocation(sizeof(char *), p->nbr_cmd + 1); 
-// 	node->redir = safe_allocation(sizeof(char *), p->nbr_redir + 1);  
-// 	while (i < index)
-// 	{
-// 		while (iter && iter->type != PIPE_LINE)
-// 			iter = iter->next;
-// 		if (iter && iter->type == PIPE_LINE)
-// 			iter = iter->next;
-// 		i++;
-// 	}
-// 	// printf("bef -> %s\n", iter->content);
-// 	// printf("-> %s\n", iter->content); 
-	
-// 	i = 0;
-// 	while (iter  && iter->type != PIPE_LINE)
-// 	{
-// 		if (iter->type == WORD)
-// 			node->cmd[i++] = ft_strdup(iter->content);
-// 		else
-// 			node->redir[j++] = ft_strdup(iter->content);
-// 		iter = iter->next;
-// 	}
-// 	node->cmd[i] = NULL;
-// 	node->redir[j] = NULL;
-// 	append(&p->exec_list, node);
-// }
-
-void _init_exec_list(t_prog *p) // ls -l >>fil | wc -l > file | echo "dd hfhfh" | ew | pwd
+void append_exec_list(t_prog *p, int index, t_exec_list *exec_list)
 {
-	t_node *iter;
-	int i = 0;
-	if (!p->list_tok->head)
-		return;
-	iter = p->list_tok->head;
-	if (iter)
-	{
-		while(i < p->nbr_pipe + 1)
-		{
-			p->nbr_cmd = 0;
-			p->nbr_redir = 0;
-			while (iter && iter->type != PIPE_LINE)
-			{
-				if (iter->type == WORD)
-					p->nbr_cmd++;
-				else
-					p->nbr_redir++;
-				iter = iter->next;
-			}
-			append_exec_list(p, i);
-			if (iter)
-			{
-				iter = iter->next;
-			}
-			i++;
-		}
-	}
-} 
+    t_tok_node *iter;
+    t_exec_node *node;
+    int i = 0;
+    int j = 0;
+
+    iter = p->list_tok->head;
+    node = safe_allocation(sizeof(t_exec_node), 1);
+    node->cmd = safe_allocation(sizeof(char *) * (p->nbr_cmd + 1), 1);
+    node->redir = safe_allocation(sizeof(char *) * (p->nbr_redir + 1), 1);
+    while (i < index)
+    {
+        while (iter && iter->type != PIPE_LINE)
+            iter = iter->next;
+        if (iter && iter->type == PIPE_LINE)
+            iter = iter->next;
+        i++;
+    }
+    i = 0;
+    j = 0;
+    while (iter && iter->type != PIPE_LINE)
+    {
+        if (iter->type == WORD)
+            node->cmd[i++] = ft_strdup(iter->content);
+        else
+            node->redir[j++] = ft_strdup(iter->content);
+        iter = iter->next;
+    }
+    node->cmd[i] = NULL;
+    node->redir[j] = NULL;
+    append_exec(exec_list, node);
+}
+
+
+void _init_exec_list(t_prog *p, t_exec_list *exec_list)
+{
+    t_tok_node *iter;
+    int i = 0;
+    if (!p->list_tok->head)
+        return;
+    iter = p->list_tok->head;
+    if (iter)
+    {
+        while (i < p->nbr_pipe + 1)
+        {
+            p->nbr_cmd = 0;
+            p->nbr_redir = 0;
+            while (iter && iter->type != PIPE_LINE)
+            {
+                if (iter->type == WORD)
+                    p->nbr_cmd++;
+                else
+                    p->nbr_redir++;
+                iter = iter->next;
+            }
+            append_exec_list(p, i, exec_list);
+            if (iter)
+                iter = iter->next;
+            i++;
+        }
+    }
+}
 
 bool check_syntax(t_prog *p)
 {
-	t_node *iter;
+	t_tok_node *iter;
 	iter = p->list_tok->head;
-	if (p->list_tok->tail->type == REDIR_HEREDOC || p->list_tok->tail->type == REDIR_APPEND
-		|| p->list_tok->tail->type == REDIR_IN || p->list_tok->tail->type == REDIR_OUT)
-		return (false);
-	while (iter)
+    if (iter)
     {
-        if (iter->type == REDIR_HEREDOC || iter->type == REDIR_APPEND ||
-            iter->type == REDIR_IN || iter->type == REDIR_OUT)
+        if (p->list_tok->tail->type == REDIR_HEREDOC || p->list_tok->tail->type == REDIR_APPEND
+            || p->list_tok->tail->type == REDIR_IN || p->list_tok->tail->type == REDIR_OUT)
+            return (false);
+        while (iter)
         {
-            if (!iter->next || iter->next->type != WORD)
-                return false;
+            if (iter->type == REDIR_HEREDOC || iter->type == REDIR_APPEND ||
+                iter->type == REDIR_IN || iter->type == REDIR_OUT)
+            {
+                if (!iter->next || iter->next->type != WORD)
+                    return false;
+            }
+            if (iter->type == PIPE_LINE)
+                if (iter->next->type == PIPE_LINE)
+                    return false;
+            iter = iter->next;
         }
-        if (iter->type == PIPE_LINE)
-            if (iter->next->type == PIPE_LINE)
-                return false;
-        iter = iter->next;
     }
 	return (true);
 }
@@ -128,15 +113,16 @@ void store_env(char **env, t_prog *p)
 	while(env[i])
 	{
 		tmp = ft_split(env[i], '=');
-		str = ft_strdup(tmp[0]);
+		str = ft_strdup(tmp[0]); 
 		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
 		ft_lstadd_back(&p->env_list, node);
 		free_double_ptr(tmp);
 		i++;
 	}
 }
-bool parser(t_prog *p, char **env)
+bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 {
+    (void)exec_list;
 	store_env(env, p);
 	if (!check_syntax(p))
 	{
@@ -145,9 +131,8 @@ bool parser(t_prog *p, char **env)
 	}
 	else
 	{
-		_init_exec_list(p);
+		_init_exec_list(p, exec_list);
 		//expand();
 		return (true);
 	}
 }
-//ret_value = WEXITSTATUS(&status)

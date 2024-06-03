@@ -98,7 +98,7 @@ bool add_spaces(t_prog *p, int len)
 	{
         if (is_operator(p->d[i]))
 		{
-            if (i != 0 && p->d[i - 1] != ' ' && !is_operator(p->d[i - 1])) // test: >>ls
+            if (i != 0 && p->d[i - 1] != ' ' && !is_operator(p->d[i - 1]))
                 p->cmd_line[j++] = ' ';
             p->cmd_line[j++] = p->d[i];
             if (p->d[i + 1] != ' '  && !is_operator(p->d[i + 1]) && p->d[i + 1])
@@ -111,9 +111,11 @@ bool add_spaces(t_prog *p, int len)
     p->cmd_line[j] = '\0';
 	return (true);
 }
+
 bool parssing(t_prog *p)
 {
 	int len;
+
 	if (check_quotes(p->r_line))
 	{
 		p->d = inject_spaces(p->r_line);

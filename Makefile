@@ -35,7 +35,8 @@ MAND_SRC = main.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
             parssing.c lexer.c parser.c \
-            minishell_utils/help_func2.c
+            minishell_utils/help_func2.c \
+            expand.c 
             
 MAND_OBJ = $(MAND_SRC:.c=.o)
 

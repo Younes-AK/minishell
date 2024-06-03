@@ -60,7 +60,7 @@ void lexer(t_prog *p, t_tokenze *list)
     bool in_quotes = false;
     char current_quote = '\0';
     start = p->cmd_line;
-    while (*p->cmd_line) 
+    while (*p->cmd_line)
 	{
         if (is_quote(*p->cmd_line))
 		{
@@ -80,11 +80,10 @@ void lexer(t_prog *p, t_tokenze *list)
             len++;
         else if (!is_whait_spaces(*p->cmd_line) && !is_operator(*p->cmd_line))
             len++;
-        else if (is_whait_spaces(*p->cmd_line)) 
+        else if (is_whait_spaces(*p->cmd_line))
 		{
             if (len > 0)
                 tokenize_word(&len, start, list, "WORD");
-          // tokenize_word(&len, start, list, "WHITE_SPACE");
         } 
 		else if (is_operator(*p->cmd_line)) 
 		{
@@ -100,4 +99,3 @@ void lexer(t_prog *p, t_tokenze *list)
         tokenize_word(&len, start, list, "WORD");
     free(original_cmd_line);
 }
-// 

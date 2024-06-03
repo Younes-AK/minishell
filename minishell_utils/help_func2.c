@@ -39,22 +39,13 @@ bool is_str_spaces(char *line)
 	}
 	return (true);
 }
+void _init(int ac, char **av, char **env)
+{
+	(void)ac;
+	(void)av;
+	(void)env;
+}
 
-// void	append(t_exec_list **lst, t_exec_list *new)
-// {
-// 	t_exec_list	*list;
-	
-// 	if (!lst || !new)
-// 		return ;
-// 	if (*lst == NULL)
-// 	{
-// 		*lst = new;
-// 		return ;
-// 	}
-// 	list = *lst;
-// 	while (list->next != NULL)
-// 		list = list->next;
-// 	list->next = new;
-// }
+ 
 
  

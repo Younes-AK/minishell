@@ -12,13 +12,6 @@
 
 #include "../minishell.h"
 
-void _init(int ac, char **av, char **env)
-{
-	(void)ac;
-	(void)av;
-	(void)env;
-}
-
 void *safe_allocation(size_t size, size_t lenght)
 {
 	void *ptr;
@@ -42,8 +35,8 @@ t_tokenze *init_list()
 
 void append_node(t_tokenze *list, char *content, int len, t_token type)
 {
-	t_node *new_node;
-	new_node = safe_allocation(sizeof(t_node), 1);
+	t_tok_node *new_node;
+	new_node = safe_allocation(sizeof(t_tok_node), 1);
 	new_node->content = ft_strndup(content, len);
 	new_node->len = len;
 	new_node->type = type;
@@ -55,18 +48,26 @@ void append_node(t_tokenze *list, char *content, int len, t_token type)
 	list->tail = new_node;
 	list->size++;
 }
-void free_list(t_tokenze *list) 
+
+t_exec_list *init_exec_list()
 {
-    t_node *curr;
-    t_node *next;
-	
-	curr = list->head;
-    while (curr) 
-	{
-        next = curr->next;
-        free(curr->content);
-        free(curr);
-        curr = next;
-    }
-    free(list);
+	t_exec_list *list;
+
+	list = safe_allocation(sizeof(t_exec_list), 1);
+	list->head = NULL;
+	list->tail = NULL;
+	return (list);
 }
+
+void append_exec(t_exec_list *list, t_exec_node *new_node)
+{	
+	if (list->tail)
+		list->tail->next = new_node;
+	else
+	{
+		list->head = new_node;
+	}
+	list->tail = new_node;
+}
+
+

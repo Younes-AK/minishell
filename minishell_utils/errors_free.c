@@ -30,3 +30,63 @@ void free_double_ptr(char **str)
 	}
 	free (str);
 }
+
+void free_exec_list(t_exec_list *exec_list)
+{
+    t_exec_node *curr = exec_list->head;
+    t_exec_node *next;
+    int i;
+	
+    while (curr)
+    {
+        next = curr->next;
+        i = 0;
+        if (curr->cmd)
+        {
+            while (curr->cmd[i])
+                free(curr->cmd[i++]);
+            free(curr->cmd);
+        }
+        i = 0;
+        if (curr->redir)
+        {
+            while (curr->redir[i])
+                free(curr->redir[i++]);
+            free(curr->redir);
+        }
+        free(curr);
+        curr = next;
+    }
+    exec_list->head = exec_list->tail = NULL;
+}
+
+void free_env_list(t_env *env_list) 
+{
+    t_env *current = env_list;
+    t_env *next;
+
+    while (current) 
+	{
+        next = current->next; 
+        free(current->key); 
+        free(current->value); 
+        free(current); 
+        current = next;
+    }
+}
+
+void free_list(t_tokenze *list) 
+{
+    t_tok_node *curr;
+    t_tok_node *next;
+	
+	curr = list->head;
+    while (curr) 
+	{
+        next = curr->next;
+        free(curr->content);
+        free(curr);
+        curr = next;
+    }
+    free(list);
+}

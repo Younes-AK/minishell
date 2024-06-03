@@ -38,20 +38,19 @@ typedef enum e_token {
     NEW_LINE,
 }	t_token;
 
-typedef struct s_node
+typedef struct s_tok_node
 {
     char *content;
     int len;
     t_token type;
-    struct s_node *next;
-} t_node;
+    struct s_tok_node *next;
+} t_tok_node;
 typedef struct s_tokenze 
 {
-    t_node *head;
-    t_node *tail;
+    t_tok_node *head;
+    t_tok_node *tail;
     int size;
 } t_tokenze;
-
 
 typedef struct s_env
 {
@@ -60,14 +59,19 @@ typedef struct s_env
 	struct s_env *next;
 }	t_env;
 
-typedef struct s_exec_list
+typedef struct s_exec_node
 {
 	char **cmd;
 	char **redir;
-	int	 fd_in;
-	int  fd_out;
-	struct s_exec_list *next;
-}	t_exec_list;
+	struct s_exec_node *next;
+}	t_exec_node;
+
+typedef struct s_exec_list
+{
+    t_exec_node *head;
+    t_exec_node *tail;
+} t_exec_list;
+
 
 typedef struct s_prog
 {
@@ -111,7 +115,12 @@ bool		parssing(t_prog *p);
 void		lexer(t_prog *p, t_tokenze *list);
 void		free_list(t_tokenze *list);
 void		_init(int ac, char **av, char **env);
-bool		parser(t_prog *p, char **env);
+bool		parser(t_prog *p, char **env, t_exec_list *exec_list);
 void		free_double_ptr(char **str);
-void		append(t_exec_list **lst, t_exec_list *new);
+void        free_exec_list(t_exec_list *exec_list);
+
+t_exec_list *init_exec_list();
+void        append_exec(t_exec_list *list, t_exec_node *new_node);
+void        free_env_list(t_env *list) ;
+void        expand();
 #endif
