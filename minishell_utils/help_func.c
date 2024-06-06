@@ -15,7 +15,6 @@
 void *safe_allocation(size_t size, size_t lenght)
 {
 	void *ptr;
-
 	ptr = malloc(size * lenght);
 	if (!ptr)
 		error_msg("Error : malloc fialed allocate memory\n");

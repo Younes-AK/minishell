@@ -54,36 +54,41 @@ int count(char *line)
 	}
 	return (len);
 }
+ 
 char *inject_spaces(char *input)
 {
-	int i = 0;
-	int j = 0;
-	char *p;
-	bool flg;
-	
-	flg= false;
-	while(is_whait_spaces(*input))
-    	input++;
-	while (input[i++])
-		if  (input[i + 1] && is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]))
-			j++;
-	p = safe_allocation(sizeof(char), ft_strlen(input) - j + 1);
-	i = 0;
-	j = 0;
-	while (input[i]) 
-	{
-		if (input[i] == '"' || input[i] == '\'')
-			flg = !flg;
-		while (is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]) && !flg)
-			i++;
-		p[j++] = input[i++];
-	}
-	while (j > 0 && p[j - 1] == ' ')
-        j--;
-	p[j] = '\0';
-	return (p);
-}
+    int i = 0, j = 0;
+    int len = ft_strlen(input);
+    char *p;
+    bool in_quotes = false;
 
+    while (is_whait_spaces(input[i]))
+        i++;
+
+    int k = i;
+    while (k < len)
+    {
+        if (input[k] == '"' || input[k] == '\'')
+            in_quotes = !in_quotes;
+        if (!(is_whait_spaces(input[k]) && is_whait_spaces(input[k + 1]) && !in_quotes))
+            j++;
+        k++;
+    }
+	p = safe_allocation(sizeof(char), j + 1);
+    j = 0;
+    while (input[i])
+    {
+        if (input[i] == '"' || input[i] == '\'')
+            in_quotes = !in_quotes;
+        while (is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]) && !in_quotes)
+            i++;
+        p[j++] = input[i++];
+    }
+    while (j > 0 && p[j - 1] == ' ')
+        j--;
+    p[j] = '\0';
+    return p;
+}
 bool add_spaces(t_prog *p, int len) 
 {    
     int i = 0;
@@ -114,15 +119,18 @@ bool add_spaces(t_prog *p, int len)
 
 bool parssing(t_prog *p)
 {
+
 	int len;
 
+	len = 0;
 	if (check_quotes(p->r_line))
 	{
 		p->d = inject_spaces(p->r_line);
+
 		len = count(p->d);
-		if (!add_spaces(p, len))
-			return false;
+		add_spaces(p, len);
 		free(p->d);
+		 
 		return (true);
 	}
 	else

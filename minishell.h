@@ -45,6 +45,7 @@ typedef struct s_tok_node
     t_token type;
     struct s_tok_node *next;
 } t_tok_node;
+
 typedef struct s_tokenze 
 {
     t_tok_node *head;
@@ -122,5 +123,5 @@ void        free_exec_list(t_exec_list *exec_list);
 t_exec_list *init_exec_list();
 void        append_exec(t_exec_list *list, t_exec_node *new_node);
 void        free_env_list(t_env *list) ;
-void        expand();
+void        expand(t_tokenze *list, t_env *env_list);
 #endif

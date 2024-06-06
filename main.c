@@ -40,6 +40,7 @@ int main(int ac, char **av, char **env)
 			parser(&vars, env, vars.exec_list);
 		}
 
+		 
 		t_exec_node *tmp = vars.exec_list->head;
         while (tmp)
         {
@@ -63,7 +64,7 @@ int main(int ac, char **av, char **env)
 		free_list(vars.list_tok);
 		free_env_list(vars.env_list);
 		free_exec_list(vars.exec_list);
-    }
+    }   
 }
 
 // ls -l >>fil | wc -l > file | echo "dd hfhfh"

@@ -122,7 +122,6 @@ void store_env(char **env, t_prog *p)
 }
 bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 {
-    (void)exec_list;
 	store_env(env, p);
 	if (!check_syntax(p))
 	{
@@ -131,8 +130,8 @@ bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 	}
 	else
 	{
+		expand(p->list_tok, p->env_list);
 		_init_exec_list(p, exec_list);
-		//expand();
 		return (true);
 	}
 }

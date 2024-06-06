@@ -33,6 +33,8 @@ void free_double_ptr(char **str)
 
 void free_exec_list(t_exec_list *exec_list)
 {
+     if (!exec_list)
+        return;
     t_exec_node *curr = exec_list->head;
     t_exec_node *next;
     int i;
@@ -64,7 +66,6 @@ void free_env_list(t_env *env_list)
 {
     t_env *current = env_list;
     t_env *next;
-
     while (current) 
 	{
         next = current->next; 
