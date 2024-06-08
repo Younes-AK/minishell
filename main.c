@@ -21,7 +21,7 @@ void f()
 
 int main(int ac, char **av, char **env)
 {
-	atexit(f);
+	//atexit(f);
 	t_prog vars;
 	_init(ac, av, env);
 	while (true)
@@ -40,31 +40,46 @@ int main(int ac, char **av, char **env)
 			parser(&vars, env, vars.exec_list);
 		}
 
+
+		// t_tok_node *node;
+		// node = vars.list_tok->head;
+		// while(node)
+		// {
+		// 	printf("cont : %s | type : %d\n", node->content, node->type);
+		// 	node = node->next;
+		// }
 		 
 		t_exec_node *tmp = vars.exec_list->head;
+        // char **cmd; 
+		// char **redir;
+		if (tmp == NULL)
+		{
+			printf("Error: exec_list is empty.\n");
+		}
         while (tmp)
         {
-            char **cmd = tmp->cmd;
-            while (*cmd)
-            {
-                printf("cmd : |%s|\n", *cmd);
-                cmd++;
-            }
-            char **redir = tmp->redir;
-            while (*redir)
-            {
-                printf("red : |%s|\n", *redir);
-                redir++;
-            }
+			// cmd = tmp->cmd;
+			
+            // while (*cmd)
+            // {
+            //     printf("cmd : |%s|\n", *cmd);
+            //     cmd++;
+            // }
+            // redir = tmp->redir;
+            // while (*redir)
+            // {
+            //     printf("red : |%s|\n", *redir);
+            //     redir++;
+            // }
+            printf("======={new node}========\n");
             tmp = tmp->next;
-            printf("===============\n");
         }
 		
 		free(vars.r_line);
 		free_list(vars.list_tok);
 		free_env_list(vars.env_list);
-		free_exec_list(vars.exec_list);
+		//free_exec_list(vars.exec_list);
     }   
-}
+} // echo "hello $HOME $USER $HOMEBREW_TEMP"
 
 // ls -l >>fil | wc -l > file | echo "dd hfhfh"

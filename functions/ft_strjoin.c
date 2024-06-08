@@ -22,7 +22,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	j = 0;
 	if (!s1 || !s2)
 		return (NULL);
-	allstr = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	allstr = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 2));
 	if (!allstr)
 		return (NULL);
 	while (s1[i])
@@ -30,6 +30,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		allstr[i] = s1[i];
 		i++;
 	}
+	allstr[i++] = ' ';
 	while (s2[j])
 	{
 		allstr[i] = s2[j];

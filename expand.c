@@ -32,18 +32,26 @@ char *get_env_val(char *content, t_env **env_list)
 {
     t_env *iter;
     char *str;
-    iter = *env_list;
-    while (iter)
+    int i = 0;
+    char *ret;
+    ret = ft_strdup("");
+    str = remove_qoutes(content);
+    char **s = ft_split(str, ' ');
+    while (s[i])
     {
-        str = remove_qoutes(content);
-        if (!ft_strcmp(str, iter->key))
+        iter = *env_list;
+        while (iter)
         {
-            return (iter->value);
+            if (!ft_strcmp(s[i], iter->key))
+                s[i] = iter->value;
+            iter = iter->next;
         }
-        free (str);
-        iter = iter->next;
+        ret = ft_strjoin(ret, s[i]);
+        i++;
     }
-    return (ft_strdup(""));
+    free(str);
+    free_double_ptr(s);
+    return (ret);
 }
 bool is_env_var(char *content)
 {
@@ -63,7 +71,9 @@ bool to_expand(char *content, t_token type)
     if (content[0] == '"' && type == WORD)
     {
         if (is_env_var(content))
+        {
             return (true);
+        }
     }
     return (false);
 }
@@ -71,15 +81,17 @@ void expand(t_tokenze *list, t_env *env_list)
 {
     t_tok_node *iter;
     char *expanded_var;
-
     iter = list->head;
     while (iter)
     {
         if (to_expand(iter->content, iter->type))
         {
             expanded_var = get_env_val(iter->content, &env_list);
-            free(iter->content);
-            iter->content = expanded_var;
+            if (expanded_var)
+            {
+               free(iter->content);
+               iter->content = expanded_var;
+            }
         }
         iter = iter->next;
     }
