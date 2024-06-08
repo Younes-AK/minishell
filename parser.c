@@ -130,7 +130,7 @@ bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 	}
 	else
 	{
-		expand(p->list_tok, p->env_list);
+		//expand(p->list_tok, p->env_list);
 		_init_exec_list(p, exec_list);
 		return (true);
 	}

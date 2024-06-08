@@ -50,29 +50,30 @@ int main(int ac, char **av, char **env)
 		// }
 		 
 		t_exec_node *tmp = vars.exec_list->head;
-        // char **cmd; 
-		// char **redir;
+        char **cmd; 
+		char **redir;
 		if (tmp == NULL)
 		{
 			printf("Error: exec_list is empty.\n");
 		}
         while (tmp)
         {
-			// cmd = tmp->cmd;
+			cmd = tmp->cmd;
 			
-            // while (*cmd)
-            // {
-            //     printf("cmd : |%s|\n", *cmd);
-            //     cmd++;
-            // }
-            // redir = tmp->redir;
-            // while (*redir)
-            // {
-            //     printf("red : |%s|\n", *redir);
-            //     redir++;
-            // }
+            while (*cmd)
+            {
+                printf("cmd : |%s|\n", *cmd);
+                cmd++;
+            }
+            redir = tmp->redir;
+            while (*redir)
+            {
+                printf("red : |%s|\n", *redir);
+                redir++;
+            }
             printf("======={new node}========\n");
-            tmp = tmp->next;
+            if((tmp = tmp->next) == NULL)
+				break;
         }
 		
 		free(vars.r_line);

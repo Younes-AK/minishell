@@ -28,6 +28,7 @@ char *remove_qoutes(char *content)
     str[j] = '\0';
     return (str);
 }
+
 char *get_env_val(char *content, t_env **env_list)
 {
     t_env *iter;
@@ -35,17 +36,22 @@ char *get_env_val(char *content, t_env **env_list)
     int i = 0;
     char *ret;
     ret = ft_strdup("");
-    str = remove_qoutes(content);
-    char **s = ft_split(str, ' ');
+    char **s = ft_split(content, ' ');
     while (s[i])
     {
-        iter = *env_list;
-        while (iter)
+        if (check_$(s[i]))
         {
-            if (!ft_strcmp(s[i], iter->key))
-                s[i] = iter->value;
-            iter = iter->next;
+            str = remove_qoutes(s[i]);
+            iter = *env_list;
+            while (iter)
+            {
+                if (!ft_strcmp(str, iter->key))
+                    s[i] = iter->value;
+                iter = iter->next;
+            }
         }
+        else
+            s[i] = remove_qoutes(s[i]);
         ret = ft_strjoin(ret, s[i]);
         i++;
     }
@@ -68,7 +74,7 @@ bool is_env_var(char *content)
 }
 bool to_expand(char *content, t_token type)
 {
-    if (content[0] == '"' && type == WORD)
+    if (content[0] != '\'' && type == WORD)
     {
         if (is_env_var(content))
         {

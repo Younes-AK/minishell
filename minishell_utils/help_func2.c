@@ -46,6 +46,24 @@ void _init(int ac, char **av, char **env)
 	(void)env;
 }
 
+bool check_$(char *s)
+{
+    int i;
+    int nbr_$;
+
+    i = 0;
+    nbr_$ = 0;
+    while (s[i])
+    {
+        if (s[i] == '$')
+            nbr_$++;
+        i++;
+    }
+    if (nbr_$ > 0 && nbr_$ % 2 != 0)
+        return (true);
+    return (false);
+}
+
  
 
  
