@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 18:17:24 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/26 13:15:44 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:17:18 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int ft_strcmp(const char *str1, const char *str2)
 {
-    while (*str1 && (*str1 == *str2)) {
+    while (*str1 && (*str1 == *str2)) 
+    {
         str1++;
         str2++;
     }

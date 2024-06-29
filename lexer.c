@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 10:27:37 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/01 11:59:56 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/26 09:00:50 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,17 @@ void process_quotes(char **cmd_line, bool *in_quotes, char *current_quote, int *
 
 void lexer(t_prog *p, t_tokenze *list)
 {
-    int len = 0;
-    char *start = p->cmd_line;
-    bool in_quotes = false;
-    char current_quote = '\0';
-    char *cmd_line = p->cmd_line;
+    int len;
+    char    *start;
+    bool in_quotes;
+    char current_quote;
+    char *cmd_line;
+    
+    len = 0;
+    start = p->cmd_line;
+    in_quotes = false;
+    current_quote = '\0';
+    cmd_line = p->cmd_line;
     while (*cmd_line)
     {
         if (is_quote(*cmd_line))
@@ -84,8 +90,8 @@ void lexer(t_prog *p, t_tokenze *list)
         }
         else if (is_operator(*cmd_line))
         {
-            if (len > 0)
-                tokenize_word(&len, start, list, "WORD");
+            // if (len > 0)
+            //     tokenize_word(&len, start, list, "WORD");
             tokenize_operator(list, &cmd_line, p, &len);
             start = cmd_line + 1;
         }

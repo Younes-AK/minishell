@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/01 15:29:16 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/28 08:18:45 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-typedef enum e_token {
+typedef enum e_token 
+{
     WORD,
     WHITE_SPACE,
     ENV,
@@ -34,7 +35,6 @@ typedef enum e_token {
 	
     DOUBLE_QUOTE,
     SINGLE_QUOTE,
-    ESCAPE,
     NEW_LINE,
 }	t_token;
 
@@ -101,6 +101,13 @@ char		**ft_split(char const *s, char c);
 char		*ft_strndup(const char *str, int len);
 void		ft_lstadd_back(t_env **lst, t_env *new);
 t_env		*ft_lstnew(char *key, char *value);
+int         ft_lstsize(t_env *lst);
+void	    *ft_memcpy(void *dest, const void *src, size_t n);
+char        *ft_strcat(char *restrict s1, const char *restrict s2);
+void        *ft_realloc(void *ptr, size_t size);
+int         ft_isalnum(int c);
+int         ft_isalpha(int c);
+int         ft_isdigit(int c);
 
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
@@ -114,7 +121,7 @@ bool		is_quote(char c);
 void		*safe_allocation(size_t size, size_t lenght);
 bool		parssing(t_prog *p);
 void		lexer(t_prog *p, t_tokenze *list);
-void		free_list(t_tokenze *list);
+void        free_tok_list(t_tokenze *list);
 void		_init(int ac, char **av, char **env);
 bool		parser(t_prog *p, char **env, t_exec_list *exec_list);
 void		free_double_ptr(char **str);

@@ -1,37 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/05 15:15:18 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/25 08:55:06 by yakazdao         ###   ########.fr       */
+/*   Created: 2023/11/16 11:15:01 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/06/27 16:26:55 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+int	ft_lstsize(t_env *lst)
 {
-	char	*substr;
-	size_t	i;
+	int	i;
 
 	i = 0;
-	if (!s)
-		return (NULL);
-	if (start >= ft_strlen(s))
-		return (ft_strdup(""));
-	if (len > ft_strlen(s) - start)
-		len = ft_strlen(s) - start;
-	substr = (char *)malloc(sizeof(char) * (len + 1));
-	if (!substr)
-		return (NULL);
-	while (s[start + i] && i < len)
+	while (lst)
 	{
-		substr[i] = s[start + i];
 		i++;
+		lst = lst->next;
 	}
-	substr[i] = '\0';
-	return (substr);
+	return (i);
 }

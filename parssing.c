@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/31 10:13:46 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/26 09:18:34 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ int count(char *line)
 	{
 		if (is_operator(line[i]))
 		{
-			if (!is_whait_spaces(line[i - 1]) && !is_operator(line[i - 1]))
-				len++;
+			if (i > 0)
+				if (!is_whait_spaces(line[i - 1]) && !is_operator(line[i - 1]))
+					len++;
 			if (!is_whait_spaces(line[i + 1]) && !is_operator(line[i + 1]))
 				len++;
 		}
@@ -54,26 +55,38 @@ int count(char *line)
 	}
 	return (len);
 }
- 
-char *inject_spaces(char *input)
+int count_over_space(char *input, int *index)
 {
-    int i = 0, j = 0;
-    int len = ft_strlen(input);
-    char *p;
-    bool in_quotes = false;
-
-    while (is_whait_spaces(input[i]))
-        i++;
-
-    int k = i;
-    while (k < len)
+	int	k;
+	int	j;
+    bool in_quotes;
+	
+	j = 0;
+	k = *index;
+	in_quotes = false;
+    while (k < (int)ft_strlen(input))
     {
-        if (input[k] == '"' || input[k] == '\'')
+        if (input[k] == '"' || input[k] == '\'') 
             in_quotes = !in_quotes;
         if (!(is_whait_spaces(input[k]) && is_whait_spaces(input[k + 1]) && !in_quotes))
             j++;
         k++;
     }
+	return (j);
+}
+char *inject_spaces(char *input)
+{
+    int	i;
+	int	j;
+    bool in_quotes;
+    char *p;
+	
+	i = 0;
+	j = 0;
+	in_quotes = false;
+    while (is_whait_spaces(input[i]))
+        i++;
+	j = count_over_space(input, &i);
 	p = safe_allocation(sizeof(char), j + 1);
     j = 0;
     while (input[i])
@@ -87,17 +100,17 @@ char *inject_spaces(char *input)
     while (j > 0 && p[j - 1] == ' ')
         j--;
     p[j] = '\0';
-    return p;
+    return (p);
 }
 bool add_spaces(t_prog *p, int len) 
 {    
     int i = 0;
     int j = 0;
-	if (*p->d == '|' || p->d[ft_strlen(p->d) - 1] == '|')
-	{
-		write(2, "Error \n", 7);
-		return (false);
-	}
+	// if (*p->d == '|' || p->d[ft_strlen(p->d) - 1] == '|')
+	// {
+	// 	write(2, "minishell: syntax error near unexpected token `|' \n", 52);
+	// 	return (false);
+	// }
     p->cmd_line = safe_allocation(sizeof(p->cmd_line), len + 1);
     while (p->d[i] && j < len)
 	{
@@ -126,16 +139,15 @@ bool parssing(t_prog *p)
 	if (check_quotes(p->r_line))
 	{
 		p->d = inject_spaces(p->r_line);
-
 		len = count(p->d);
-		add_spaces(p, len);
+		if (!add_spaces(p, len))
+			return (false);
 		free(p->d);
-		 
 		return (true);
 	}
 	else
 	{
-		write(2, "Error \n", 7);
+		write(2, "minishell: syntax error near unexpected quote \n", 48);
 		return (false);
 	}
 }

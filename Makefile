@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/06/01 17:10:17 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/06/28 08:19:24 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@
 
 CC = cc
 
-FLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
+FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 
 FILE =  main.c \
             functions/ft_split.c \
@@ -76,9 +76,17 @@ FILE =  main.c \
             functions/ft_strndup.c \
             functions/ft_strcmp.c \
             functions/ft_strchr.c \
+            functions/ft_strrchr.c \
             functions/ft_substr.c \
             functions/ft_lstadd_back.c \
             functions/ft_lstnew.c \
+            functions/ft_lstsize.c \
+            functions/ft_memcpy.c \
+            functions/ft_strcat.c \
+            functions/ft_realloc.c \
+            functions/ft_isalnum.c \
+            functions/ft_isalpha.c \
+            functions/ft_isdigit.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
             parssing.c lexer.c parser.c \

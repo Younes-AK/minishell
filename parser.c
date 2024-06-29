@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:36:11 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/01 18:25:07 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:08:00 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void append_exec_list(t_prog *p, int index, t_exec_list *exec_list)
     }
     node->cmd[i] = NULL;
     node->redir[j] = NULL;
+    node->next = NULL;
     append_exec(exec_list, node);
 }
 
@@ -51,8 +52,8 @@ void _init_exec_list(t_prog *p, t_exec_list *exec_list)
 {
     t_tok_node *iter;
     int i = 0;
-    if (!p->list_tok->head)
-        return;
+    // if (!p->list_tok->head)  
+    //     return;
     iter = p->list_tok->head;
     if (iter)
     {
@@ -79,11 +80,13 @@ void _init_exec_list(t_prog *p, t_exec_list *exec_list)
 bool check_syntax(t_prog *p)
 {
 	t_tok_node *iter;
+    
 	iter = p->list_tok->head;
     if (iter)
     {
         if (p->list_tok->tail->type == REDIR_HEREDOC || p->list_tok->tail->type == REDIR_APPEND
-            || p->list_tok->tail->type == REDIR_IN || p->list_tok->tail->type == REDIR_OUT)
+            || p->list_tok->tail->type == REDIR_IN || p->list_tok->tail->type == REDIR_OUT
+            || p->list_tok->head->type == PIPE_LINE || p->list_tok->tail->type == PIPE_LINE)
             return (false);
         while (iter)
         {
@@ -93,7 +96,7 @@ bool check_syntax(t_prog *p)
                 if (!iter->next || iter->next->type != WORD)
                     return false;
             }
-            if (iter->type == PIPE_LINE)
+            if (iter->type == PIPE_LINE && iter->next)
                 if (iter->next->type == PIPE_LINE)
                     return false;
             iter = iter->next;
@@ -125,12 +128,12 @@ bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 	store_env(env, p);
 	if (!check_syntax(p))
 	{
-		write(2, "Syntax Error\n", 14);
+		write(2, "minishell: syntax error near unexpected token\n", 47);
 		return (false);
 	}
 	else
 	{
-		//expand(p->list_tok, p->env_list);
+		expand(p->list_tok, p->env_list);
 		_init_exec_list(p, exec_list);
 		return (true);
 	}

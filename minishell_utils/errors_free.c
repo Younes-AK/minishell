@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 11:57:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/29 23:03:46 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/25 14:55:43 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void free_double_ptr(char **str)
 
 void free_exec_list(t_exec_list *exec_list)
 {
-     if (!exec_list)
+    if (!exec_list)
         return;
     t_exec_node *curr = exec_list->head;
     t_exec_node *next;
@@ -76,7 +76,7 @@ void free_env_list(t_env *env_list)
     }
 }
 
-void free_list(t_tokenze *list) 
+void free_tok_list(t_tokenze *list) 
 {
     t_tok_node *curr;
     t_tok_node *next;

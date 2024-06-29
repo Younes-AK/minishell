@@ -1,37 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_strcat.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/05 15:15:18 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/25 08:55:06 by yakazdao         ###   ########.fr       */
+/*   Created: 2023/11/03 11:43:38 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/06/28 07:55:37 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+char *ft_strcat(char *restrict s1, const char *restrict s2) 
 {
-	char	*substr;
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (NULL);
-	if (start >= ft_strlen(s))
-		return (ft_strdup(""));
-	if (len > ft_strlen(s) - start)
-		len = ft_strlen(s) - start;
-	substr = (char *)malloc(sizeof(char) * (len + 1));
-	if (!substr)
-		return (NULL);
-	while (s[start + i] && i < len)
+    char *dest = s1;
+    while (*dest)
+        dest++;
+    while (*s2) 
 	{
-		substr[i] = s[start + i];
-		i++;
-	}
-	substr[i] = '\0';
-	return (substr);
+        *dest = *s2;
+        dest++;
+        s2++;
+    }
+    *dest = '\0';
+    return (s1);
 }
+

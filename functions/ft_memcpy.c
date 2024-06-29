@@ -1,37 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/05 15:15:18 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/25 08:55:06 by yakazdao         ###   ########.fr       */
+/*   Created: 2023/11/01 20:12:35 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/06/28 07:37:03 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	char	*substr;
+	char	*ptr_src;
+	char	*ptr_dest;
 	size_t	i;
 
+	ptr_src = (char *) src;
+	ptr_dest = (char *) dest;
 	i = 0;
-	if (!s)
-		return (NULL);
-	if (start >= ft_strlen(s))
-		return (ft_strdup(""));
-	if (len > ft_strlen(s) - start)
-		len = ft_strlen(s) - start;
-	substr = (char *)malloc(sizeof(char) * (len + 1));
-	if (!substr)
-		return (NULL);
-	while (s[start + i] && i < len)
+	if (src == dest)
+		return (dest);
+	while (i < n)
 	{
-		substr[i] = s[start + i];
+		ptr_dest[i] = ptr_src[i];
 		i++;
 	}
-	substr[i] = '\0';
-	return (substr);
+	return (dest);
 }
