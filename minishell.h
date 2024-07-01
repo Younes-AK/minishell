@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/28 08:18:45 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/01 09:54:42 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <readline/history.h>  
 #include <errno.h>
 #include <stdbool.h>
+#include <limits.h>
 #include <string.h>
 
 typedef enum e_token 
@@ -108,6 +109,7 @@ void        *ft_realloc(void *ptr, size_t size);
 int         ft_isalnum(int c);
 int         ft_isalpha(int c);
 int         ft_isdigit(int c);
+char        *ft_strcpy(char *dest, const char *src);
 
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
@@ -132,4 +134,11 @@ void        append_exec(t_exec_list *list, t_exec_node *new_node);
 void        free_env_list(t_env *list) ;
 void        expand(t_tokenze *list, t_env *env_list);
 bool        check_$(char *s);
+
+void	    ft_putstr_fd(char *s, int fd);
+void        ft_putendl_fd(char *s, int fd);
+void	    ft_putchar_fd(char c, int fd);
+
+int         echo(char **args);
+int        cd(char **strs, t_env *env);
 #endif

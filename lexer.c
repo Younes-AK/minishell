@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 10:27:37 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/26 09:00:50 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/06/29 12:09:17 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void lexer(t_prog *p, t_tokenze *list)
     bool in_quotes;
     char current_quote;
     char *cmd_line;
-    
+
     len = 0;
     start = p->cmd_line;
     in_quotes = false;

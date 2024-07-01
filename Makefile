@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/06/28 08:19:24 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/07/01 09:55:35 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@
 
 CC = cc
 
-FLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 FILE =  main.c \
             functions/ft_split.c \
@@ -87,11 +87,17 @@ FILE =  main.c \
             functions/ft_isalnum.c \
             functions/ft_isalpha.c \
             functions/ft_isdigit.c \
+            functions/ft_putendl_fd.c \
+            functions/ft_putstr_fd.c \
+            functions/ft_putchar_fd.c \
+            functions/ft_strcpy.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
             parssing.c lexer.c parser.c \
             minishell_utils/help_func2.c \
-            expand.c 
+            minishell_utils/help_func3.c \
+            expand.c builtins/echo.c \
+            builtins/cd.c
 
 OBJECT_FILE = $(FILE:.c=.o)
 

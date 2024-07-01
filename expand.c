@@ -53,6 +53,7 @@ char *replace(char *str, t_env *env_list)
     size_t var_len;
     char *var_name;
     const char *var_value;
+    
     result = safe_allocation(sizeof(char), ft_strlen(str) + 1);
     result[0] = '\0';
     start = str;
