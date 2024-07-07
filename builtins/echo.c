@@ -6,21 +6,12 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 14:35:26 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/30 16:25:57 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/07 14:36:46 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int get_args_nbr(char **args)
-{
-    int i;
-
-    i = 0;
-    while (args[i])
-        i++;
-    return (i);
-}
 int echo(char **args)
 {
     int args_nbr;

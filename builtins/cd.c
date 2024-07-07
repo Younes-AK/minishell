@@ -6,21 +6,11 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 10:55:04 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/01 10:28:00 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/07 14:38:31 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int get_args_nbr1(char **args)
-{
-    int i;
-
-    i = 0;
-    while (args[i])
-        i++;
-    return (i);
-}
 
 char *get_env_var(char *path, t_env *env)
 {
@@ -40,7 +30,7 @@ int cd(char **args, t_env *env)
     static char prev_path[PATH_MAX];
     char *new_path;
     
-    args_nbr = get_args_nbr1(args);
+    args_nbr = get_args_nbr(args);
     getcwd(curr_path, PATH_MAX);
     if (args_nbr == 1 && !ft_strcmp(args[0], "cd"))
     {
@@ -63,6 +53,6 @@ int cd(char **args, t_env *env)
         if (chdir(new_path) != 0)
             return (ft_putstr_fd("Error chdir() failled to found path\n", 2), 1);
     }
-    strcpy(prev_path, curr_path);
+    ft_strcpy(prev_path, curr_path);
     return (0);
 }

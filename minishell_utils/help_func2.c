@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 00:35:47 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/30 09:00:35 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/07 14:23:25 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,23 +46,6 @@ void _init(int ac, char **av, char **env)
 	(void)env;
 }
 
-bool check_$(char *s)
-{
-    int i;
-    int nbr_$;
-
-    i = 0;
-    nbr_$ = 0;
-    while (s[i])
-    {
-        if (s[i] == '$')
-            nbr_$++;
-        i++;
-    }
-    if (nbr_$ > 0 && nbr_$ % 2 != 0)
-        return (true);
-    return (false);
-}
 
  
 

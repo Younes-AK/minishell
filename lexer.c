@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 10:27:37 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/29 12:09:17 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:45:49 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,11 @@ void process_quotes(char **cmd_line, bool *in_quotes, char *current_quote, int *
 
 void lexer(t_prog *p, t_tokenze *list)
 {
-    int len;
+    int     len;
     char    *start;
-    bool in_quotes;
-    char current_quote;
-    char *cmd_line;
+    bool    in_quotes;
+    char    current_quote;
+    char    *cmd_line;
 
     len = 0;
     start = p->cmd_line;

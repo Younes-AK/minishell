@@ -6,31 +6,33 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/26 09:18:34 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/06 09:01:52 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool check_quotes(char  *p)
+bool check_quotes(char *p)
 {
-	int d_qout_count;
-	int s_qout_count;
-	int	i;
+    int i;
+    bool in_d_quote;
+    bool in_s_quote;
+	
+    i = 0;
+	in_d_quote = false;
+	in_s_quote = false;
 
-	i = 0;
-	d_qout_count = 0;
-	s_qout_count = 0;
-	while (p[i])
-	{
-		if (p[i] == '\'')
-			s_qout_count++;
-		if (p[i] == '"')
-			d_qout_count++;
-		i++;
-	}
-	return (d_qout_count % 2 == 0 && s_qout_count % 2 == 0);
+    while (p[i])
+    {
+        if (p[i] == '"' && !in_s_quote)
+            in_d_quote = !in_d_quote;
+        else if (p[i] == '\'' && !in_d_quote)
+            in_s_quote = !in_s_quote;
+        i++;
+    }
+    return (!in_s_quote && !in_d_quote);
 }
+
 int count(char *line)
 {
 	int i;
@@ -59,16 +61,20 @@ int count_over_space(char *input, int *index)
 {
 	int	k;
 	int	j;
-    bool in_quotes;
+    bool in_squotes;
+    bool in_dquotes;
 	
 	j = 0;
 	k = *index;
-	in_quotes = false;
+	in_squotes = false;
+	in_dquotes = false;
     while (k < (int)ft_strlen(input))
     {
-        if (input[k] == '"' || input[k] == '\'') 
-            in_quotes = !in_quotes;
-        if (!(is_whait_spaces(input[k]) && is_whait_spaces(input[k + 1]) && !in_quotes))
+        if (input[k] == '\'') 
+            in_squotes = !in_squotes;
+		else if (input[k] == '"') 
+            in_dquotes = !in_dquotes;
+        if (!(is_whait_spaces(input[k]) && is_whait_spaces(input[k + 1]) && !in_squotes && !in_dquotes))
             j++;
         k++;
     }
@@ -78,22 +84,28 @@ char *inject_spaces(char *input)
 {
     int	i;
 	int	j;
-    bool in_quotes;
+    bool in_squotes;
+    bool in_dquotes;
     char *p;
 	
 	i = 0;
 	j = 0;
-	in_quotes = false;
+	in_squotes = false;
+	in_dquotes = false;
     while (is_whait_spaces(input[i]))
         i++;
 	j = count_over_space(input, &i);
 	p = safe_allocation(sizeof(char), j + 1);
+	if (!p)
+		exit(1);
     j = 0;
     while (input[i])
     {
-        if (input[i] == '"' || input[i] == '\'')
-            in_quotes = !in_quotes;
-        while (is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]) && !in_quotes)
+        if (input[i] == '"')
+            in_dquotes = !in_dquotes;
+		else if (input[i] == '"')
+            in_squotes = !in_squotes;
+        while (is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]) && !in_squotes && !in_dquotes)
             i++;
         p[j++] = input[i++];
     }
@@ -116,14 +128,19 @@ bool add_spaces(t_prog *p, int len)
 	{
         if (is_operator(p->d[i]))
 		{
-            if (i != 0 && p->d[i - 1] != ' ' && !is_operator(p->d[i - 1]))
+            if (i != 0 && !is_whait_spaces(p->d[i - 1]) && !is_operator(p->d[i - 1]))
                 p->cmd_line[j++] = ' ';
             p->cmd_line[j++] = p->d[i];
-            if (p->d[i + 1] != ' '  && !is_operator(p->d[i + 1]) && p->d[i + 1])
+            if (!is_whait_spaces(p->d[i + 1]) && !is_operator(p->d[i + 1]) && p->d[i + 1])
                 p->cmd_line[j++] = ' ';
         }
 		else
-            p->cmd_line[j++] = p->d[i];
+		{
+			if (is_whait_spaces(p->d[i]))
+				p->cmd_line[j++] = ' ';
+			else
+            	p->cmd_line[j++] = p->d[i];
+		}
         i++;
     }
     p->cmd_line[j] = '\0';
@@ -132,7 +149,6 @@ bool add_spaces(t_prog *p, int len)
 
 bool parssing(t_prog *p)
 {
-
 	int len;
 
 	len = 0;

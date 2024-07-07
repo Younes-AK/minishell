@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/01 09:54:42 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/07 14:26:48 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,14 @@ t_env		*ft_lstnew(char *key, char *value);
 int         ft_lstsize(t_env *lst);
 void	    *ft_memcpy(void *dest, const void *src, size_t n);
 char        *ft_strcat(char *restrict s1, const char *restrict s2);
-void        *ft_realloc(void *ptr, size_t size);
+// void        *ft_realloc(void *ptr, size_t size);
+void *ft_realloc(void *ptr, size_t original_size, size_t new_size);
 int         ft_isalnum(int c);
 int         ft_isalpha(int c);
 int         ft_isdigit(int c);
 char        *ft_strcpy(char *dest, const char *src);
+char        *ft_strrchr(const char *s, int c);
+char        *ft_strncpy(char *dst, const char *src, size_t len);
 
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
@@ -128,17 +131,26 @@ void		_init(int ac, char **av, char **env);
 bool		parser(t_prog *p, char **env, t_exec_list *exec_list);
 void		free_double_ptr(char **str);
 void        free_exec_list(t_exec_list *exec_list);
-
 t_exec_list *init_exec_list();
 void        append_exec(t_exec_list *list, t_exec_node *new_node);
 void        free_env_list(t_env *list) ;
 void        expand(t_tokenze *list, t_env *env_list);
-bool        check_$(char *s);
+char        *remove_qoutes(char *content);
+char        *get_env_value(const char *var_name, t_env *env_list) ;
+
+char        *extract_var_name(const char **start);
+char        *append_value(char *res, const char *value, size_t *res_size);
+char        *append_char(char *res, char c, size_t *res_size);
+
 
 void	    ft_putstr_fd(char *s, int fd);
 void        ft_putendl_fd(char *s, int fd);
 void	    ft_putchar_fd(char c, int fd);
 
+int         get_args_nbr(char **args);
 int         echo(char **args);
-int        cd(char **strs, t_env *env);
+int         cd(char **args, t_env *env);
+void        pwd(void);
+int         env(t_env *env);
+int         ft_export(char **args, t_env *env);
 #endif

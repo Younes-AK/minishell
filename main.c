@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/01 07:55:34 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/07 14:37:52 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ void f()
 }
 
 
-int main(int ac, char **av, char **env)
+int main(int ac, char **av, char **envp)
 {
 	//atexit(f);
 	t_prog vars;
-	_init(ac, av, env);
+	_init(ac, av, envp);
 	bool flg;
 	while (true)
 	{
@@ -43,12 +43,25 @@ int main(int ac, char **av, char **env)
 			{
 				flg = true;
 				lexer(&vars, vars.list_tok);
-				parser(&vars, env, vars.exec_list);	
+				parser(&vars, envp, vars.exec_list);	
 			}
 		}
-		// echo(ft_split(vars.r_line, ' '));
-		cd(ft_split(vars.r_line, ' '), vars.env_list);
-		 
+
+		char **strs  = ft_split(vars.r_line, ' ');
+		if (*strs && !ft_strcmp(*strs, "cd"))
+			cd(strs, vars.env_list);
+		if (*strs && !ft_strcmp(*strs, "echo"))
+			echo(strs);
+		else if (*strs && !ft_strcmp(*strs, "pwd"))
+			pwd();
+		else if (*strs && !ft_strcmp(*strs, "env"))
+			env(vars.env_list);
+		else if (*strs && !ft_strcmp(*strs, "exit"))
+			exit(0);
+		else if (*strs && !ft_strcmp(*strs, "export"))
+			ft_export(strs + 1, vars.env_list);
+
+		
 		// t_tok_node *node;
 		// node = vars.list_tok->head;
 		// while (node)
@@ -56,14 +69,14 @@ int main(int ac, char **av, char **env)
 		// 	printf("content = %s | type = %u | count = %d\n", node->content, node->type, node->len);
 		// 	node = node->next;
 		// }
-		//  	exit(0);
+		 	
 		// t_env *pp;
 		// pp = vars.env_list;
 		// while (pp)
 		// {
 		// 	printf("key = %s | value = %s\n", pp->key, pp->value);
 		// 	pp = pp->next;
-		// }exit(0);
+		// } 
 		
 		// if (vars.r_line[0] != 0)
 		// {
@@ -110,7 +123,7 @@ int main(int ac, char **av, char **env)
 		// 	free(vars.list_tok);
 		// 	free(vars.exec_list);		
 		// }
-   }
+  	 }
 
 } // echo "hello $HOME $USER $HOMEBREW_TEMP"
 

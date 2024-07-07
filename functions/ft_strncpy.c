@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   help_func3.c                                       :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/30 15:21:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/07 14:37:02 by yakazdao         ###   ########.fr       */
+/*   Created: 2024/07/06 12:01:18 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/07/06 12:55:56 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int get_args_nbr(char **args)
+char *ft_strncpy(char *dst, const char *src, size_t len) 
 {
-    int i;
+    size_t i;
 
     i = 0;
-    while (args[i])
+    while (src[i] && i < len)
+    {
+        dst[i] = src[i];
         i++;
-    return (i);
+    }
+    while (i < len)
+    {
+        dst[i] = '\0';
+        i++;
+    }
+    return dst;
 }

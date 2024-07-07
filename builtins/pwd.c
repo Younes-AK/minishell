@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   help_func3.c                                       :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/30 15:21:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/07 14:37:02 by yakazdao         ###   ########.fr       */
+/*   Created: 2024/07/01 11:04:47 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/07/01 11:26:16 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int get_args_nbr(char **args)
+void pwd(void)
 {
-    int i;
-
-    i = 0;
-    while (args[i])
-        i++;
-    return (i);
+    char cwd[PATH_MAX];
+    
+    getcwd(cwd, PATH_MAX);
+    ft_putstr_fd(cwd, 1);
+    ft_putstr_fd("\n", 1);
 }

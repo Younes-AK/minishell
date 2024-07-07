@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/07/01 09:55:35 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/07/07 14:28:34 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -91,13 +91,16 @@ FILE =  main.c \
             functions/ft_putstr_fd.c \
             functions/ft_putchar_fd.c \
             functions/ft_strcpy.c \
+            functions/ft_strncpy.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
             parssing.c lexer.c parser.c \
             minishell_utils/help_func2.c \
             minishell_utils/help_func3.c \
-            expand.c builtins/echo.c \
-            builtins/cd.c
+            expand.c expand_utils.c \
+            builtins/echo.c \
+            builtins/cd.c builtins/pwd.c \
+            builtins/env.c builtins/ft_export.c
 
 OBJECT_FILE = $(FILE:.c=.o)
 

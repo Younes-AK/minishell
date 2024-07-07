@@ -1,23 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   help_func3.c                                       :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/30 15:21:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/07 14:37:02 by yakazdao         ###   ########.fr       */
+/*   Created: 2024/07/01 14:36:16 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/07/07 14:34:02 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int get_args_nbr(char **args)
+int ft_export(char **args, t_env *env)
 {
+    (void)env;
+    int nbr_args;
     int i;
-
+    char *var;
+   // int end;
+    
     i = 0;
-    while (args[i])
+    
+    // printf("--> %s\n", var);
+    nbr_args = get_args_nbr(args);
+    while (i < nbr_args)
+    {
+        var = ft_strchr(args[i], '=');
         i++;
-    return (i);
+    }
+    return (0);
 }
