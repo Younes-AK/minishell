@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:36:11 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/05 10:53:12 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:56:48 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,7 @@ void store_env(char **env, t_prog *p)
 bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 {
 	store_env(env, p);
+    (void)exec_list;
 	if (!check_syntax(p))
 	{
 		write(2, "minishell: syntax error near unexpected token\n", 47);

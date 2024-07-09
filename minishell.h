@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/07 14:26:48 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:12:20 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ typedef struct s_exec_list
     t_exec_node *tail;
 } t_exec_list;
 
-
 typedef struct s_prog
 {
 	char		*r_line;
@@ -106,7 +105,7 @@ int         ft_lstsize(t_env *lst);
 void	    *ft_memcpy(void *dest, const void *src, size_t n);
 char        *ft_strcat(char *restrict s1, const char *restrict s2);
 // void        *ft_realloc(void *ptr, size_t size);
-void *ft_realloc(void *ptr, size_t original_size, size_t new_size);
+void        *ft_realloc(void *ptr, size_t original_size, size_t new_size);
 int         ft_isalnum(int c);
 int         ft_isalpha(int c);
 int         ft_isdigit(int c);
@@ -154,3 +153,6 @@ void        pwd(void);
 int         env(t_env *env);
 int         ft_export(char **args, t_env *env);
 #endif
+
+
+// "$"HOME    ''"$HOME"''   '$'HOME   "'$'HOME"   '"'$'HOME"'

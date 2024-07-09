@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/07 13:14:58 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/09 12:17:17 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@ char *extract_var_name(const char **start)
     const char *end = *start + 1;
     char *var_name;
     size_t var_size;
-    
     if (*end == '$' || *end == '@' || *end == '*' || *end == '#'
-        || *end == '?' || *end == '-' || *end == '!' || ft_isdigit(*end)) 
+        || *end == '?' || *end == '-' || *end == '!' || ft_isdigit(*end))
     {
         var_name = safe_allocation(sizeof(char), 3);
         var_name[0] = '$';
@@ -37,6 +36,25 @@ char *extract_var_name(const char **start)
     *start = end;
     return (var_name);
 }
+// char *extract_var_name(const char **start) 
+// {
+//     const char *end = *start + 1;
+//     if (*end == '$' || *end == '@' || *end == '*' || *end == '#' ||
+//         *end == '?' || *end == '-' || *end == '!' || *end == '0') {
+//         end++;
+//     } else {
+//         while (*end && (ft_isalnum(*end) || *end == '_')) {
+//             end++;
+//         }
+//     }
+//     size_t var_size = end - *start - 1;
+//     char *var_name = safe_allocation(sizeof(char), var_size + 1);
+//     ft_strncpy(var_name, *start + 1, var_size);
+//     var_name[var_size] = '\0';
+//     *start = end;
+//     return var_name;
+// }
+
 
 
 char *append_value(char *res, const char *value, size_t *res_size) 
@@ -83,10 +101,9 @@ char *remove_qoutes(char *content)
     int j = 0;
     bool in_double_quotes = false;
     bool in_single_quotes = false;
-    int len = strlen(content);
-    char *str = safe_allocation(sizeof(char), len + 1);
-
-    while (content[i]) 
+    int len = ft_strlen(content);
+    char *str = safe_allocation(sizeof(char), len + 2);
+    while (content[i])
     {
         if (content[i] == '"' && !in_single_quotes) 
             in_double_quotes = !in_double_quotes;
@@ -94,9 +111,12 @@ char *remove_qoutes(char *content)
             in_single_quotes = !in_single_quotes;
         else if (!(content[i] == '$' && in_single_quotes))
             str[j++] = content[i];
+        if (content[i] == '$')
+            str[j++] = content[i];
         i++;
     }
     str[j] = '\0';
+    // char *s = "...........$sdfghjkl;$HOME";
     return str;
 }
 
@@ -104,6 +124,7 @@ char *get_env_value(const char *var_name, t_env *env_list)
 {
     t_env *iter;
     char *pid_str;
+    printf("--> %s\n", var_name);
     
     if (ft_strcmp(var_name, "$$") == 0) 
     {

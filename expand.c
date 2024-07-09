@@ -3,6 +3,7 @@
 
 char *replace(char *str, t_env *env_list) 
 {
+    // printf("--------->%s\n", str);
     size_t result_size;
     char    *result;
     const char  *start;
@@ -34,8 +35,8 @@ char *get_env_val(char *str, t_env *env_list)
 {
     char *tmp;
     
-    tmp = remove_qoutes(str);
-    tmp = replace(tmp, env_list);
+    // tmp = remove_qoutes(str);
+    tmp = replace(str, env_list);
     return (tmp);
 }
 
@@ -51,26 +52,65 @@ bool is_env_var(char *content)
     return false;
 }
 
-bool to_expand(char *content, t_token type) 
+bool should_expand(const char* command) 
 {
-    if (content[0] != '\'' && type == WORD) 
+    bool in_single_quotes = false;
+    bool in_double_quotes = false;
+    size_t i = 0;
+
+   while (i < ft_strlen(command)) 
     {
-        if (is_env_var(content))
+        char c = command[i];
+        
+        if (c == '\'') 
+        {
+            if (!in_double_quotes)
+                in_single_quotes = !in_single_quotes;
+        } 
+        else if (c == '"') 
+        {
+            if (!in_single_quotes)
+                in_double_quotes = !in_double_quotes;
+        } 
+        else if (c == '$' && !in_single_quotes)
             return true;
+        i++;
     }
     return false;
 }
+bool to_expand(char *content, t_token type)
+{
+    if (type == WORD) 
+    {
+        if (should_expand(content) && is_env_var(content))
+            return (true);
+    }
+    return (false);
+}
 
 void expand(t_tokenze *list, t_env *env_list) 
-{
-    t_tok_node *iter = list->head;
+{   
+   char *expanded_var;
+    t_tok_node *iter;
+    // char *tmp;
+    iter = list->head;
     while (iter) 
     {
         if (to_expand(iter->content, iter->type)) 
         {
-            char *expanded_var = get_env_val(iter->content, env_list);
+            expanded_var = get_env_val(iter->content, env_list);
             if (expanded_var) 
             {
+                //tmp = remove_qoutes(expanded_var);
+                // free(iter->content);
+                iter->content = expanded_var;
+            }
+        }
+        else
+        {
+            if (is_env_var(iter->content))
+            {
+                expanded_var = remove_qoutes(iter->content);
                 free(iter->content);
                 iter->content = expanded_var;
             }
