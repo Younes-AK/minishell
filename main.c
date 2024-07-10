@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/09 10:03:59 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/10 12:19:53 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,11 @@ int main(int ac, char **av, char **envp)
 			{
 				flg = true;
 				lexer(&vars, vars.list_tok);
-				parser(&vars, envp, vars.exec_list);
+				if (parser(&vars, envp, vars.exec_list))
+				{
+					;
+					// execution(vars.exec_list);
+				}
 			}
 		}
 

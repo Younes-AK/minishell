@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:36:11 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/09 09:56:48 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/10 10:46:14 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@ void append_exec_list(t_prog *p, int index, t_exec_list *exec_list)
 {
     t_tok_node *iter;
     t_exec_node *node;
+    t_tok_node *prev;
     int i = 0;
-    int j = 0;
+    int j;
 
     iter = p->list_tok->head;
+    prev = iter;
     node = safe_allocation(sizeof(t_exec_node), 1);
     node->cmd = safe_allocation(sizeof(char *) * (p->nbr_cmd + 1), 1);
     node->redir = safe_allocation(sizeof(char *) * (p->nbr_redir + 1), 1);
@@ -35,10 +37,12 @@ void append_exec_list(t_prog *p, int index, t_exec_list *exec_list)
     j = 0;
     while (iter && iter->type != PIPE_LINE)
     {
-        if (iter->type == WORD)
+       if (iter->type == WORD && (prev->type != REDIR_OUT && prev->type != REDIR_IN
+            && prev->type != REDIR_APPEND && prev->type != REDIR_HEREDOC))
             node->cmd[i++] = ft_strdup(iter->content);
         else
             node->redir[j++] = ft_strdup(iter->content);
+        prev = iter;
         iter = iter->next;
     }
     node->cmd[i] = NULL;
@@ -47,14 +51,15 @@ void append_exec_list(t_prog *p, int index, t_exec_list *exec_list)
     append_exec(exec_list, node);
 }
 
-
 void _init_exec_list(t_prog *p, t_exec_list *exec_list)
 {
     t_tok_node *iter;
+    t_tok_node *prev;
     int i = 0;
-    // if (!p->list_tok->head)  
+    // if (!p->list_tok->head)
     //     return;
     iter = p->list_tok->head;
+    prev = iter;
     if (iter)
     {
         while (i < p->nbr_pipe + 1)
@@ -63,10 +68,12 @@ void _init_exec_list(t_prog *p, t_exec_list *exec_list)
             p->nbr_redir = 0;
             while (iter && iter->type != PIPE_LINE)
             {
-                if (iter->type == WORD)
+                if (iter->type == WORD && (prev->type != REDIR_OUT && prev->type != REDIR_IN
+                    && prev->type != REDIR_APPEND && prev->type != REDIR_HEREDOC))
                     p->nbr_cmd++;
                 else
                     p->nbr_redir++;
+                prev = iter;
                 iter = iter->next;
             }
             append_exec_list(p, i, exec_list);
@@ -90,15 +97,17 @@ bool check_syntax(t_prog *p)
             return (false);
         while (iter)
         {
+            // if (iter->type == REDIR_HEREDOC)
+            //     ft_heredoc(iter->content, iter->next->content);
             if (iter->type == REDIR_HEREDOC || iter->type == REDIR_APPEND ||
                 iter->type == REDIR_IN || iter->type == REDIR_OUT)
             {
                 if (!iter->next || iter->next->type != WORD)
-                    return false;
+                    return (false);
             }
             if (iter->type == PIPE_LINE && iter->next)
                 if (iter->next->type == PIPE_LINE)
-                    return false;
+                    return (false);
             iter = iter->next;
         }
     }
@@ -126,7 +135,7 @@ void store_env(char **env, t_prog *p)
 bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 {
 	store_env(env, p);
-    (void)exec_list;
+  
 	if (!check_syntax(p))
 	{
 		write(2, "minishell: syntax error near unexpected token\n", 47);

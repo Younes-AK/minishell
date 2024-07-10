@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/09 12:17:17 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/09 13:25:41 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ char *extract_var_name(const char **start)
     const char *end = *start + 1;
     char *var_name;
     size_t var_size;
+    
     if (*end == '$' || *end == '@' || *end == '*' || *end == '#'
         || *end == '?' || *end == '-' || *end == '!' || ft_isdigit(*end))
     {
@@ -27,7 +28,7 @@ char *extract_var_name(const char **start)
         *start = end + 1;
         return (var_name);
     }
-    while (*end && (ft_isalnum(*end) || *end == '_' || *end == '@' || *end == '$'))
+    while (*end && (ft_isalpha(*end) || *end == '_'))
         end++;
     var_size = end - *start - 1;
     var_name = safe_allocation(sizeof(char), var_size + 1);
@@ -36,10 +37,11 @@ char *extract_var_name(const char **start)
     *start = end;
     return (var_name);
 }
-// char *extract_var_name(const char **start) 
+
+// char *extract_var_name(const char **start)
 // {
 //     const char *end = *start + 1;
-//     if (*end == '$' || *end == '@' || *end == '*' || *end == '#' ||
+//     if (*end == '$' || *end == '@' || *end == '*' || *end == '#' || 
 //         *end == '?' || *end == '-' || *end == '!' || *end == '0') {
 //         end++;
 //     } else {
@@ -124,7 +126,6 @@ char *get_env_value(const char *var_name, t_env *env_list)
 {
     t_env *iter;
     char *pid_str;
-    printf("--> %s\n", var_name);
     
     if (ft_strcmp(var_name, "$$") == 0) 
     {

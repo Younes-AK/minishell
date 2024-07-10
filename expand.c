@@ -92,29 +92,34 @@ void expand(t_tokenze *list, t_env *env_list)
 {   
    char *expanded_var;
     t_tok_node *iter;
-    // char *tmp;
+    t_tok_node *prev;
+    char *tmp;
     iter = list->head;
+    prev = iter;
     while (iter) 
     {
-        if (to_expand(iter->content, iter->type)) 
+        // if (iter->type == REDIR_HEREDOC)
+        //     ft_here_doc();
+        if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC) 
         {
             expanded_var = get_env_val(iter->content, env_list);
             if (expanded_var) 
             {
-                //tmp = remove_qoutes(expanded_var);
-                // free(iter->content);
-                iter->content = expanded_var;
+                tmp = remove_qoutes(expanded_var);
+                //free(iter->content);
+                iter->content = tmp;
             }
         }
         else
         {
-            if (is_env_var(iter->content))
+            if (prev->type != REDIR_HEREDOC)
             {
                 expanded_var = remove_qoutes(iter->content);
                 free(iter->content);
                 iter->content = expanded_var;
             }
         }
+        prev = iter;
         iter = iter->next;
     }
 }
