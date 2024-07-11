@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 10:55:04 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/08 07:53:07 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/11 07:56:45 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int cd(char **args, t_env *env)
     
     args_nbr = get_args_nbr(args);
     getcwd(curr_path, PATH_MAX);
-    if (args_nbr == 1)
+    if (args_nbr == 1 || (args_nbr == 2 && !ft_strcmp(args[1], "~")))
     {
         if (chdir(get_env_value("HOME", env)) != 0)
             return (ft_putstr_fd("Error chdir() failled to found path\n", 2), 1);
