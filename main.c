@@ -21,9 +21,11 @@ void f()
 
 int main(int ac, char **av, char **envp)
 {
-	//atexit(f);
+	// atexit(f);
 	t_prog vars;
-	_init(ac, av, envp);
+	ft_init(ac, av, envp);
+	store_env(envp, &vars);
+    store_secret_env(envp, &vars);
 	bool flg;
 	while (true)
 	{
@@ -51,19 +53,22 @@ int main(int ac, char **av, char **envp)
 			}
 		}
 
-		char **strs  = ft_split(vars.r_line, ' ');
-		if (*strs && !ft_strcmp(*strs, "cd"))
-			cd(strs, vars.env_list);
-		if (*strs && !ft_strcmp(*strs, "echo"))
-			echo(strs);
-		else if (*strs && !ft_strcmp(*strs, "pwd"))
-			pwd();
-		else if (*strs && !ft_strcmp(*strs, "env"))
-			env(vars.env_list);
-		else if (*strs && !ft_strcmp(*strs, "exit"))
-			exit(0);
-		else if (*strs && !ft_strcmp(*strs, "export"))
-			ft_export(strs + 1, vars.env_list);
+		// char **strs  = ft_split(vars.r_line, ' ');
+		// if (*strs && !ft_strcmp(*strs, "cd"))
+		// 	cd(strs, vars.env_list);
+		// if (*strs && !ft_strcmp(*strs, "echo"))
+		// 	echo(strs);
+		// else if (*strs && !ft_strcmp(*strs, "pwd"))
+		// 	pwd();
+		// else if (*strs && !ft_strcmp(*strs, "env"))
+		// 	env(vars.env_list);
+		// else if (*strs && !ft_strcmp(*strs, "exit"))
+		// 	exit(0);
+		// else if (*strs && !ft_strcmp(*strs, "export"))
+		// 	ft_export(strs + 1, &vars);
+		// else if (*strs && !ft_strcmp(*strs, "unset"))
+		// 	ft_unset(strs + 1, vars.env_list);
+
 
 		
 		// t_tok_node *node;
@@ -75,59 +80,60 @@ int main(int ac, char **av, char **envp)
 		// }
 		 	
 		// t_env *pp;
-		// pp = vars.env_list;
+		// pp = vars.secret_env;
 		// while (pp)
 		// {
 		// 	printf("key = %s | value = %s\n", pp->key, pp->value);
 		// 	pp = pp->next;
 		// } 
 		
-		// if (vars.r_line[0] != 0)
-		// {
-		// 	if (flg)
-		// 	{
-		// 		t_exec_node *tmp = vars.exec_list->head;
-		// 		char **cmd = NULL;
-		// 		char **redir = NULL;
-		// 		int i;
-		// 		if (tmp == NULL)
-		// 		{
-		// 			printf("Error: exec_list is empty.\n");
-		// 		}
-		// 			i = 0;
-		// 		while (tmp)    
-		// 		{
-		// 			printf("======={new node : %d}========\n", i);
-		// 			if (!tmp)
-		// 				break;
-		// 			cmd = tmp->cmd;
-		// 			while (*cmd)
-		// 			{
-		// 				printf("cmd : |%s|\n", *cmd);
-		// 				cmd++;
-		// 			}
-		// 			redir = tmp->redir;
-		// 			while (*redir)
-		// 			{
-		// 				printf("red : |%s|\n", *redir);
-		// 				redir++;
-		// 			}
-		// 			i++;
-		// 			tmp = tmp->next ;
-		// 		}
+		if (vars.r_line[0] != 0)
+		{
+			if (flg)
+			{
+				t_exec_node *tmp = vars.exec_list->head;
+				char **cmd = NULL;
+				char **redir = NULL;
+				int i;
+				if (tmp == NULL)
+				{
+					printf("Error: exec_list is empty.\n");
+				}
+					i = 0;
+				while (tmp)    
+				{
+					printf("======={new node : %d}========\n", i);
+					if (!tmp)
+						break;
+					cmd = tmp->cmd;
+					while (*cmd)
+					{
+						printf("cmd : |%s|\n", *cmd);
+						cmd++;
+					}
+					redir = tmp->redir;
+					while (*redir)
+					{
+						printf("red : |%s|\n", *redir);
+						redir++;
+					}
+					i++;
+					tmp = tmp->next ;
+				}
 			
-		// 		free(vars.r_line);
-		// 		free_tok_list(vars.list_tok);
-		// 		free_env_list(vars.env_list);
-		// 		free_exec_list(vars.exec_list);	
-		// 	}
-		// }
-		// else
-		// {
-		// 	free(vars.list_tok);
-		// 	free(vars.exec_list);
-		// }
+				free(vars.r_line);
+				free_tok_list(vars.list_tok);
+				free_exec_list(vars.exec_list);	
+			}
+		}
+		else
+		{
+			free(vars.list_tok);
+			free(vars.exec_list);
+		}
   	 }
+		free_env_list(vars.env_list);
+		free_env_list(vars.secret_env);
 
 } // echo "hello $HOME $USER $HOMEBREW_TEMP"
 

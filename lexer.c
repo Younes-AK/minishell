@@ -63,7 +63,7 @@ void process_quotes(char **cmd_line, bool *in_quotes, char *current_quote, int *
     (*len)++;
 }
 
-void lexer(t_prog *p, t_tokenze *list)
+void  lexer(t_prog *p, t_tokenze *list)
 {
     int     len;
     char    *start;

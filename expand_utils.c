@@ -38,33 +38,12 @@ char *extract_var_name(const char **start)
     return (var_name);
 }
 
-// char *extract_var_name(const char **start)
-// {
-//     const char *end = *start + 1;
-//     if (*end == '$' || *end == '@' || *end == '*' || *end == '#' || 
-//         *end == '?' || *end == '-' || *end == '!' || *end == '0') {
-//         end++;
-//     } else {
-//         while (*end && (ft_isalnum(*end) || *end == '_')) {
-//             end++;
-//         }
-//     }
-//     size_t var_size = end - *start - 1;
-//     char *var_name = safe_allocation(sizeof(char), var_size + 1);
-//     ft_strncpy(var_name, *start + 1, var_size);
-//     var_name[var_size] = '\0';
-//     *start = end;
-//     return var_name;
-// }
-
-
-
 char *append_value(char *res, const char *value, size_t *res_size) 
 {
     size_t res_len;
     size_t new_res_size;
     size_t value_len;
-    
+
     res_len = strlen(res);
     value_len = strlen(value);
     new_res_size = res_len + value_len + 1;
@@ -74,7 +53,7 @@ char *append_value(char *res, const char *value, size_t *res_size)
         *res_size = new_res_size;
     }
     ft_strcat(res, value);
-    return res;
+    return (res);
 }
 
 char *append_char(char *res, char c, size_t *res_size) 
@@ -118,7 +97,6 @@ char *remove_qoutes(char *content)
         i++;
     }
     str[j] = '\0';
-    // char *s = "...........$sdfghjkl;$HOME";
     return str;
 }
 
@@ -127,14 +105,16 @@ char *get_env_value(const char *var_name, t_env *env_list)
     t_env *iter;
     char *pid_str;
     
-    if (ft_strcmp(var_name, "$$") == 0) 
+    if (ft_strcmp(var_name, "$$") == 0)
     {
         pid_str = safe_allocation(sizeof(char), 20);
         sprintf(pid_str, "%d", getpid());
         return (pid_str);
     }
     // if (strcmp(var_name, "$?") == 0) {
-    //     // return last exit status
+    //     result = safe_allocation(sizeof(char), 4);
+    //     sprintf(result, "%d", get_last_exit_status());
+    //     return result
     // }
     iter = env_list;
     while (iter) 
@@ -146,3 +126,31 @@ char *get_env_value(const char *var_name, t_env *env_list)
     return ("");
 }
 
+char *replace(char *str, t_env *env_list)
+{
+    size_t result_size;
+    char    *result;
+    const char  *start;
+    char    *var_name;
+    const char  *var_value;
+    result_size = ft_strlen(str) + 1;
+    result = safe_allocation(sizeof(char), result_size);
+    result[0] = '\0';
+    start = str;
+    while (*start)
+    {
+        if (*start == '$')
+        {
+            var_name = extract_var_name(&start);
+            var_value = get_env_value(var_name, env_list);
+            result = append_value(result, var_value, &result_size);
+            free (var_name);
+        }
+        else
+        {
+            result = append_char(result, *start, &result_size);
+            start++;
+        }
+    }
+    return (free(str), result);
+}

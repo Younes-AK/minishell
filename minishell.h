@@ -82,6 +82,7 @@ typedef struct s_prog
 	char		*d;
 	t_tokenze	*list_tok;
 	t_env		*env_list;
+	t_env		*secret_env;
 	t_exec_list	*exec_list;
 	
 	int nbr_cmd;
@@ -126,7 +127,7 @@ void		*safe_allocation(size_t size, size_t lenght);
 bool		parssing(t_prog *p);
 void		lexer(t_prog *p, t_tokenze *list);
 void        free_tok_list(t_tokenze *list);
-void		_init(int ac, char **av, char **env);
+void		ft_init(int ac, char **av, char **env);
 bool		parser(t_prog *p, char **env, t_exec_list *exec_list);
 void		free_double_ptr(char **str);
 void        free_exec_list(t_exec_list *exec_list);
@@ -134,12 +135,17 @@ t_exec_list *init_exec_list();
 void        append_exec(t_exec_list *list, t_exec_node *new_node);
 void        free_env_list(t_env *list) ;
 void        expand(t_tokenze *list, t_env *env_list);
+bool        is_env_var(char *content);
 char        *remove_qoutes(char *content);
+void        store_env(char **env, t_prog *p);
+void        store_secret_env(char **env, t_prog *p);
 char        *get_env_value(const char *var_name, t_env *env_list) ;
 
 char        *extract_var_name(const char **start);
 char        *append_value(char *res, const char *value, size_t *res_size);
 char        *append_char(char *res, char c, size_t *res_size);
+char        *replace(char *str, t_env *env_list);
+bool        check_var_exist(char *str, t_env **env);
 
 
 void	    ft_putstr_fd(char *s, int fd);
@@ -151,7 +157,8 @@ int         echo(char **args);
 int         cd(char **args, t_env *env);
 void        pwd(void);
 int         env(t_env *env);
-int         ft_export(char **args, t_env *env);
+int         ft_export(char **args, t_prog *p);
+int         ft_unset(char **args, t_env *env);
 #endif
 
 

@@ -57,7 +57,7 @@ int count(char *line)
 	}
 	return (len);
 }
-int count_over_space(char *input, int *index)
+int count_extra_spaces(char *input, int *index)
 {
 	int	k;
 	int	j;
@@ -92,9 +92,10 @@ char *inject_spaces(char *input)
 	j = 0;
 	in_squotes = false;
 	in_dquotes = false;
-    while (is_whait_spaces(input[i]))
+    while (is_whait_spaces(input[i])){
         i++;
-	j = count_over_space(input, &i);
+	}
+	j = count_extra_spaces(input, &i);
 	p = safe_allocation(sizeof(char), j + 1);
 	if (!p)
 		exit(1);
@@ -114,15 +115,13 @@ char *inject_spaces(char *input)
     p[j] = '\0';
     return (p);
 }
-bool add_spaces(t_prog *p, int len) 
+void add_spaces(t_prog *p, int len) 
 {    
-    int i = 0;
-    int j = 0;
-	// if (*p->d == '|' || p->d[ft_strlen(p->d) - 1] == '|')
-	// {
-	// 	write(2, "minishell: syntax error near unexpected token `|' \n", 52);
-	// 	return (false);
-	// }
+    int i;
+    int j;
+
+	i = 0;
+	j = 0;
     p->cmd_line = safe_allocation(sizeof(p->cmd_line), len + 1);
     while (p->d[i] && j < len)
 	{
@@ -144,7 +143,6 @@ bool add_spaces(t_prog *p, int len)
         i++;
     }
     p->cmd_line[j] = '\0';
-	return (true);
 }
 
 bool parssing(t_prog *p)
@@ -156,8 +154,7 @@ bool parssing(t_prog *p)
 	{
 		p->d = inject_spaces(p->r_line);
 		len = count(p->d);
-		if (!add_spaces(p, len))
-			return (false);
+		add_spaces(p, len);
 		free(p->d);
 		return (true);
 	}

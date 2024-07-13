@@ -39,7 +39,7 @@ bool is_str_spaces(char *line)
 	}
 	return (true);
 }
-void _init(int ac, char **av, char **env)
+void ft_init(int ac, char **av, char **env)
 {
 	(void)ac;
 	(void)av;
