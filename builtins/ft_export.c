@@ -44,7 +44,7 @@ void add_to_env(char *str, t_env **env)
 {
     t_env *new_node;
     char **var;
-
+    printf("--> %s\n", str);exit(0);
     new_node = malloc(sizeof(t_env));
     var = ft_split(str, '=');
     if (!check_var_exist(var[0], env) && !search(str, '='))

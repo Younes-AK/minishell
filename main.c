@@ -47,8 +47,7 @@ int main(int ac, char **av, char **envp)
 				lexer(&vars, vars.list_tok);
 				if (parser(&vars, envp, vars.exec_list))
 				{
-					;
-					// execution(vars.exec_list);
+					execution(vars.exec_list);
 				}
 			}
 		}
