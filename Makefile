@@ -45,6 +45,7 @@ MAND_SRC = main.c \
             functions/ft_putchar_fd.c \
             functions/ft_strcpy.c \
             functions/ft_strncpy.c \
+            functions/ft_strncmp.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
             parssing.c lexer.c parser.c \
@@ -53,7 +54,10 @@ MAND_SRC = main.c \
             expand.c expand_utils.c \
             builtins/echo.c  builtins/cd.c \
             builtins/pwd.c builtins/env.c \
-            builtins/ft_export.c builtins/ft_unset.c
+            builtins/ft_export.c builtins/ft_unset.c \
+            execution.c get_next_line/get_next_line.c \
+            get_next_line/get_next_line_utils.c \
+            exec_cmds.c execution_utils.c
             
 MAND_OBJ = $(MAND_SRC:.c=.o)
 

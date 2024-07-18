@@ -97,7 +97,7 @@ char *remove_qoutes(char *content)
         i++;
     }
     str[j] = '\0';
-    return str;
+    return (str);
 }
 
 char *get_env_value(const char *var_name, t_env *env_list) 

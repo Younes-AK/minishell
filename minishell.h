@@ -22,6 +22,10 @@
 #include <stdbool.h>
 #include <limits.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+
+#define BUFFER_SIZE 5
 
 typedef enum e_token 
 {
@@ -88,6 +92,13 @@ typedef struct s_prog
 	int nbr_cmd;
 	int nbr_redir;
 	int nbr_pipe;
+
+    int pid;
+    int end[2];
+    char *line;
+    char *path;
+    char **all_paths;
+    char *access_path;
 }	t_prog;
 
  
@@ -113,6 +124,7 @@ int         ft_isdigit(int c);
 char        *ft_strcpy(char *dest, const char *src);
 char        *ft_strrchr(const char *s, int c);
 char        *ft_strncpy(char *dst, const char *src, size_t len);
+int         ft_strncmp(const char *s1, const char *s2, size_t n);
 
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
@@ -159,6 +171,13 @@ void        pwd(void);
 int         env(t_env *env);
 int         ft_export(char **args, t_prog *p);
 int         ft_unset(char **args, t_env *env);
+
+bool        execution(t_prog *p, t_exec_list *list);
+char        *get_next_line(int fd);
+char        *ft_strjoin2(char *s1, char *s2);
+int         ft_found_newline(char *str);
+bool        exec_cmds(t_prog *path, t_exec_list *exec_list, t_env *env_list);
+char        **convert_env_list(t_env *env_list);
 #endif
 
 

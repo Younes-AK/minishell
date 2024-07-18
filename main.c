@@ -26,10 +26,10 @@ int main(int ac, char **av, char **envp)
 	ft_init(ac, av, envp);
 	store_env(envp, &vars);
     store_secret_env(envp, &vars);
-	bool flg;
+	// bool flg;
 	while (true)
 	{
-		flg = false;
+		// flg = false;
 		vars.nbr_pipe = 0;
 		vars.list_tok = init_list();
 		vars.exec_list = init_exec_list();
@@ -43,11 +43,11 @@ int main(int ac, char **av, char **envp)
 		{
 			if(parssing(&vars))
 			{
-				flg = true;
+				// flg = true;
 				lexer(&vars, vars.list_tok);
 				if (parser(&vars, envp, vars.exec_list))
 				{
-					execution(vars.exec_list);
+					execution(&vars, vars.exec_list);
 				}
 			}
 		}
@@ -86,53 +86,53 @@ int main(int ac, char **av, char **envp)
 		// 	pp = pp->next;
 		// } 
 		
-		if (vars.r_line[0] != 0)
-		{
-			if (flg)
-			{
-				t_exec_node *tmp = vars.exec_list->head;
-				char **cmd = NULL;
-				char **redir = NULL;
-				int i;
-				if (tmp == NULL)
-				{
-					printf("Error: exec_list is empty.\n");
-				}
-					i = 0;
-				while (tmp)    
-				{
-					printf("======={new node : %d}========\n", i);
-					if (!tmp)
-						break;
-					cmd = tmp->cmd;
-					while (*cmd)
-					{
-						printf("cmd : |%s|\n", *cmd);
-						cmd++;
-					}
-					redir = tmp->redir;
-					while (*redir)
-					{
-						printf("red : |%s|\n", *redir);
-						redir++;
-					}
-					i++;
-					tmp = tmp->next ;
-				}
+		// if (vars.r_line[0] != 0)
+		// {
+		// 	if (flg)
+		// 	{
+		// 		t_exec_node *tmp = vars.exec_list->head;
+		// 		char **cmd = NULL;
+		// 		char **redir = NULL;
+		// 		int i;
+		// 		if (tmp == NULL)
+		// 		{
+		// 			printf("Error: exec_list is empty.\n");
+		// 		}
+		// 			i = 0;
+		// 		while (tmp)    
+		// 		{
+		// 			printf("======={new node : %d}========\n", i);
+		// 			if (!tmp)
+		// 				break;
+		// 			cmd = tmp->cmd;
+		// 			while (*cmd)
+		// 			{
+		// 				printf("cmd : |%s|\n", *cmd);
+		// 				cmd++;
+		// 			}
+		// 			redir = tmp->redir;
+		// 			while (*redir)
+		// 			{
+		// 				printf("red : |%s|\n", *redir);
+		// 				redir++;
+		// 			}
+		// 			i++;
+		// 			tmp = tmp->next ;
+		// 		}
 			
-				free(vars.r_line);
-				free_tok_list(vars.list_tok);
-				free_exec_list(vars.exec_list);	
-			}
-		}
-		else
-		{
-			free(vars.list_tok);
-			free(vars.exec_list);
-		}
+		// 		free(vars.r_line);
+		// 		free_tok_list(vars.list_tok);
+		// 		free_exec_list(vars.exec_list);	
+		// 	}
+		// }
+		// else
+		// {
+		// 	free(vars.list_tok);
+		// 	free(vars.exec_list);
+		// }
   	 }
-		free_env_list(vars.env_list);
-		free_env_list(vars.secret_env);
+		// free_env_list(vars.env_list);
+		// free_env_list(vars.secret_env);
 
 } // echo "hello $HOME $USER $HOMEBREW_TEMP"
 
