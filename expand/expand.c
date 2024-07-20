@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char *get_env_val(char *str, t_env *env_list) 
 {
@@ -84,4 +84,5 @@ void expand(t_tokenze *list, t_env *env_list)
         iter = iter->next;
     }
 }
+
 

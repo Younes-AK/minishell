@@ -10,18 +10,18 @@
 #                                                                              #
 # **************************************************************************** #
 
-CC = cc
-FLAGS = -Wall -Werror -Wextra #-g -fsanitaize=address
-NAME = minishell
-RM = rm -rf
+CC := cc
+CFLAGS := -Wall -Werror -Wextra -g #-fsanitize=address
+NAME := minishell
+RM := rm -rf
 
-COLOR_RESET   = \033[0m
-COLOR_RED     = \033[31m
-COLOR_GREEN   = \033[32m
-COLOR_YELLOW  = \033[33m
-COLOR_BOLD    = \033[1m
+COLOR_RESET   := \033[0m
+COLOR_GREEN   := \033[32m
 
-MAND_SRC = main.c \
+SRC_DIR := .
+OBJ_DIR := obj
+
+MAND_SRC := main.c \
             functions/ft_split.c \
             functions/ft_strlen.c \
             functions/ft_strjoin.c \
@@ -46,43 +46,52 @@ MAND_SRC = main.c \
             functions/ft_strcpy.c \
             functions/ft_strncpy.c \
             functions/ft_strncmp.c \
+            functions/ft_itoa.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
-            parssing.c lexer.c parser.c \
+            parssing/parssing.c \
+            parssing/parssing_utils.c \
+            parssing/create_exec_list.c \
+            parssing/lexer.c  parssing/parser.c \
             minishell_utils/help_func2.c \
             minishell_utils/help_func3.c \
-            expand.c expand_utils.c \
+            expand/expand.c expand/expand_utils.c \
             builtins/echo.c  builtins/cd.c \
             builtins/pwd.c builtins/env.c \
             builtins/ft_export.c builtins/ft_unset.c \
-            execution.c get_next_line/get_next_line.c \
-            get_next_line/get_next_line_utils.c \
-            exec_cmds.c execution_utils.c
-            
-MAND_OBJ = $(MAND_SRC:.c=.o)
+            execution/execution.c \
+            execution/exec_cmds.c \
+            execution/execution_utils.c \
+            get_next_line/get_next_line.c \
+            get_next_line/get_next_line_utils.c
 
-$(NAME): $(MAND_OBJ)
-	@echo "$(COLOR_YELLOW)Compiling... Please wait.$(COLOR_RESET)"
-	@$(CC) $(MAND_OBJ) -lreadline -o $(NAME)
-	@echo "$(COLOR_GREEN)✅ Done$(COLOR_RESET)"
+MAND_OBJ := $(patsubst %.c,$(OBJ_DIR)/%.o,$(MAND_SRC))
+
+.PHONY: all clean fclean re
 
 all: $(NAME)
 
-%.o: %.c minishell.h
-	@$(CC) $(FLAGS) -c -o $@ $<
+$(NAME): $(MAND_OBJ)
+	@echo "Compiling... Please wait."
+	@$(CC) $(CFLAGS) $(MAND_OBJ) -lreadline -o $(NAME)
+	@echo "$(COLOR_GREEN)✅ Done$(COLOR_RESET)"
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c minishell.h
+	@mkdir -p $(@D)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@echo "$(COLOR_RED)🧹 Cleaning object files...$(COLOR_RESET)"
-	@$(RM) $(MAND_OBJ)
+	@echo "🧹 Cleaning object files..."
+	@$(RM) $(OBJ_DIR)
 
 fclean: clean
-	@echo "$(COLOR_RED)🧹 Cleaning executable...$(COLOR_RESET)"
+	@echo "🧹 Cleaning executable..."
 	@$(RM) $(NAME)
 	@echo "$(COLOR_GREEN)✅ Done$(COLOR_RESET)"
 
 re: fclean all
 
-.PHONY: all clean fclean re
+
 
 
 # CC = cc

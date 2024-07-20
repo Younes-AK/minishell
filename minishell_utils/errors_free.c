@@ -18,6 +18,11 @@ void error_msg(char *msg)
 	exit(1);
 }
 
+void error_msg1(char *msg)
+{
+	write(2, msg, ft_strlen(msg));
+}
+
 void free_double_ptr(char **str)
 {
 	int	i;

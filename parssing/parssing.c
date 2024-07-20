@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 bool check_quotes(char *p)
 {
@@ -33,7 +33,7 @@ bool check_quotes(char *p)
     return (!in_s_quote && !in_d_quote);
 }
 
-int count(char *line)
+int count_new_str(char *line)
 {
 	int i;
 	int len;
@@ -57,64 +57,7 @@ int count(char *line)
 	}
 	return (len);
 }
-int count_extra_spaces(char *input, int *index)
-{
-	int	k;
-	int	j;
-    bool in_squotes;
-    bool in_dquotes;
-	
-	j = 0;
-	k = *index;
-	in_squotes = false;
-	in_dquotes = false;
-    while (k < (int)ft_strlen(input))
-    {
-        if (input[k] == '\'') 
-            in_squotes = !in_squotes;
-		else if (input[k] == '"') 
-            in_dquotes = !in_dquotes;
-        if (!(is_whait_spaces(input[k]) && is_whait_spaces(input[k + 1]) && !in_squotes && !in_dquotes))
-            j++;
-        k++;
-    }
-	return (j);
-}
-char *inject_spaces(char *input)
-{
-    int	i;
-	int	j;
-    bool in_squotes;
-    bool in_dquotes;
-    char *p;
-	
-	i = 0;
-	j = 0;
-	in_squotes = false;
-	in_dquotes = false;
-    while (is_whait_spaces(input[i])){
-        i++;
-	}
-	j = count_extra_spaces(input, &i);
-	p = safe_allocation(sizeof(char), j + 1);
-	if (!p)
-		exit(1);
-    j = 0;
-    while (input[i])
-    {
-        if (input[i] == '"')
-            in_dquotes = !in_dquotes;
-		else if (input[i] == '"')
-            in_squotes = !in_squotes;
-        while (is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]) && !in_squotes && !in_dquotes)
-            i++;
-        p[j++] = input[i++];
-    }
-    while (j > 0 && p[j - 1] == ' ')
-        j--;
-    p[j] = '\0';
-    return (p);
-}
+
 void add_spaces(t_prog *p, int len) 
 {    
     int i;
@@ -145,6 +88,18 @@ void add_spaces(t_prog *p, int len)
     p->cmd_line[j] = '\0';
 }
 
+char	*inject_spaces(char *input)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (is_whait_spaces(input[i]))
+		i++;
+	j = count_orignal_space(input, &i);
+	return (process_spaces(input, &i, j));
+}
+
 bool parssing(t_prog *p)
 {
 	int len;
@@ -153,7 +108,7 @@ bool parssing(t_prog *p)
 	if (check_quotes(p->r_line))
 	{
 		p->d = inject_spaces(p->r_line);
-		len = count(p->d);
+		len = count_new_str(p->d);
 		add_spaces(p, len);
 		free(p->d);
 		return (true);

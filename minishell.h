@@ -116,7 +116,6 @@ t_env		*ft_lstnew(char *key, char *value);
 int         ft_lstsize(t_env *lst);
 void	    *ft_memcpy(void *dest, const void *src, size_t n);
 char        *ft_strcat(char *restrict s1, const char *restrict s2);
-// void        *ft_realloc(void *ptr, size_t size);
 void        *ft_realloc(void *ptr, size_t original_size, size_t new_size);
 int         ft_isalnum(int c);
 int         ft_isalpha(int c);
@@ -125,45 +124,51 @@ char        *ft_strcpy(char *dest, const char *src);
 char        *ft_strrchr(const char *s, int c);
 char        *ft_strncpy(char *dst, const char *src, size_t len);
 int         ft_strncmp(const char *s1, const char *s2, size_t n);
+char        *ft_itoa(int n);
 
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
 bool		is_str_spaces(char *line);
 t_tokenze 	*init_list();
-
 void		append_node(t_tokenze *list, char *content, int len, t_token type);
 bool		is_operator(char c);
 bool		is_quote(char c);
-
 void		*safe_allocation(size_t size, size_t lenght);
+// =================== start parssing part ======================
 bool		parssing(t_prog *p);
+int         count_orignal_space(char *input, int *index);
+char        *process_spaces(char *input, int *i, int j);
 void		lexer(t_prog *p, t_tokenze *list);
 void        free_tok_list(t_tokenze *list);
-void		ft_init(int ac, char **av, char **env);
+void		ft_init(int ac, char **av);
 bool		parser(t_prog *p, char **env, t_exec_list *exec_list);
 void		free_double_ptr(char **str);
 void        free_exec_list(t_exec_list *exec_list);
 t_exec_list *init_exec_list();
+void        append_exec_list(t_prog *p, int index, t_exec_list *exec_list);
 void        append_exec(t_exec_list *list, t_exec_node *new_node);
 void        free_env_list(t_env *list) ;
+// =================== end parssing part ======================
+
+// =================== start expanding part ======================
 void        expand(t_tokenze *list, t_env *env_list);
 bool        is_env_var(char *content);
 char        *remove_qoutes(char *content);
-void        store_env(char **env, t_prog *p);
-void        store_secret_env(char **env, t_prog *p);
 char        *get_env_value(const char *var_name, t_env *env_list) ;
-
 char        *extract_var_name(const char **start);
 char        *append_value(char *res, const char *value, size_t *res_size);
 char        *append_char(char *res, char c, size_t *res_size);
 char        *replace(char *str, t_env *env_list);
 bool        check_var_exist(char *str, t_env **env);
+// =================== end expanding part ======================
 
-
+void        store_env(char **env, t_prog *p);
+void        store_secret_env(char **env, t_prog *p);
 void	    ft_putstr_fd(char *s, int fd);
 void        ft_putendl_fd(char *s, int fd);
 void	    ft_putchar_fd(char c, int fd);
 
+// =================== start builtins part ======================
 int         get_args_nbr(char **args);
 int         echo(char **args);
 int         cd(char **args, t_env *env);
@@ -171,13 +176,19 @@ void        pwd(void);
 int         env(t_env *env);
 int         ft_export(char **args, t_prog *p);
 int         ft_unset(char **args, t_env *env);
+// =================== end builtins part ======================
 
+// =================== start execution part ======================
 bool        execution(t_prog *p, t_exec_list *list);
 char        *get_next_line(int fd);
 char        *ft_strjoin2(char *s1, char *s2);
 int         ft_found_newline(char *str);
 bool        exec_cmds(t_prog *path, t_exec_list *exec_list, t_env *env_list);
 char        **convert_env_list(t_env *env_list);
+void        error_msg1(char *msg);
+// =================== start execution part ======================
+
+
 #endif
 
 

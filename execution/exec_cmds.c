@@ -1,4 +1,5 @@
-#include "minishell.h"
+#include "../minishell.h"
+
 void ft_free(t_prog *p_struct)
 {
     int i;
@@ -52,10 +53,10 @@ void execute_cmds(char **cmds, char **env, t_prog *p)
 	if(!p->access_path)
     {
         ft_free(p);
-        error_msg("path (1) is not accessible");
+        error_msg1("path (1) is not accessible");
     }
     execve(p->access_path, cmds, env);
-    error_msg("Error : Execve () failed\n");
+    error_msg1("Error : Execve () failed\n");
 }
 
 bool exec_one_cmd(char **cmds, char **env, t_prog *p)
@@ -64,7 +65,7 @@ bool exec_one_cmd(char **cmds, char **env, t_prog *p)
 
 	pid = fork();
 	if (pid == -1)
-		return (error_msg("pipe () failled"), false);
+		return (error_msg1("pipe () failled"), false);
 	if (pid == 0)
 		execute_cmds(cmds, env, p);
 	else
@@ -74,7 +75,7 @@ bool exec_one_cmd(char **cmds, char **env, t_prog *p)
 bool exec_multi_pipe(char **cmd, char **env, t_prog *p)
 {
 	if ((p->pid = fork()) == -1)
-		return (error_msg("fork () failled"), false);
+		return (error_msg1("fork () failled"), false);
 	if (p->pid == 0)
 	{
 		close(p->end[0]);
@@ -93,10 +94,8 @@ bool exec_multi_pipe(char **cmd, char **env, t_prog *p)
 bool create_childs(t_exec_list *list, char **env, t_prog *p)
 {
     t_exec_node *node;
-	int i;
-
-	i = 0;
-    node = list->head;
+	int i = 0;
+	    node = list->head;
     while (node)
     {
 		if (node->next == NULL)
@@ -109,13 +108,13 @@ bool create_childs(t_exec_list *list, char **env, t_prog *p)
 			if (i < p->nbr_pipe)
 			{
 				if (pipe(p->end) == -1)
-					return(error_msg("Error: pipe() fialled\n"), false);
+					return(error_msg1("Error: pipe() fialled\n"), false);
 			}
 			exec_multi_pipe(node->cmd, env, p);
 		}	
 		node = node->next;
     }
-	execute_cmds(node->cmd, env, p);
+	// execute_cmds(node->cmd, env, p);
 	return (true);
 }
 
@@ -129,10 +128,10 @@ bool exec_cmds(t_prog *p, t_exec_list *exec_list, t_env *env_list)
 	env = convert_env_list(env_list);
     p->path = get_path(env_list, "PATH");
 	if (!p->path)
-		error_msg("Error : path not found\n");
+		error_msg1("Error : path not found\n");
     p->all_paths = ft_split(p->path, ':');
 	if (!p->all_paths)
-		error_msg("Error : split func failed\n");
+		error_msg1("Error : split func failed\n");
 	create_childs(exec_list, env, p);
 
 	return (true);

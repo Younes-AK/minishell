@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 
 void tokenize_word(int *len, char *line, t_tokenze *list, char *type)
@@ -90,8 +90,6 @@ void  lexer(t_prog *p, t_tokenze *list)
         }
         else if (is_operator(*cmd_line))
         {
-            // if (len > 0)
-            //     tokenize_word(&len, start, list, "WORD");
             tokenize_operator(list, &cmd_line, p, &len);
             start = cmd_line + 1;
         }

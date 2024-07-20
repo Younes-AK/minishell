@@ -1,6 +1,6 @@
 
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void heredoc_handle(char *delimitre, t_prog *p)
 {
@@ -123,12 +123,13 @@ bool execution(t_prog *p, t_exec_list *list)
     t_exec_node *node;
 
     node = list->head;
-    while (node)
-    {
-        if (*node->redir)
-            redirs_handle(node->redir, p);
-        node = node->next;
-    }
+    (void)node;
+    // while (node)
+    // {
+    //     if (*node->redir)
+    //         redirs_handle(node->redir, p);
+    //     node = node->next;
+    // }
     if (!exec_cmds(p, list, p->env_list))
     {
         return (false);

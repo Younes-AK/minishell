@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char *extract_var_name(const char **start) 
 {
@@ -108,7 +108,7 @@ char *get_env_value(const char *var_name, t_env *env_list)
     if (ft_strcmp(var_name, "$$") == 0)
     {
         pid_str = safe_allocation(sizeof(char), 20);
-        sprintf(pid_str, "%d", getpid());
+        pid_str = ft_itoa(getpid());
         return (pid_str);
     }
     // if (strcmp(var_name, "$?") == 0) {

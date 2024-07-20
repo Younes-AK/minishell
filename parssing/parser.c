@@ -10,54 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void append_exec_list(t_prog *p, int index, t_exec_list *exec_list)
-{
-    t_tok_node *iter;
-    t_exec_node *node;
-    t_tok_node *prev;
-    int i = 0;
-    int j;
 
-    iter = p->list_tok->head;
-    prev = iter;
-    node = safe_allocation(sizeof(t_exec_node), 1);
-    node->cmd = safe_allocation(sizeof(char *) * (p->nbr_cmd + 1), 1);
-    node->redir = safe_allocation(sizeof(char *) * (p->nbr_redir + 1), 1);
-    while (i < index)
-    {
-        while (iter && iter->type != PIPE_LINE)
-            iter = iter->next;
-        if (iter && iter->type == PIPE_LINE)
-            iter = iter->next;
-        i++;
-    }
-    i = 0;
-    j = 0;
-    while (iter && iter->type != PIPE_LINE)
-    {
-       if (iter->type == WORD && (prev->type != REDIR_OUT && prev->type != REDIR_IN
-            && prev->type != REDIR_APPEND && prev->type != REDIR_HEREDOC))
-            node->cmd[i++] = ft_strdup(iter->content);
-        else
-            node->redir[j++] = ft_strdup(iter->content);
-        prev = iter;
-        iter = iter->next;
-    }
-    node->cmd[i] = NULL;
-    node->redir[j] = NULL;
-    node->next = NULL;
-    append_exec(exec_list, node);
-}
 
 void _init_exec_list(t_prog *p, t_exec_list *exec_list)
 {
     t_tok_node *iter;
     t_tok_node *prev;
     int i = 0;
-    // if (!p->list_tok->head)
-    //     return;
+
     iter = p->list_tok->head;
     prev = iter;
     if (iter)
@@ -97,8 +59,6 @@ bool check_syntax(t_prog *p)
             return (false);
         while (iter)
         {
-            // if (iter->type == REDIR_HEREDOC)
-            //     ft_heredoc(iter->content, iter->next->content);
             if (iter->type == REDIR_HEREDOC || iter->type == REDIR_APPEND ||
                 iter->type == REDIR_IN || iter->type == REDIR_OUT)
             {

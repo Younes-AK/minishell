@@ -1,0 +1,59 @@
+
+
+
+#include "../minishell.h"
+
+
+int count_orignal_space(char *input, int *index)
+{
+	int	i;
+	int	j;
+    bool in_squotes;
+    bool in_dquotes;
+	
+	j = 0;
+	i = *index;
+	in_squotes = false;
+	in_dquotes = false;
+    while (i < (int)ft_strlen(input))
+    {
+        if (input[i] == '\'') 
+            in_squotes = !in_squotes;
+		else if (input[i] == '"') 
+            in_dquotes = !in_dquotes;
+        if (!(is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]) 
+			&& !in_squotes && !in_dquotes))
+            j++;
+        i++;
+    }
+	return (j);
+}
+
+char	*process_spaces(char *input, int *i, int j)
+{
+	bool	in_squotes;
+	bool	in_dquotes;
+	char	*ret;
+
+	in_squotes = false;
+	in_dquotes = false;
+	ret = safe_allocation(sizeof(char), j + 1);
+	if (!ret)
+		exit(1);
+	j = 0;
+	while (input[*i])
+	{
+		if (input[*i] == '"')
+			in_dquotes = !in_dquotes;
+		else if (input[*i] == '\'')
+			in_squotes = !in_squotes;
+		while (is_whait_spaces(input[*i]) && is_whait_spaces(input[*i + 1])
+			&& !in_squotes && !in_dquotes)
+			(*i)++;
+		ret[j++] = input[(*i)++];
+	}
+	while (j > 0 && ret[j - 1] == ' ')
+		j--;
+	ret[j] = '\0';
+	return (ret);
+}
