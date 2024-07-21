@@ -124,12 +124,12 @@ bool execution(t_prog *p, t_exec_list *list)
 
     node = list->head;
     (void)node;
-    // while (node)
-    // {
-    //     if (*node->redir)
-    //         redirs_handle(node->redir, p);
-    //     node = node->next;
-    // }
+    while (node)
+    {
+        if (*node->redir)
+            redirs_handle(node->redir, p);
+        node = node->next;
+    }
     if (!exec_cmds(p, list, p->env_list))
     {
         return (false);

@@ -6,14 +6,14 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:36:16 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/11 09:02:24 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:10:50 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 
-bool search(const char *str, char c)
+ bool search(const char *str, char c)
 {
     if (*str == '\0')
         return false;
@@ -47,22 +47,20 @@ void add_to_env(char *str, t_env **env)
 
     new_node = malloc(sizeof(t_env));
     var = ft_split(str, '=');
-    if (!check_var_exist(var[0], env) && !search(str, '='))
-    {
-        new_node->key = ft_strdup(var[0]);
+    new_node->key = ft_strdup(var[0]);
+    new_node->next = NULL;
+    if (str[ft_strlen(str) - 1] == '=')
+        new_node->value = ft_strdup("\"\"");
+    else if (!check_var_exist(var[0], env) && !search(str, '='))
         new_node->value = NULL;
-        new_node->next = NULL;
-        ft_lstadd_back(env, new_node);
-    }
     else if (!check_var_exist(var[0], env) && search(str, '='))
-    {
-        new_node->key = ft_strdup(var[0]);
         new_node->value = ft_strdup(ft_strchr(str, '=') + 1);
-        new_node->next = NULL;
-        ft_lstadd_back(env, new_node);
-    }
-    else if (check_var_exist(var[0], env) && search(str, '='))
+    if (check_var_exist(var[0], env) && search(str, '='))
+    {
         update_var_value(var[0], ft_strchr(str, '=') + 1, env);
+        return ;
+    }
+    ft_lstadd_back(env, new_node);
 }
 
 void print_env(t_env *env)
@@ -74,11 +72,26 @@ void print_env(t_env *env)
     {
         ft_putstr_fd("declare -x ", 1);
         ft_putstr_fd(iter->key, 1);
-        ft_putstr_fd("=",1);
-        ft_putstr_fd(iter->value, 1);
+        if (iter->value)
+        {
+            ft_putstr_fd("=",1);
+            ft_putstr_fd(iter->value, 1);
+        }
         ft_putstr_fd("\n",1);
         iter = iter->next;
     }
+}
+bool check_valid_identifier(char *identifier)
+{
+    if (!identifier || *identifier == '=')
+        return (false);
+    while (*identifier && *identifier != '=')
+    {
+        if (!ft_isalnum(*identifier) && *identifier != '_' && *identifier != '+')
+            return (false);
+        identifier++;
+    }
+    return (true);
 }
 int ft_export(char **args, t_prog *p)
 {
@@ -91,8 +104,13 @@ int ft_export(char **args, t_prog *p)
         return (print_env(p->env_list), 0);
     while (i < nbr_args)
     {
-        add_to_env(args[i], &p->env_list);
+        if (check_valid_identifier(args[i]))
+            add_to_env(args[i], &p->env_list);
+        else
+            ft_putstr_fd("export: not a valid identifier\n", 1);
         i++;
     }
     return (0);
 }
+
+ 
