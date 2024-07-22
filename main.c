@@ -26,10 +26,10 @@ int main(int ac, char **av, char **envp)
 	ft_init(ac, av);
 	store_env(envp, &vars);
     store_secret_env(envp, &vars);
-	bool flg;
+	// bool flg;
 	while (true)
 	{
-		flg = false;
+		// flg = false;
 		vars.nbr_pipe = 0;
 		vars.list_tok = init_list();
 		vars.exec_list = init_exec_list();
@@ -43,7 +43,7 @@ int main(int ac, char **av, char **envp)
 		{
 			if(parssing(&vars))
 			{
-				flg = true;
+				// flg = true;
 				lexer(&vars, vars.list_tok);
 				if (parser(&vars, envp, vars.exec_list))
 				{
