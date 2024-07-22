@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/08 12:12:20 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:42:56 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,8 +174,8 @@ int         echo(char **args);
 int         cd(char **args, t_env *env);
 void        pwd(void);
 int         env(t_env *env);
-int         ft_export(char **args, t_prog *p);
-int         ft_unset(char **args, t_env *env);
+int ft_export(char **args, t_prog *p);
+int ft_unset(char **args, t_env *env);
 // =================== end builtins part ======================
 
 // =================== start execution part ======================
