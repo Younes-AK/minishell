@@ -99,6 +99,11 @@ typedef struct s_prog
     char *path;
     char **all_paths;
     char *access_path;
+    int heredoc_fd;
+    int fd_in;
+    int fd_out;
+    int original_stdin;
+    int original_stdout;
 }	t_prog;
 
  

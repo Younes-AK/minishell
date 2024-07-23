@@ -53,7 +53,8 @@ void execute_cmds(char **cmds, char **env, t_prog *p)
 	if(!p->access_path)
     {
         ft_free(p);
-        error_msg1("path (1) is not accessible");
+        error_msg1("path (1) is not accessible\n");
+		return;
     }
     execve(p->access_path, cmds, env);
     error_msg1("Error : Execve () failed\n");
@@ -95,34 +96,35 @@ bool create_childs(t_exec_list *list, char **env, t_prog *p)
 {
     t_exec_node *node;
 	int i = 0;
-	    node = list->head;
+	node = list->head;
+	
     while (node)
     {
-		if (node->next == NULL)
+		if (*node->cmd)
 		{
-			exec_one_cmd(node->cmd, env, p);
-			break;
-		}
-        else
-		{
-			if (i < p->nbr_pipe)
+			if (p->nbr_pipe == 0)
+				exec_one_cmd(node->cmd, env, p);
+			else
 			{
-				if (pipe(p->end) == -1)
-					return(error_msg1("Error: pipe() fialled\n"), false);
+				if (i < p->nbr_pipe)
+				{
+					if (pipe(p->end) == -1)
+						return(error_msg1("Error: pipe() fialled\n"), false);
+				}
+				exec_multi_pipe(node->cmd, env, p);
+				i++;
 			}
-			exec_multi_pipe(node->cmd, env, p);
-		}	
+		}
 		node = node->next;
     }
 	// execute_cmds(node->cmd, env, p);
 	return (true);
 }
 
-
+ 
 
 bool exec_cmds(t_prog *p, t_exec_list *exec_list, t_env *env_list)
 {
-
 	char **env;
 
 	env = convert_env_list(env_list);
@@ -131,8 +133,10 @@ bool exec_cmds(t_prog *p, t_exec_list *exec_list, t_env *env_list)
 		error_msg1("Error : path not found\n");
     p->all_paths = ft_split(p->path, ':');
 	if (!p->all_paths)
-		error_msg1("Error : split func failed\n");
+		return (error_msg1("Error : split func failed\n"), false);
 	create_childs(exec_list, env, p);
+	free_double_ptr(p->all_paths);
+	free_double_ptr(env);
 
 	return (true);
 }
