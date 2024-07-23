@@ -26,15 +26,14 @@ int main(int ac, char **av, char **envp)
 	ft_init(ac, av);
 	store_env(envp, &vars);
     store_secret_env(envp, &vars);
-	// bool flg;
+	bool flg;
 	while (true)
 	{
-		// flg = false;
+		flg = false;
 		vars.nbr_pipe = 0;
 		vars.list_tok = init_list();
 		vars.exec_list = init_exec_list();
 		vars.r_line = readline("\033[34m[minishell]~> \033[0m");
-
 		// if (!vars.r_line)
 		// 	error_msg("Error\n");
 		if (ft_strlen(vars.r_line) > 0)
@@ -43,31 +42,30 @@ int main(int ac, char **av, char **envp)
 		{
 			if(parssing(&vars))
 			{
-				// flg = true;
+				flg = true;
 				lexer(&vars, vars.list_tok);
 				if (parser(&vars, envp, vars.exec_list))
 				{
-					;
-					//execution(&vars, vars.exec_list);
+					execution(&vars, vars.exec_list);
 				}
 			}
 		}
 
-		char **strs  = ft_split(vars.r_line, ' ');
-		if (*strs && !ft_strcmp(*strs, "cd"))
-			cd(strs, vars.env_list);
-		if (*strs && !ft_strcmp(*strs, "echo"))
-			echo(strs);
-		else if (*strs && !ft_strcmp(*strs, "pwd"))
-			pwd();
-		else if (*strs && !ft_strcmp(*strs, "env"))
-			env(vars.env_list);
-		else if (*strs && !ft_strcmp(*strs, "exit"))
-			exit(0);
-		else if (*strs && !ft_strcmp(*strs, "export"))
-			ft_export(strs + 1, &vars);
-		else if (*strs && !ft_strcmp(*strs, "unset"))
-			ft_unset(strs + 1, vars.env_list);
+		// char **strs  = ft_split(vars.r_line, ' ');
+		// if (*strs && !ft_strcmp(*strs, "cd"))
+		// 	cd(strs, vars.env_list);
+		// if (*strs && !ft_strcmp(*strs, "echo"))
+		// 	echo(strs);
+		// else if (*strs && !ft_strcmp(*strs, "pwd"))
+		// 	pwd();
+		// else if (*strs && !ft_strcmp(*strs, "env"))
+		// 	env(vars.env_list);
+		// else if (*strs && !ft_strcmp(*strs, "exit"))
+		// 	exit(0);
+		// else if (*strs && !ft_strcmp(*strs, "export"))
+		// 	ft_export(strs + 1, &vars);
+		// else if (*strs && !ft_strcmp(*strs, "unset"))
+		// 	ft_unset(strs + 1, vars.env_list);
 
 
 		
@@ -131,9 +129,15 @@ int main(int ac, char **av, char **envp)
 		// 	free(vars.list_tok);
 		// 	free(vars.exec_list);
 		// }
+			free(vars.r_line);
+			if (flg)
+			{
+				free_tok_list(vars.list_tok);
+				free_exec_list(vars.exec_list);
+			}
   	 }
-		// free_env_list(vars.env_list);
-		// free_env_list(vars.secret_env);
+	free_env_list(vars.env_list);
+	free_env_list(vars.secret_env);
 
 } // echo "hello $HOME $USER $HOMEBREW_TEMP"
 
