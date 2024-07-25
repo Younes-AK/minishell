@@ -103,6 +103,7 @@ typedef struct s_prog
     int fd_in;
     int fd_out;
     int original_stdin;
+    int original_heredoc;
     int original_stdout;
 }	t_prog;
 

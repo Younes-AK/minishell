@@ -77,6 +77,7 @@ bool exec_multi_pipe(char **cmd, char **env, t_prog *p)
 {
 	if ((p->pid = fork()) == -1)
 		return (error_msg1("fork () failled"), false);
+
 	if (p->pid == 0)
 	{
 		close(p->end[0]);
@@ -85,9 +86,12 @@ bool exec_multi_pipe(char **cmd, char **env, t_prog *p)
 	}
 	else
 	{
+
 		close(p->end[1]);
 		dup2(p->end[0], 0);
 		waitpid(p->pid, NULL, 0);
+		dup2(p->end[0], STDIN_FILENO);
+   		 
 	}
 	return (true);
 }
@@ -97,6 +101,7 @@ bool create_childs(t_exec_list *list, char **env, t_prog *p)
     t_exec_node *node;
 	int i = 0;
 	node = list->head;
+    p->original_stdin = dup(STDIN_FILENO);
 	
     while (node)
     {
@@ -117,7 +122,8 @@ bool create_childs(t_exec_list *list, char **env, t_prog *p)
 		}
 		node = node->next;
     }
-	// execute_cmds(node->cmd, env, p);
+	dup2(p->end[0], STDIN_FILENO);
+
 	return (true);
 }
 
@@ -138,6 +144,13 @@ bool exec_cmds(t_prog *p, t_exec_list *exec_list, t_env *env_list)
 	free_double_ptr(p->all_paths);
 	free_double_ptr(env);
 
+
+	if (p->original_stdin >= 0)
+    {
+        dup2(p->original_stdin, STDIN_FILENO);
+        close(p->original_stdin);
+        p->original_stdin = -1;
+    }
 	return (true);
 }
 

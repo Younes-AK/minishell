@@ -34,8 +34,9 @@ int main(int ac, char **av, char **envp)
 		vars.list_tok = init_list();
 		vars.exec_list = init_exec_list();
 		vars.r_line = readline("\033[34m[minishell]~> \033[0m");
-		// if (!vars.r_line)
-		// 	error_msg("Error\n");
+		if (!vars.r_line)
+			error_msg1("Error\n");
+	
 		if (ft_strlen(vars.r_line) > 0)
 			add_history(vars.r_line);
 		if (vars.r_line[0] != '\0')
@@ -129,7 +130,7 @@ int main(int ac, char **av, char **envp)
 		// 	free(vars.list_tok);
 		// 	free(vars.exec_list);
 		// }
-			free(vars.r_line);
+			// free(vars.r_line);
 			if (flg)
 			{
 				free_tok_list(vars.list_tok);
