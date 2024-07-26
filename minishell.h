@@ -26,7 +26,7 @@
 #include <fcntl.h>
 
 #define BUFFER_SIZE 5
-
+#define PROMPT "\033[34m[minishell]~> \033[0m"
 typedef enum e_token 
 {
     WORD,
