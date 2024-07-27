@@ -22,7 +22,7 @@ void process_heredoc(t_exec_node *node, t_prog *p, const char *temp_file)
                 perror("open");
                 return;
             }
-            while ((p->line = get_next_line(0)) != NULL) 
+            while ((p->line = readline("> ")))
             {
                 if (!ft_strncmp(p->line, delimiter, ft_strlen(delimiter))) 
                 {
@@ -32,6 +32,7 @@ void process_heredoc(t_exec_node *node, t_prog *p, const char *temp_file)
                 if (expand && is_env_var(p->line))
                     p->line = replace(p->line, p->env_list);
                 write(fd, p->line, ft_strlen(p->line));
+                write(fd, "\n", 1);
                 free(p->line);
             }
             close(fd);
@@ -45,7 +46,6 @@ void heredoc_handle(t_exec_list *list, t_prog *p)
     const char *temp_file;
     int fd;
     t_exec_node *node;
-    
     temp_file = "/tmp/heredoc_temp";
     node = list->head;
     while (node) 
@@ -96,10 +96,11 @@ bool red_out_handle(char *redir, char *red_name, t_prog *p)
     return true;
 }
 
-bool red_in_handle(char *red_name, t_prog *p)
+bool red_in_handle(char *red_name, t_prog *p, bool *here_doc)
 {
+    if (*here_doc)
+        return (true);
     int fd;
-
     fd = open(red_name, O_RDONLY);
     if (fd < 0)
     {
@@ -107,14 +108,13 @@ bool red_in_handle(char *red_name, t_prog *p)
         return false;
     }
 
-    p->original_stdin = dup(STDIN_FILENO);
-    if (p->original_stdin < 0)
+    p->fd_in = dup(STDIN_FILENO);
+    if (p->fd_in < 0)
     {
-        perror("dup");
+        perror("dup1");
         close(fd);
         return false;
     }
-
     if (dup2(fd, STDIN_FILENO) < 0)
     {
         perror("dup2");
@@ -126,55 +126,94 @@ bool red_in_handle(char *red_name, t_prog *p)
     return true;
 }
 
-void redirs_handle(char **redirs, t_prog *p)
-{
-    int i;
-
-    i = 0;
-    while (redirs[i])
-    {
-        if (!ft_strcmp(redirs[i], "<"))
-            red_in_handle(redirs[i + 1], p);
-        else if (!ft_strcmp(redirs[i], ">>") || !ft_strcmp(redirs[i], ">"))
-            red_out_handle(redirs[i], redirs[i + 1], p);
-        i+=2;
-    }
-}
-bool is_here_doc(t_exec_list *list)
+bool is_here_doc(t_exec_list *list, bool *is_heredoc)
 {
     t_exec_node *iter;
     int i;
 
-    i = 0;
     iter = list->head;
     while(iter)
     {
+        i = 0;
         while (iter->redir[i])
         {
             if (!ft_strcmp(iter->redir[i], "<<"))
+            {
+                *is_heredoc = true;
                 return (true);
+            }
             i++;
         }
         iter = iter->next;
     }
     return (false);
 }
+void redirs_handle(char **redirs, t_prog *p, bool is_heredoc)
+{
+    int i;
+    (void)is_heredoc;
+    i = 0;
+    while (redirs[i])
+    {
+        // if(!ft_strcmp(redirs[i], "<") && is_heredoc)
+        // {
+        //     i+=2;
+        //     continue;
+        // }
+        // if (!ft_strcmp(redirs[i], "<"))
+        //     red_in_handle(redirs[i + 1], p);
+        if (!ft_strcmp(redirs[i], ">>") || !ft_strcmp(redirs[i], ">"))
+            red_out_handle(redirs[i], redirs[i + 1], p);
+        i+=2;
+    }
+}
+char *get_last_redin(t_exec_list *list)
+{
+    t_exec_node *iter;
+    char *last_redin = NULL;
+    int i;
 
+    iter = list->head;
+    while (iter)
+    {
+        i = 0;
+        while (iter->redir && iter->redir[i] && iter->redir[i + 1])
+        {
+            if (strcmp(iter->redir[i], "<") == 0)
+            {
+                last_redin = iter->redir[i + 1];
+            }
+            i += 2;
+        }
+        iter = iter->next;
+    }
+    return last_redin;
+}
 bool execution(t_prog *p, t_exec_list *list)
 {
     t_exec_node *node;
     node = list->head;
-    if (is_here_doc(list))
+    bool is_heredoc;
+    if (is_here_doc(list, &is_heredoc))
         heredoc_handle(list, p);
+    char *filein = get_last_redin(list);
+    if (filein)
+        red_in_handle(filein, p, &is_heredoc);
     while (node)
     {
         if (*node->redir)
-            redirs_handle(node->redir, p);
+            redirs_handle(node->redir, p, is_heredoc);
         node = node->next;
     }
     if (!exec_cmds(p, list, p->env_list))
         return (false);
-    if (p->original_heredoc >= 0 && is_here_doc(list))
+    if (p->fd_in >= 0)
+    {
+        dup2(p->fd_in, STDIN_FILENO);
+        close(p->fd_in);
+        p->fd_in = -1;
+    }
+    if (p->original_heredoc >= 0 && is_here_doc(list, &is_heredoc))
     {
         dup2(p->original_heredoc, STDIN_FILENO);
         close(p->original_heredoc);

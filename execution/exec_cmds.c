@@ -53,7 +53,8 @@ void execute_cmds(char **cmds, char **env, t_prog *p)
 	if(!p->access_path)
     {
         ft_free(p);
-        error_msg1("path (1) is not accessible\n");
+        error_msg1(cmds[0]);
+		error_msg1(": command not found\n");
 		return;
     }
     execve(p->access_path, cmds, env);
@@ -73,58 +74,71 @@ bool exec_one_cmd(char **cmds, char **env, t_prog *p)
 		waitpid(pid, NULL, 0);
 	return (true);
 }
-bool exec_multi_pipe(char **cmd, char **env, t_prog *p)
+bool exec_multi_pipe(char **cmd, char **env, t_prog *p, int in_fd, int out_fd)
 {
-	if ((p->pid = fork()) == -1)
-		return (error_msg1("fork () failled"), false);
+    p->pid = fork();
+    if (p->pid == -1)
+        return (error_msg1("fork() failed"), false);
 
-	if (p->pid == 0)
-	{
-		close(p->end[0]);
-		dup2(p->end[1], 1);
-		execute_cmds(cmd, env, p);
-	}
-	else
-	{
-
-		close(p->end[1]);
-		dup2(p->end[0], 0);
-		waitpid(p->pid, NULL, 0);
-		dup2(p->end[0], STDIN_FILENO);
-   		 
-	}
-	return (true);
+    if (p->pid == 0)
+    {
+        if (in_fd != STDIN_FILENO)
+        {
+            dup2(in_fd, STDIN_FILENO);
+            close(in_fd);
+        }
+        if (out_fd != STDOUT_FILENO)
+        {
+            dup2(out_fd, STDOUT_FILENO);
+            close(out_fd);
+        }
+        execute_cmds(cmd, env, p);
+        exit(EXIT_FAILURE);  // In case execute_cmds fails
+    }
+    
+    // Parent doesn't wait here, it continues to set up the next command
+    if (in_fd != STDIN_FILENO)
+        close(in_fd);
+    if (out_fd != STDOUT_FILENO)
+        close(out_fd);
+    
+    return true;
 }
 
 bool create_childs(t_exec_list *list, char **env, t_prog *p)
 {
     t_exec_node *node;
-	int i = 0;
-	node = list->head;
-    p->original_stdin = dup(STDIN_FILENO);
-	
+    int in_fd = STDIN_FILENO;
+    int fd[2];
+
+    node = list->head;
     while (node)
     {
-		if (*node->cmd)
-		{
-			if (p->nbr_pipe == 0)
-				exec_one_cmd(node->cmd, env, p);
-			else
-			{
-				if (i < p->nbr_pipe)
-				{
-					if (pipe(p->end) == -1)
-						return(error_msg1("Error: pipe() fialled\n"), false);
-				}
-				exec_multi_pipe(node->cmd, env, p);
-				i++;
-			}
-		}
-		node = node->next;
-    }
-	dup2(p->end[0], STDIN_FILENO);
+        if (*node->cmd)
+        {
+            if (node->next && pipe(fd) == -1)
+                return (error_msg1("Error: pipe() failed\n"), false);
 
-	return (true);
+            if (p->nbr_pipe == 0)
+                exec_one_cmd(node->cmd, env, p);
+            else
+                exec_multi_pipe(node->cmd, env, p, in_fd, node->next ? fd[1] : STDOUT_FILENO);
+
+            if (in_fd != STDIN_FILENO)
+                close(in_fd);
+            if (node->next)
+            {
+                close(fd[1]);
+                in_fd = fd[0];
+            }
+        }
+        node = node->next;
+    }
+
+    while (wait(NULL) > 0)
+	;
+
+    return true;
 }
 
  
@@ -132,7 +146,6 @@ bool create_childs(t_exec_list *list, char **env, t_prog *p)
 bool exec_cmds(t_prog *p, t_exec_list *exec_list, t_env *env_list)
 {
 	char **env;
-
 	env = convert_env_list(env_list);
     p->path = get_path(env_list, "PATH");
 	if (!p->path)
@@ -145,12 +158,13 @@ bool exec_cmds(t_prog *p, t_exec_list *exec_list, t_env *env_list)
 	free_double_ptr(env);
 
 
-	if (p->original_stdin >= 0)
-    {
-        dup2(p->original_stdin, STDIN_FILENO);
-        close(p->original_stdin);
-        p->original_stdin = -1;
-    }
+	// if (p->original_stdin >= 0)
+    // {
+    //     dup2(p->original_stdin, STDIN_FILENO);
+    //     close(p->original_stdin);
+    //     p->original_stdin = -1;
+    // }
+
 	return (true);
 }
 

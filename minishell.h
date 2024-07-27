@@ -83,7 +83,7 @@ typedef struct s_prog
 	char		*r_line;
 	int			tokens_len;
 	char 		*cmd_line;
-	char		*d;
+	char		*tmp;
 	t_tokenze	*list_tok;
 	t_env		*env_list;
 	t_env		*secret_env;
@@ -135,7 +135,7 @@ char        *ft_itoa(int n);
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
 bool		is_str_spaces(char *line);
-t_tokenze 	*init_list();
+t_tokenze 	*init_token_list();
 void		append_node(t_tokenze *list, char *content, int len, t_token type);
 bool		is_operator(char c);
 bool		is_quote(char c);

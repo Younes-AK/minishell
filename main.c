@@ -22,19 +22,18 @@ void f()
 void loop(t_prog *prog, char **envp)
 {
 	prog->nbr_pipe = 0;
-	prog->list_tok = init_list();
-		prog->exec_list = init_exec_list();
+	prog->fd_in = -1;
+	prog->list_tok = init_token_list();
+	prog->exec_list = init_exec_list();
 	prog->r_line = readline("\033[34m[minishell]~> \033[0m");
 	if (!prog->r_line)
 		error_msg1("Error\n");
-	
 	if (ft_strlen(prog->r_line) > 0)
 		add_history(prog->r_line);
 	if (prog->r_line[0] != '\0')
 	{
 		if(parssing(prog))
 		{
-			// flg = true;
 			lexer(prog, prog->list_tok);
 			if (parser(prog, envp, prog->exec_list))
 			{
