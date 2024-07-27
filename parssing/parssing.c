@@ -21,7 +21,6 @@ bool check_quotes(char *p)
     i = 0;
 	in_d_quote = false;
 	in_s_quote = false;
-
     while (p[i])
     {
         if (p[i] == '"' && !in_s_quote)
@@ -66,22 +65,22 @@ void add_spaces(t_prog *p, int len)
 	i = 0;
 	j = 0;
     p->cmd_line = safe_allocation(sizeof(p->cmd_line), len + 1);
-    while (p->d[i] && j < len)
+    while (p->tmp[i] && j < len)
 	{
-        if (is_operator(p->d[i]))
+        if (is_operator(p->tmp[i]))
 		{
-            if (i != 0 && !is_whait_spaces(p->d[i - 1]) && !is_operator(p->d[i - 1]))
+            if (i != 0 && !is_whait_spaces(p->tmp[i - 1]) && !is_operator(p->tmp[i - 1]))
                 p->cmd_line[j++] = ' ';
-            p->cmd_line[j++] = p->d[i];
-            if (!is_whait_spaces(p->d[i + 1]) && !is_operator(p->d[i + 1]) && p->d[i + 1])
+            p->cmd_line[j++] = p->tmp[i];
+            if (!is_whait_spaces(p->tmp[i + 1]) && !is_operator(p->tmp[i + 1]) && p->tmp[i + 1])
                 p->cmd_line[j++] = ' ';
         }
 		else
 		{
-			if (is_whait_spaces(p->d[i]))
+			if (is_whait_spaces(p->tmp[i]))
 				p->cmd_line[j++] = ' ';
 			else
-            	p->cmd_line[j++] = p->d[i];
+            	p->cmd_line[j++] = p->tmp[i];
 		}
         i++;
     }
@@ -107,10 +106,10 @@ bool parssing(t_prog *p)
 	len = 0;
 	if (check_quotes(p->r_line))
 	{
-		p->d = inject_spaces(p->r_line);
-		len = count_new_str(p->d);
+		p->tmp = inject_spaces(p->r_line);
+		len = count_new_str(p->tmp);
 		add_spaces(p, len);
-		free(p->d);
+		free(p->tmp);
 		return (true);
 	}
 	else

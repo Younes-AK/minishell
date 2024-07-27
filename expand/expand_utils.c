@@ -92,7 +92,7 @@ char *remove_qoutes(char *content)
             in_single_quotes = !in_single_quotes;
         else if (!(content[i] == '$' && in_single_quotes))
             str[j++] = content[i];
-        if (content[i] == '$')
+        else if (content[i] == '$')
             str[j++] = content[i];
         i++;
     }

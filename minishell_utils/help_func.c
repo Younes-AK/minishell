@@ -21,7 +21,7 @@ void *safe_allocation(size_t size, size_t lenght)
 	return (ptr);
 }
 
-t_tokenze *init_list()
+t_tokenze *init_token_list()
 {
 	t_tokenze *list;
 
