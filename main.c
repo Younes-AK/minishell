@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/21 20:22:44 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/07/27 22:41:32 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void loop(t_prog *prog, char **envp)
 		error_msg1("Error\n");
 	if (ft_strlen(prog->r_line) > 0)
 		add_history(prog->r_line);
+		(void)envp;
 	if (prog->r_line[0] != '\0')
 	{
 		if(parssing(prog))
@@ -43,6 +44,23 @@ void loop(t_prog *prog, char **envp)
 			}
 		}
 	}
+	// char **strs  = ft_split(prog->r_line, ' ');
+	// 	if (*strs && !ft_strcmp(*strs, "cd"))
+	// 		cd(strs, prog->env_list);
+	// 	if (*strs && !ft_strcmp(*strs, "echo"))
+	// 		echo(strs);
+	// 	else if (*strs && !ft_strcmp(*strs, "pwd"))
+	// 		pwd();
+	// 	else if (*strs && !ft_strcmp(*strs, "env"))
+	// 		env(prog->env_list);
+	// 	else if (*strs && !ft_strcmp(*strs, "exit"))
+	// 		exit(0);
+	// 	else if (*strs && !ft_strcmp(*strs, "export"))
+	// 		ft_export(strs + 1, prog);
+	// 	else if (*strs && !ft_strcmp(*strs, "unset"))
+	// 		ft_unset(strs + 1, prog->env_list);
+	free_env_list(prog->env_list);
+	free_env_list(prog->secret_env);
 }
 int main(int ac, char **av, char **envp)
 {
@@ -55,22 +73,6 @@ int main(int ac, char **av, char **envp)
 	{
 		loop(&prog, envp);
 	}
-		// char **strs  = ft_split(vars.r_line, ' ');
-		// if (*strs && !ft_strcmp(*strs, "cd"))
-		// 	cd(strs, vars.env_list);
-		// if (*strs && !ft_strcmp(*strs, "echo"))
-		// 	echo(strs);
-		// else if (*strs && !ft_strcmp(*strs, "pwd"))
-		// 	pwd();
-		// else if (*strs && !ft_strcmp(*strs, "env"))
-		// 	env(vars.env_list);
-		// else if (*strs && !ft_strcmp(*strs, "exit"))
-		// 	exit(0);
-		// else if (*strs && !ft_strcmp(*strs, "export"))
-		// 	ft_export(strs + 1, &vars);
-		// else if (*strs && !ft_strcmp(*strs, "unset"))
-		// 	ft_unset(strs + 1, vars.env_list);
-	free_env_list(prog.env_list);
-	free_env_list(prog.secret_env);
+		
 
 } 
