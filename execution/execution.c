@@ -67,32 +67,15 @@ void heredoc_handle(t_exec_list *list, t_prog *p)
 bool red_out_handle(char *redir, char *red_name, t_prog *p)
 {
     int fd;
-
-    if (pipe(p->end) == -1)
-        error_msg("Error: pipe() failed\n");
-    if ((p->pid = fork()) < 0)
-        error_msg("Error: fork() failed\n");
-    if (p->pid == 0)
-    {
-        close(p->end[0]);
-        if (!strcmp(redir, ">>"))
-            fd = open(red_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        else
-            fd = open(red_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (fd == -1)
-            return (error_msg("Error: open() failed\n"), false);
-        dup2(fd, 1);
-        close(fd);
-        close(p->end[1]);
-        exit(0);
-    }
+    (void)p;
+    p->fd_out = dup(1);
+    if (!strcmp(redir, ">>"))
+        fd = open(red_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
     else
-    {
-        close(p->end[1]);
-        dup2(p->end[0], 0);
-        close(p->end[0]);
-        wait(NULL);
-    }
+        fd = open(red_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1)
+        return (error_msg("Error: open() failed\n"), false);
+    dup2(fd, 1);
     return true;
 }
 
@@ -212,6 +195,12 @@ bool execution(t_prog *p, t_exec_list *list)
         dup2(p->fd_in, STDIN_FILENO);
         close(p->fd_in);
         p->fd_in = -1;
+    }
+     if (p->fd_out >= 0)
+    {
+        dup2(p->fd_out, STDOUT_FILENO);
+        close(p->fd_out);
+        p->fd_out = -1;
     }
     if (p->original_heredoc >= 0 && is_here_doc(list, &is_heredoc))
     {
