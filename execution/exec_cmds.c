@@ -1,18 +1,5 @@
 #include "../minishell.h"
 
-void ft_free(t_prog *p_struct)
-{
-    int i;
-
-    i = 0;
-    while(p_struct->all_paths[i])
-    {
-        free(p_struct->all_paths[i]);
-        i++;
-    }
-    free(p_struct->all_paths);
-}
-
 char *check_path(char **paths, char *cmd)
 {
     char *full_path;
@@ -20,8 +7,10 @@ char *check_path(char **paths, char *cmd)
     int i;
 
     i = 0;
+    if (access(cmd, X_OK) == 0)
+        return ft_strdup(cmd);
     cmd_path = ft_strjoin("/", cmd);
-    while(paths[i])
+    while(paths && paths[i])
     {
         full_path = ft_strjoin(paths[i], cmd_path);
         if(access(full_path, X_OK) == 0)
@@ -32,130 +21,72 @@ char *check_path(char **paths, char *cmd)
         free(full_path);
         i++;
     }
+    free(cmd_path);
     return (NULL);
 }
+
 char * get_path(t_env *env_list, char *key)
 {
-	t_env	*iter;
+    t_env *iter;
 
-	iter = env_list;
-	while (iter)
-	{
-		if (!strcmp(iter->key, key))
-			return (iter->value);
-		iter = iter->next;
-	}
-	return (NULL);
-}
-void execute_cmds(char **cmds, char **env, t_prog *p)
-{
-    p->access_path = check_path(p->all_paths, cmds[0]);
-	if(!p->access_path)
+    iter = env_list;
+    while (iter)
     {
-        ft_free(p);
-        error_msg1(cmds[0]);
-		error_msg1(": command not found\n");
-		return;
+        if (!strcmp(iter->key, key))
+            return (iter->value);
+        iter = iter->next;
     }
-    execve(p->access_path, cmds, env);
-    error_msg1("Error : Execve () failed\n");
+    return (NULL);
 }
 
-bool exec_one_cmd(char **cmds, char **env, t_prog *p)
+static void execute_cmd(char **cmd, t_prog *p)
 {
-	int pid;
+    char **env_variables;
 
-	pid = fork();
-	if (pid == -1)
-		return (error_msg1("pipe () failled"), false);
-	if (pid == 0)
-		execute_cmds(cmds, env, p);
-	else
-		waitpid(pid, NULL, 0);
-	return (true);
-}
-bool exec_multi_pipe(char **cmd, char **env, t_prog *p, int in_fd, int out_fd)
-{
-    p->pid = fork();
-    if (p->pid == -1)
-        return (error_msg1("fork() failed"), false);
-    if (p->pid == 0)
+    if (!cmd || !*cmd) return;
+
+    p->access_path = check_path(p->all_paths, cmd[0]);
+    if (!p->access_path)
     {
-        if (in_fd != STDIN_FILENO)
-        {
-            dup2(in_fd, STDIN_FILENO);
-            close(in_fd);
-        }
-        if (out_fd != STDOUT_FILENO)
-        {
-            dup2(out_fd, STDOUT_FILENO);
-            close(out_fd);
-        }
-        execute_cmds(cmd, env, p);
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "Command not found: %s\n", cmd[0]);
+        exit(127);
     }
-    if (in_fd != STDIN_FILENO)
-        close(in_fd);
-    if (out_fd != STDOUT_FILENO)
-        close(out_fd);
-    return true;
+
+    env_variables = convert_env_list(p->env_list);
+    execve(p->access_path, cmd, env_variables);
+    perror("execve");
+    free(p->access_path);
+    free_double_ptr(env_variables);
+    exit(126);
 }
 
-bool create_childs(t_exec_list *list, char **env, t_prog *p)
+void execute(char **cmd, t_prog *p)
 {
-    t_exec_node *node;
-    int in_fd = STDIN_FILENO;
-    int fd[2];
+    if (!cmd || !*cmd) return;
 
-    node = list->head;
-    while (node)
+    p->path = get_path(p->env_list, "PATH");
+    if (!p->path)
     {
-        if (*node->cmd)
-        {
-            if (node->next && pipe(fd) == -1)
-                return (error_msg1("Error: pipe() failed\n"), false);
-            if (p->nbr_pipe == 0)
-                exec_one_cmd(node->cmd, env, p);
-            else
-                exec_multi_pipe(node->cmd, env, p, in_fd, node->next ? fd[1] : STDOUT_FILENO);
-            if (in_fd != STDIN_FILENO)
-                close(in_fd);
-            if (node->next)
-            {
-                close(fd[1]);
-                in_fd = fd[0];
-            }
-        }
-        node = node->next;
+        fprintf(stderr, "PATH not set\n");
+        return;
     }
-    while (wait(NULL) > 0);
-    return true;
+
+    p->all_paths = ft_split(p->path, ':');
+    if (!p->all_paths)
+    {
+        fprintf(stderr, "Failed to split PATH\n");
+        return;
+    }
+
+    execute_cmd(cmd, p);
+    free_double_ptr(p->all_paths);
 }
+
+
+
+
+
+
+
 
  
-
-bool exec_cmds(t_prog *p, t_exec_list *exec_list, t_env *env_list)
-{
-	char **env;
-	env = convert_env_list(env_list);
-    p->path = get_path(env_list, "PATH");
-	if (!p->path)
-		error_msg1("Error : path not found\n");
-    p->all_paths = ft_split(p->path, ':');
-	if (!p->all_paths)
-		return (error_msg1("Error : split func failed\n"), false);
-	create_childs(exec_list, env, p);
-	// free_double_ptr(p->all_paths);
-	// free_double_ptr(env);
-
-
-	// if (p->original_stdin >= 0)
-    // {
-    //     dup2(p->original_stdin, STDIN_FILENO);
-    //     close(p->original_stdin);
-    //     p->original_stdin = -1;
-    // }
-
-	return (true);
-}
-

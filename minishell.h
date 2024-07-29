@@ -185,7 +185,7 @@ int ft_unset(char **args, t_env *env);
 // =================== end builtins part ======================
 
 // =================== start execution part ======================
-bool        execution(t_prog *p, t_exec_list *list);
+void        execution(t_prog *p, t_exec_list *list);
 char        *get_next_line(int fd);
 char        *ft_strjoin2(char *s1, char *s2);
 int         ft_found_newline(char *str);
@@ -194,7 +194,13 @@ char        **convert_env_list(t_env *env_list);
 void        error_msg1(char *msg);
 // =================== start execution part ======================
 
-
+// static void	make_redirect(char *redirect, char *file, int *save_fd);
+void	check_redirects(char **redirs, int *save_fd);
+void	execute(char **cmd, t_prog *p);
+// static void	make_redirect(char *redirect, char *file, int *save_fd);
+ void	redirect_output(char *file, int flags);
+ void	redirect_input(char *file, int flags);
+void	here_doc_input(char *eof, int *save_fd);
 #endif
 
 

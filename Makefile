@@ -62,6 +62,7 @@ MAND_SRC := main.c \
             execution/execution.c \
             execution/exec_cmds.c \
             execution/execution_utils.c \
+            execution/here_doc.c \
             get_next_line/get_next_line.c \
             get_next_line/get_next_line_utils.c
 
