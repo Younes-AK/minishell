@@ -23,14 +23,14 @@ void loop(t_prog *prog, char **envp)
 {
 	prog->nbr_pipe = 0;
 	prog->fd_in = -1;
+	prog->fd_out = -1;
 	prog->list_tok = init_token_list();
 	prog->exec_list = init_exec_list();
 	prog->r_line = readline("\033[34m[minishell]~> \033[0m");
 	if (!prog->r_line)
-		error_msg1("Error\n");
+		error_msg1("Error#\n");
 	if (ft_strlen(prog->r_line) > 0)
 		add_history(prog->r_line);
-		(void)envp;
 	if (prog->r_line[0] != '\0')
 	{
 		if(parssing(prog))
@@ -44,23 +44,9 @@ void loop(t_prog *prog, char **envp)
 			}
 		}
 	}
-	// char **strs  = ft_split(prog->r_line, ' ');
-	// 	if (*strs && !ft_strcmp(*strs, "cd"))
-	// 		cd(strs, prog->env_list);
-	// 	if (*strs && !ft_strcmp(*strs, "echo"))
-	// 		echo(strs);
-	// 	else if (*strs && !ft_strcmp(*strs, "pwd"))
-	// 		pwd();
-	// 	else if (*strs && !ft_strcmp(*strs, "env"))
-	// 		env(prog->env_list);
-	// 	else if (*strs && !ft_strcmp(*strs, "exit"))
-	// 		exit(0);
-	// 	else if (*strs && !ft_strcmp(*strs, "export"))
-	// 		ft_export(strs + 1, prog);
-	// 	else if (*strs && !ft_strcmp(*strs, "unset"))
-	// 		ft_unset(strs + 1, prog->env_list);
-	free_env_list(prog->env_list);
-	free_env_list(prog->secret_env);
+	
+	// free_env_list(prog->env_list);
+	// free_env_list(prog->secret_env);
 }
 int main(int ac, char **av, char **envp)
 {
@@ -76,3 +62,19 @@ int main(int ac, char **av, char **envp)
 		
 
 } 
+
+	// char **strs  = ft_split(prog->r_line, ' ');
+	// 	if (*strs && !ft_strcmp(*strs, "cd"))
+	// 		cd(strs, prog->env_list);
+	// 	if (*strs && !ft_strcmp(*strs, "echo"))
+	// 		echo(strs);
+	// 	else if (*strs && !ft_strcmp(*strs, "pwd"))
+	// 		pwd();
+	// 	else if (*strs && !ft_strcmp(*strs, "env"))
+	// 		env(prog->env_list);
+	// 	else if (*strs && !ft_strcmp(*strs, "exit"))
+	// 		exit(0);
+	// 	else if (*strs && !ft_strcmp(*strs, "export"))
+	// 		ft_export(strs + 1, prog);
+	// 	else if (*strs && !ft_strcmp(*strs, "unset"))
+	// 		ft_unset(strs + 1, prog->env_list);
