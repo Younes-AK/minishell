@@ -1,89 +1,95 @@
 #include "../minishell.h"
 
-static void set_first_input_fd(int *old_pipe_in)
+static void save_restore_fds(int *save_fd, bool save)
 {
-    *old_pipe_in = -1;
-}
-
-static void save_std_fds(int *save_fd)
-{
-    save_fd[0] = dup(STDIN_FILENO);
-    save_fd[1] = dup(STDOUT_FILENO);
-}
-
-static void create_pipe(int *old_pipe_in, bool is_last)
-{
-    int new_pipe[2];
-
-    if (*old_pipe_in != -1)
+    static const int fds[] = {STDIN_FILENO, STDOUT_FILENO};
+    for (int i = 0; i < 2; i++)
     {
-        dup2(*old_pipe_in, STDIN_FILENO);
-        close(*old_pipe_in);
+        if (save)
+            save_fd[i] = dup(fds[i]);
+        else
+        {
+            dup2(save_fd[i], fds[i]);
+            close(save_fd[i]);
+        }
+    }
+}
+
+static void setup_pipes(int *prev_pipe, int *curr_pipe, bool is_first, bool is_last)
+{
+    if (!is_first)
+    {
+        dup2(prev_pipe[0], STDIN_FILENO);
+        close(prev_pipe[0]);
     }
     if (!is_last)
     {
-        pipe(new_pipe);
-        dup2(new_pipe[1], STDOUT_FILENO);
-        close(new_pipe[1]);
-        *old_pipe_in = new_pipe[0];
-    }
-    else
-    {
-        *old_pipe_in = -1;
+        dup2(curr_pipe[1], STDOUT_FILENO);
+        close(curr_pipe[1]);
+        close(curr_pipe[0]);
     }
 }
 
-
-static void restore_std_fds(int *save_fd)
-{
-    dup2(save_fd[0], STDIN_FILENO);
-    close(save_fd[0]);
-    dup2(save_fd[1], STDOUT_FILENO);
-    close(save_fd[1]);
-}
-
-void command_parser(char **redirs, char **cmds, int *old_pipe_in, t_prog *p, bool is_last)
+static void execute_command(char **redirs, char **cmds, t_prog *p)
 {
     int save_fd[2];
-
-    save_std_fds(save_fd);
-    create_pipe(old_pipe_in, is_last);
-    check_redirects(redirs, save_fd);
+    save_restore_fds(save_fd, true);
+    check_redirects(redirs, save_fd, p);
     execute(cmds, p);
     free_double_ptr(cmds);
-    restore_std_fds(save_fd);
+    save_restore_fds(save_fd, false);
 }
 
+ 
 
 void execution(t_prog *p, t_exec_list *list)
 {
-    int old_pipe_in;
-    
     if (!list || !list->head)
         return;
-    
-    set_first_input_fd(&old_pipe_in);
-    
+
+    int prev_pipe[2], curr_pipe[2];
     t_exec_node *node = list->head;
+    bool is_first = true;
+
     while (node)
     {
+        bool is_last = (node->next == NULL);
+
+        if (!is_last)
+            pipe(curr_pipe);
+
         pid_t pid = fork();
         if (pid == 0)
         {
-            command_parser(node->redir, node->cmd, &old_pipe_in, p, node->next == NULL);
+            setup_pipes(prev_pipe, curr_pipe, is_first, is_last);
+
+            if (check_is_builtin(node->cmd[0]))
+                exec_builtins(node->cmd, p);
+            else
+                execute_command(node->redir, node->cmd, p);
             exit(0);
         }
-        else
+        else if (pid < 0)
         {
-            if (old_pipe_in != -1)
-            {
-                close(old_pipe_in);
-            }
-            node = node->next;
+            perror("fork");
+            break;
         }
+
+        if (!is_first)
+            close(prev_pipe[0]);
+        if (!is_last)
+        {
+            prev_pipe[0] = curr_pipe[0];
+            close(curr_pipe[1]);
+        }
+        is_first = false;
+        node = node->next;
     }
     int status;
-    while (wait(&status) > 0);
+    while (wait(&status) > 0)
+    {
+        if (WIFEXITED(status))
+            p->error_status = WEXITSTATUS(status);
+    }
 }
-
 

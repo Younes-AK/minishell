@@ -51,7 +51,6 @@ static void execute_cmd(char **cmd, t_prog *p)
         fprintf(stderr, "Command not found: %s\n", cmd[0]);
         exit(127);
     }
-
     env_variables = convert_env_list(p->env_list);
     execve(p->access_path, cmd, env_variables);
     perror("execve");
@@ -89,4 +88,56 @@ void execute(char **cmd, t_prog *p)
 
 
 
- 
+// char *check_path(char **paths, char *cmd)
+// {
+//     char *full_path;
+//     char *cmd_path;
+//     int i;
+
+//     i = 0;
+//     cmd_path = ft_strjoin("/", cmd);
+//     while(paths[i])
+//     {
+//         full_path = ft_strjoin(paths[i], cmd_path);
+//         if(access(full_path, X_OK) == 0)
+//         {
+//             free(cmd_path);
+//             return(full_path);
+//         }
+//         free(full_path);
+//         i++;
+//     }
+//     return (NULL);
+// }
+
+// // static void	execute_builtin(char **cmd)
+// // {
+// // 	if (!(strcmp(cmd[0], "echo\0")))
+// // 		echo(cmd);
+// // 	else if (!(strcmp(cmd[0], "cd\0")))
+// // 		cd(cmd[1]);
+// // 	else if (!(strcmp(cmd[0], "pwd")))
+// // 		pwd();
+// // 	else if (!(strcmp(cmd[0], "export")))
+// // 		export(cmd);
+// // 	else if (!(strcmp(cmd[0], "unset")))
+// // 		unset(cmd);
+// // 	else if (!(strcmp(cmd[0], "env")))
+// // 		print_environment(g_minishell.env, STDOUT_FILENO);
+// // 	else if (!(strcmp(cmd[0], "exit")))
+// // 		exit_builtin(cmd);
+// // }
+// char * get_path(t_env *env_list, char *key)
+// {
+// 	t_env	*iter;
+
+// 	iter = env_list;
+// 	while (iter)
+// 	{
+// 		if (!strcmp(iter->key, key))
+// 			return (iter->value);
+// 		iter = iter->next;
+// 	}
+// 	return (NULL);
+// }
+// static void	execute_cmd(char **cmd, t_prog *p)

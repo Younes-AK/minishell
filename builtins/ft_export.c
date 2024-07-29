@@ -135,7 +135,6 @@ int ft_export(char **args, t_prog *p)
         return (print_env(p->env_list), 0);
     while (i < nbr_args)
     {
-        
         if (check_valid_identifier(args[i]))
             add_to_env(remove_qoutes(args[i]), &p->env_list);
         else
