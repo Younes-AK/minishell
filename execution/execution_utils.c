@@ -75,24 +75,29 @@ static void make_redirect(char *redirect, char *file, int *save_fd, bool is_herd
         redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
 }
 
-bool check_heredoc(char **redirs)
+bool check_heredoc(t_exec_list *list)
 {
+    t_exec_node *iter;
     int i;
 
-    i = 0;
-    while (redirs[i])
+    iter = list->head;
+    while (iter)
     {
-        if (!ft_strcmp(redirs[i], "<<"))
-            return (true);
-        i++;
+        i = 0;
+        while (iter->redir[i])
+        {
+            if (!ft_strcmp(iter->redir[i], "<<"))
+                return (true);
+            i++;
+        }
+        iter = iter->next;
     }
     return (false);
 }
 void check_redirects(char **redirs, int *save_fd, t_prog *p)
 {
     int i = 0;
-    bool is_heredoc = check_heredoc(redirs);
-    
+    bool is_heredoc = check_heredoc(p->exec_list);
     while (redirs[i])
     {
         if (redirs[i + 1])
@@ -103,20 +108,6 @@ void check_redirects(char **redirs, int *save_fd, t_prog *p)
     }
 }
 
-// bool check_is_builtin(char *type)
-// {
-// 	if (!type)
-// 		return (false);
-// 	if (!(strcmp(type, "echo\0")) || !(strcmp(type, "cd\0")))
-// 		return (true);
-// 	if (!(strcmp(type, "pwd")) || !(strcmp(type, "export")))
-// 		return (true);
-// 	if (!(strcmp(type, "unset")) || !(strcmp(type, "env")))
-// 		return (true);
-// 	if (!(strcmp(type, "exit")))
-// 		return (true);
-// 	return (false);
-// }
 bool check_is_builtin(char *type)
 {
     if (!type)

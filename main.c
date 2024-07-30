@@ -44,7 +44,23 @@ void loop(t_prog *prog, char **envp)
 			}
 		}
 	}
-	
+		// (void)envp;
+		// char **strs  = ft_split(prog->r_line, ' ');
+		// if (*strs && !ft_strcmp(*strs, "cd"))
+		// 	cd(strs, prog->env_list);
+		// if (*strs && !ft_strcmp(*strs, "echo"))
+		// 	echo(strs);
+		// else if (*strs && !ft_strcmp(*strs, "pwd"))
+		// 	pwd();
+		// else if (*strs && !ft_strcmp(*strs, "env"))
+		// 	env(prog->env_list);
+		// else if (*strs && !ft_strcmp(*strs, "exit"))
+		// 	exit(0);
+		// else if (*strs && !ft_strcmp(*strs, "export"))
+		// 	ft_export(strs + 1, prog);
+		// else if (*strs && !ft_strcmp(*strs, "unset"))
+		// 	ft_unset(strs + 1, prog->env_list);
+
 	// free_env_list(prog->env_list);
 	// free_env_list(prog->secret_env);
 }
@@ -63,18 +79,5 @@ int main(int ac, char **av, char **envp)
 
 } 
 
-	// char **strs  = ft_split(prog->r_line, ' ');
-	// 	if (*strs && !ft_strcmp(*strs, "cd"))
-	// 		cd(strs, prog->env_list);
-	// 	if (*strs && !ft_strcmp(*strs, "echo"))
-	// 		echo(strs);
-	// 	else if (*strs && !ft_strcmp(*strs, "pwd"))
-	// 		pwd();
-	// 	else if (*strs && !ft_strcmp(*strs, "env"))
-	// 		env(prog->env_list);
-	// 	else if (*strs && !ft_strcmp(*strs, "exit"))
-	// 		exit(0);
-	// 	else if (*strs && !ft_strcmp(*strs, "export"))
-	// 		ft_export(strs + 1, prog);
-	// 	else if (*strs && !ft_strcmp(*strs, "unset"))
-	// 		ft_unset(strs + 1, prog->env_list);
+// !!!!! :    < main.c << end  | wc -l
+
