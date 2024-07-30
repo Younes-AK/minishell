@@ -35,32 +35,6 @@ char **convert_env_list(t_env *env_list)
     return env_array;
 }
 
-static void make_redirect(char *redirect, char *file, int *save_fd)
-{
-    if (!strcmp(redirect, ">"))
-        redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
-    else if (!strcmp(redirect, "<"))
-        redirect_input(file, O_RDONLY | O_CREAT);
-    else if (!strcmp(redirect, ">>"))
-        redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
-    else if (!strcmp(redirect, "<<"))
-        here_doc_input(file, save_fd);
-}
-
-void check_redirects(char **redirs, int *save_fd)
-{
-    int i = 0;
-    while (redirs[i])
-    {
-        if (redirs[i + 1])
-        {
-            make_redirect(redirs[i], redirs[i + 1], save_fd);
-        }
-        i += 2;
-    }
-}
-
-
 void	redirect_output(char *file, int flags)
 {
 	int	fd_file;
@@ -78,7 +52,7 @@ void	redirect_output(char *file, int flags)
 void	redirect_input(char *file, int flags)
 {
 	int	fd_file;
-
+    
 	fd_file = open(file, flags);
 	if (fd_file == -1)
 		error_msg1("error222 \n");
@@ -89,3 +63,86 @@ void	redirect_input(char *file, int flags)
 	}
 }
 
+static void make_redirect(char *redirect, char *file, int *save_fd, bool is_herdoc, t_prog *p)
+{
+    if (!strcmp(redirect, "<<"))
+        here_doc_input(file, save_fd, p);
+    else if (!strcmp(redirect, ">"))
+        redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
+    else if (!strcmp(redirect, "<") && !is_herdoc)
+        redirect_input(file, O_RDONLY | O_CREAT);
+    else if (!strcmp(redirect, ">>"))
+        redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
+}
+
+bool check_heredoc(char **redirs)
+{
+    int i;
+
+    i = 0;
+    while (redirs[i])
+    {
+        if (!ft_strcmp(redirs[i], "<<"))
+            return (true);
+        i++;
+    }
+    return (false);
+}
+void check_redirects(char **redirs, int *save_fd, t_prog *p)
+{
+    int i = 0;
+    bool is_heredoc = check_heredoc(redirs);
+    
+    while (redirs[i])
+    {
+        if (redirs[i + 1])
+        {
+            make_redirect(redirs[i], redirs[i + 1], save_fd, is_heredoc, p);
+        }
+        i += 2;
+    }
+}
+
+// bool check_is_builtin(char *type)
+// {
+// 	if (!type)
+// 		return (false);
+// 	if (!(strcmp(type, "echo\0")) || !(strcmp(type, "cd\0")))
+// 		return (true);
+// 	if (!(strcmp(type, "pwd")) || !(strcmp(type, "export")))
+// 		return (true);
+// 	if (!(strcmp(type, "unset")) || !(strcmp(type, "env")))
+// 		return (true);
+// 	if (!(strcmp(type, "exit")))
+// 		return (true);
+// 	return (false);
+// }
+bool check_is_builtin(char *type)
+{
+    if (!type)
+        return (false);
+    if (!(strcmp(type, "echo\0")) || !(strcmp(type, "cd\0"))
+        || !(strcmp(type, "pwd")) || !(strcmp(type, "export"))
+        || !(strcmp(type, "unset")) || !(strcmp(type, "env"))
+        || !(strcmp(type, "exit")))
+	        return (true);
+    return (false);
+}
+
+void exec_builtins(char **cmd, t_prog *p)
+{
+    if (!(strcmp(cmd[0], "echo\0")))
+		echo(cmd);
+    else if (!(strcmp(cmd[0], "cd\0")))
+		cd(cmd, p->env_list);
+    else if (!(strcmp(cmd[0], "pwd\0")))
+		pwd();
+    else if (!(strcmp(cmd[0], "unset\0")))
+		ft_unset(cmd, p->env_list);
+    else if (!(strcmp(cmd[0], "export\0")))
+		ft_export(cmd + 1, p);
+    else if (!(strcmp(cmd[0], "env\0")))
+		env(p->env_list);
+    // else if (!(strcmp(cmd[0], "exit\0")))
+	// 	exit(p->env_list);
+}

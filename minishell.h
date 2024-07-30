@@ -105,6 +105,7 @@ typedef struct s_prog
     int original_stdin;
     int original_heredoc;
     int original_stdout;
+    int error_status;
 }	t_prog;
 
  
@@ -195,12 +196,15 @@ void        error_msg1(char *msg);
 // =================== start execution part ======================
 
 // static void	make_redirect(char *redirect, char *file, int *save_fd);
-void	check_redirects(char **redirs, int *save_fd);
 void	execute(char **cmd, t_prog *p);
 // static void	make_redirect(char *redirect, char *file, int *save_fd);
  void	redirect_output(char *file, int flags);
  void	redirect_input(char *file, int flags);
-void	here_doc_input(char *eof, int *save_fd);
+void check_redirects(char **redirs, int *save_fd, t_prog *p);
+char *check_path(char **paths, char *cmd);
+void here_doc_input(char *eof, int *save_fd, t_prog *p);
+bool check_is_builtin(char *type);
+void exec_builtins(char **cmd, t_prog *p);
 #endif
 
 
