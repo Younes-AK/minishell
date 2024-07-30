@@ -24,6 +24,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <signal.h>
 
 #define BUFFER_SIZE 5
 #define PROMPT "\033[34m[minishell]~> \033[0m"
@@ -206,6 +207,3 @@ void here_doc_input(char *eof, int *save_fd, t_prog *p);
 bool check_is_builtin(char *type);
 void exec_builtins(char **cmd, t_prog *p);
 #endif
-
-
-// "$"HOME    ''"$HOME"''   '$'HOME   "'$'HOME"   '"'$'HOME"'

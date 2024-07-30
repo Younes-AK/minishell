@@ -42,6 +42,15 @@ static void execute_command(char **redirs, char **cmds, t_prog *p)
 
  
 
+static void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
+{
+    int save_fd[2];
+    save_restore_fds(save_fd, true);
+    check_redirects(redirs, save_fd, p);
+    exec_builtins(cmd, p);
+    save_restore_fds(save_fd, false);
+}
+
 void execution(t_prog *p, t_exec_list *list)
 {
     if (!list || !list->head)
@@ -58,21 +67,22 @@ void execution(t_prog *p, t_exec_list *list)
         if (!is_last)
             pipe(curr_pipe);
 
-        pid_t pid = fork();
-        if (pid == 0)
+        if (check_is_builtin(node->cmd[0]) && is_first && is_last)
+            exec_builtin_parent(node->cmd, node->redir, p);
+        else
         {
-            setup_pipes(prev_pipe, curr_pipe, is_first, is_last);
-
-            if (check_is_builtin(node->cmd[0]))
-                exec_builtins(node->cmd, p);
-            else
+            pid_t pid = fork();
+            if (pid == 0)
+            {
+                setup_pipes(prev_pipe, curr_pipe, is_first, is_last);
                 execute_command(node->redir, node->cmd, p);
-            exit(0);
-        }
-        else if (pid < 0)
-        {
-            perror("fork");
-            break;
+                exit(p->error_status);
+            }
+            else if (pid < 0)
+            {
+                perror("fork");
+                break;
+            }
         }
 
         if (!is_first)
@@ -92,4 +102,3 @@ void execution(t_prog *p, t_exec_list *list)
             p->error_status = WEXITSTATUS(status);
     }
 }
-

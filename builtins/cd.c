@@ -25,7 +25,7 @@ int cd(char **args, t_env *env)
     if (args_nbr == 1 || (args_nbr == 2 && !ft_strcmp(args[1], "~")))
     {
         if (chdir(get_env_value("HOME", env)) != 0)
-            return (ft_putstr_fd("Error chdir() failled to found path\n", 2), 1);
+            return (ft_putstr_fd("Error chdir() failled\n", 2), 1);
     }
     else if (args_nbr == 2 && !ft_strcmp(args[1], "-"))
     {
@@ -43,7 +43,7 @@ int cd(char **args, t_env *env)
         args[1] = ft_strjoin("/", args[1]);
         new_path = ft_strjoin(curr_path, args[1]);
         if (chdir(new_path) != 0)
-            return (ft_putstr_fd("Error11 chdir() failled to found path\n", 2), 1);
+            return (ft_putstr_fd("minishell: cd: invalid option\n", 2), 1);
     }
     ft_strcpy(prev_path, curr_path);
     return (0);
