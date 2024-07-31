@@ -107,6 +107,7 @@ typedef struct s_prog
     int original_heredoc;
     int original_stdout;
     int error_status;
+	int	herdoc_del;
 }	t_prog;
 
  

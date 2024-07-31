@@ -1,4 +1,5 @@
 #include "../minishell.h"
+#include <stdio.h>
 
 #define TMP_FILE	"/tmp/minihell_temporary_file"
 
@@ -26,15 +27,19 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
             close(tmp_fd);
             exit(130);
         }
+
+		if (to_expand && is_env_var(input))
+            input = replace(input, p->env_list);
+		
+		ft_putendl_fd(input, tmp_fd);
         if (strcmp(input, delemitre) == 0)
         {
             close(tmp_fd);
             free(input);
-            exit(0);
+			if (p->herdoc_del == 0)
+				exit(0);
+			break;
         }
-		if (to_expand && is_env_var(input))
-            input = replace(input, p->env_list);
-        ft_putendl_fd(input, tmp_fd);
         free(input);
     }
 }
@@ -65,6 +70,7 @@ void here_doc_input(char *eof, int *save_fd, t_prog *p)
 
     int save_fd_out = dup(STDOUT_FILENO);
     dup2(save_fd[1], STDOUT_FILENO);
+	p->herdoc_del--;
     pid_t pid = fork();
     if (pid == 0)
         get_and_write_input(tmp_fd, eof, p);
