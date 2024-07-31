@@ -80,4 +80,4 @@ int main(int ac, char **av, char **envp)
 } 
 
 // !!!!! :    < main.c << end  | wc -l
-
+// <<end1 << end2 > a #! doesn't redirect to a

@@ -1,5 +1,6 @@
 
 #include "../minishell.h"
+#include <stdio.h>
 
 char **convert_env_list(t_env *env_list)
 {
@@ -94,10 +95,29 @@ bool check_heredoc(t_exec_list *list)
     }
     return (false);
 }
+
+int	count_delimiter(char **redirs)
+{
+	int	nb;
+	int	i;
+
+	nb = 0;
+	i = 0;
+	while (redirs[i])
+	{
+		if (!ft_strcmp(redirs[i],"<<"))
+			nb++;
+		i++;
+	}
+	return (nb);
+}
+
 void check_redirects(char **redirs, int *save_fd, t_prog *p)
 {
     int i = 0;
     bool is_heredoc = check_heredoc(p->exec_list);
+	if (is_heredoc)
+		p->herdoc_del = count_delimiter(redirs);
     while (redirs[i])
     {
         if (redirs[i + 1])
