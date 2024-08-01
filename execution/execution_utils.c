@@ -67,10 +67,10 @@ static void make_redirect(char *redirect, char *file)
 {
     if (!strcmp(redirect, ">"))
         redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
-    else if (!strcmp(redirect, "<") || !strcmp(redirect, "<<"))
-        redirect_input(file, O_RDONLY | O_CREAT);
     else if (!strcmp(redirect, ">>"))
         redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
+    else if (!strcmp(redirect, "<") || !strcmp(redirect, "<<"))
+        redirect_input(file, O_RDONLY | O_CREAT);
 }
 
 bool check_heredoc(t_exec_list *list)

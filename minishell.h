@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/01 14:13:54 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/01 14:39:05 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,6 @@ int ft_unset(char **args, t_env *env);
 
 // =================== start execution part ======================
 void        execution(t_prog *p, t_exec_list *list);
-char        *get_next_line(int fd);
 char        *ft_strjoin2(char *s1, char *s2);
 int         ft_found_newline(char *str);
 bool        exec_cmds(t_prog *path, t_exec_list *exec_list, t_env *env_list);
