@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/01 14:40:38 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/01 23:50:18 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,18 +66,22 @@ MAND_SRC := main.c \
 
 MAND_OBJ := $(patsubst %.c,$(OBJ_DIR)/%.o,$(MAND_SRC))
 
+    READLINE_L = ~/.brew/opt/readline/lib
+    READLINE_I = ~/.brew/opt/readline/include
+
 .PHONY: all clean fclean re
 
 all: $(NAME)
 
 $(NAME): $(MAND_OBJ)
 	@echo "Compiling... Please wait."
-	@$(CC) $(CFLAGS) $(MAND_OBJ) -lreadline -o $(NAME)
+	@$(CC) $(CFLAGS) $(MAND_OBJ) -L $(READLINE_L) -lreadline -o $(NAME)
 	@echo "$(COLOR_GREEN)✅ Done$(COLOR_RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c minishell.h
+
 	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -I $(READLINE_I) -o $@
 
 clean:
 	@echo "🧹 Cleaning object files..."

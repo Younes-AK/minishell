@@ -6,18 +6,40 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/01 10:32:21 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/01 23:57:24 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
+volatile sig_atomic_t sigint_received = 0;
 void f()
 {
 	system("leaks minishell");
 }
  
+ void	sig_ign(int signum)
+ {
+	(void) signum;
+	return ;
+ }
+
+void	function_handler(int signum)
+{
+	printf("\n");
+	sigint_received = 0;
+
+	// rl_replace_line("", 0);
+    // rl_redisplay();
+	(void)signum;
+	return ;
+}
+void ft_exit(int signum)
+{
+	printf("signum: %d\n", signum);
+	printf("eof: %d\n", EOF);
+	exit(signum);
+}
 
 void loop(t_prog *prog, char **envp)
 {
@@ -28,7 +50,7 @@ void loop(t_prog *prog, char **envp)
 	prog->exec_list = init_exec_list();
 	prog->r_line = readline("\033[34m[minishell]~> \033[0m");
 	if (!prog->r_line)
-		error_msg1("Error#\n");
+		exit(0);
 	if (ft_strlen(prog->r_line) > 0)
 		add_history(prog->r_line);
 	if (prog->r_line[0] != '\0')
@@ -44,38 +66,34 @@ void loop(t_prog *prog, char **envp)
 			}
 		}
 	}
-		// (void)envp;
-		// char **strs  = ft_split(prog->r_line, ' ');
-		// if (*strs && !ft_strcmp(*strs, "cd"))
-		// 	cd(strs, prog->env_list);
-		// if (*strs && !ft_strcmp(*strs, "echo"))
-		// 	echo(strs);
-		// else if (*strs && !ft_strcmp(*strs, "pwd"))
-		// 	pwd();
-		// else if (*strs && !ft_strcmp(*strs, "env"))
-		// 	env(prog->env_list);
-		// else if (*strs && !ft_strcmp(*strs, "exit"))
-		// 	exit(0);
-		// else if (*strs && !ft_strcmp(*strs, "export"))
-		// 	ft_export(strs + 1, prog);
-		// else if (*strs && !ft_strcmp(*strs, "unset"))
-		// 	ft_unset(strs + 1, prog->env_list);
-
+	 sigint_received = 0;
 	// free_env_list(prog->env_list);
 	// free_env_list(prog->secret_env);
 }
 int main(int ac, char **av, char **envp)
 {
+	struct  sigaction handler;
+	
+	
+	handler.sa_handler = &function_handler;
+
+	handler.sa_flags = SA_RESTART;
+	// signal(SIG)
+	signal(SIGQUIT, sig_ign);
 	// atexit(f);
 	t_prog prog;
 	ft_init(ac, av);
 	store_env(envp, &prog);
     store_secret_env(envp, &prog);
+	rl_catch_signals = 0;
 	while (true)
 	{
+		if (sigint_received) {
+            continue;
+        }
+		sigaction(SIGINT, &handler, NULL);
 		loop(&prog, envp);
 	}
-		
 
 } 
 
