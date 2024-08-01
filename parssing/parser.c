@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:36:11 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/10 10:46:14 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:32:45 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ bool check_syntax(t_prog *p)
 }
 
 
-bool parser(t_prog *p, char **env, t_exec_list *exec_list)
+bool parser(t_prog *p, char **env)
 {
 	// store_env(env, p);
     // store_secret_env(env, p);
@@ -89,7 +89,8 @@ bool parser(t_prog *p, char **env, t_exec_list *exec_list)
 	else
 	{
 		expand(p->list_tok, p->env_list);
-		_init_exec_list(p, exec_list);
+		_init_exec_list(p, p->exec_list);
+        ft_heredoc(p);
 		return (true);
 	}
 }

@@ -34,19 +34,17 @@ static void execute_command(char **redirs, char **cmds, t_prog *p)
 {
     int save_fd[2];
     save_restore_fds(save_fd, true);
-    check_redirects(redirs, save_fd, p);
+    check_redirects(redirs, p);
     execute(cmds, p);
     free_double_ptr(cmds);
     save_restore_fds(save_fd, false);
 }
 
- 
-
 static void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
 {
     int save_fd[2];
     save_restore_fds(save_fd, true);
-    check_redirects(redirs, save_fd, p);
+    check_redirects(redirs, p);
     exec_builtins(cmd, p);
     save_restore_fds(save_fd, false);
 }
@@ -59,14 +57,14 @@ void execution(t_prog *p, t_exec_list *list)
     int prev_pipe[2], curr_pipe[2];
     t_exec_node *node = list->head;
     bool is_first = true;
-
+    (void)p;
+ 
     while (node)
     {
         bool is_last = (node->next == NULL);
 
         if (!is_last)
             pipe(curr_pipe);
-
         if (check_is_builtin(node->cmd[0]) && is_first && is_last)
             exec_builtin_parent(node->cmd, node->redir, p);
         else

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/21 19:42:56 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/01 14:13:54 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ char        *process_spaces(char *input, int *i, int j);
 void		lexer(t_prog *p, t_tokenze *list);
 void        free_tok_list(t_tokenze *list);
 void		ft_init(int ac, char **av);
-bool		parser(t_prog *p, char **env, t_exec_list *exec_list);
+bool		parser(t_prog *p, char **env);
 void		free_double_ptr(char **str);
 void        free_exec_list(t_exec_list *exec_list);
 t_exec_list *init_exec_list();
@@ -201,9 +201,10 @@ void	execute(char **cmd, t_prog *p);
 // static void	make_redirect(char *redirect, char *file, int *save_fd);
  void	redirect_output(char *file, int flags);
  void	redirect_input(char *file, int flags);
-void check_redirects(char **redirs, int *save_fd, t_prog *p);
+void check_redirects(char **redirs, t_prog *p);
 char *check_path(char **paths, char *cmd);
-void here_doc_input(char *eof, int *save_fd, t_prog *p);
+// void here_doc_input(char *eof, int *save_fd, t_prog *p);
 bool check_is_builtin(char *type);
 void exec_builtins(char **cmd, t_prog *p);
+void ft_heredoc(t_prog *p);
 #endif

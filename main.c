@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/27 22:41:32 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:32:21 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void loop(t_prog *prog, char **envp)
 		if(parssing(prog))
 		{
 			lexer(prog, prog->list_tok);
-			if (parser(prog, envp, prog->exec_list))
+			if (parser(prog, envp))
 			{
 				execution(prog, prog->exec_list);
 				free_tok_list(prog->list_tok);

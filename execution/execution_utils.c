@@ -63,13 +63,11 @@ void	redirect_input(char *file, int flags)
 	}
 }
 
-static void make_redirect(char *redirect, char *file, int *save_fd, bool is_herdoc, t_prog *p)
+static void make_redirect(char *redirect, char *file)
 {
-    if (!strcmp(redirect, "<<"))
-        here_doc_input(file, save_fd, p);
-    else if (!strcmp(redirect, ">"))
+    if (!strcmp(redirect, ">"))
         redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
-    else if (!strcmp(redirect, "<") && !is_herdoc)
+    else if (!strcmp(redirect, "<") || !strcmp(redirect, "<<"))
         redirect_input(file, O_RDONLY | O_CREAT);
     else if (!strcmp(redirect, ">>"))
         redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
@@ -94,15 +92,16 @@ bool check_heredoc(t_exec_list *list)
     }
     return (false);
 }
-void check_redirects(char **redirs, int *save_fd, t_prog *p)
+void check_redirects(char **redirs, t_prog *p)
 {
     int i = 0;
-    bool is_heredoc = check_heredoc(p->exec_list);
+    (void)p;
+    //bool is_heredoc = check_heredoc(p->exec_list);
     while (redirs[i])
     {
         if (redirs[i + 1])
         {
-            make_redirect(redirs[i], redirs[i + 1], save_fd, is_heredoc, p);
+            make_redirect(redirs[i], redirs[i + 1]);
         }
         i += 2;
     }
