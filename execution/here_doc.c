@@ -1,5 +1,5 @@
 #include "../minishell.h"
-
+extern int G_VAR;
 #define TMP_FILE	"/tmp/minihell_temporary_file"
 
 static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
@@ -7,17 +7,19 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
     char *input;
 	char *delemitre;
 	bool to_expand = true;
+
     while (true)
     {
+        sig_here_doc();
         input = readline("> ");
-		delemitre = remove_qoutes(eof);
-		if (is_quote(*input))
-			to_expand = false;
         if (!input)
         {
             close(tmp_fd);
-            exit(130);
+            break;
         }
+		delemitre = remove_qoutes(eof);
+		if (is_quote(*input))
+			to_expand = false;
         if (strcmp(input, delemitre) == 0)
         {
             close(tmp_fd);
@@ -90,6 +92,7 @@ void ft_heredoc(t_prog *p)
     int i;
 
     i = 0;
+    p->original_stdin = dup(STDIN_FILENO);
     node = p->exec_list->head;
     while (node)
     {
@@ -97,5 +100,11 @@ void ft_heredoc(t_prog *p)
             here_doc_input(node, p, i);
         node = node->next;
         i++;
+    }
+    if (G_VAR == 1)
+    {
+        printf("reset\n");
+        dup2(p->original_stdin, 0);
+        G_VAR = 0;
     }
 }

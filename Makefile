@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/01 23:50:18 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/02 11:29:16 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,7 +62,8 @@ MAND_SRC := main.c \
             execution/execution.c \
             execution/exec_cmds.c \
             execution/execution_utils.c \
-            execution/here_doc.c 
+            execution/here_doc.c \
+            execution/signal.c 
 
 MAND_OBJ := $(patsubst %.c,$(OBJ_DIR)/%.o,$(MAND_SRC))
 

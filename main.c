@@ -6,17 +6,17 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/01 23:57:24 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/02 12:10:32 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-volatile sig_atomic_t sigint_received = 0;
+int G_VAR = 0;
 void f()
 {
 	system("leaks minishell");
 }
+<<<<<<< HEAD
  
  void	sig_ign(int signum)
  {
@@ -41,6 +41,8 @@ void ft_exit(int signum)
 	printf("eof: %d\n", EOF);
 	exit(signum);
 }
+=======
+>>>>>>> 5ed68ae43fffdc485e640ca79398217ede72ad5a
 
 void loop(t_prog *prog, char **envp)
 {
@@ -67,12 +69,12 @@ void loop(t_prog *prog, char **envp)
 			}
 		}
 	}
-	 sigint_received = 0;
 	// free_env_list(prog->env_list);
 	// free_env_list(prog->secret_env);
 }
 int main(int ac, char **av, char **envp)
 {
+<<<<<<< HEAD
 	struct  sigaction handler;
 	
 	
@@ -82,18 +84,21 @@ int main(int ac, char **av, char **envp)
 	// signal(SIG)
 	signal(SIGQUIT, sig_ign);
 	sigaction(SIGINT, &handler, NULL);
+=======
+>>>>>>> 5ed68ae43fffdc485e640ca79398217ede72ad5a
 	// atexit(f);
+	rl_catch_signals = 0;
+	 
 	t_prog prog;
 	ft_init(ac, av);
 	store_env(envp, &prog);
     store_secret_env(envp, &prog);
-	rl_catch_signals = 0;
 	while (true)
 	{
+<<<<<<< HEAD
+=======
+		ft_sign();
+>>>>>>> 5ed68ae43fffdc485e640ca79398217ede72ad5a
 		loop(&prog, envp);
 	}
-
 } 
-
-// !!!!! :    < main.c << end  | wc -l
-
