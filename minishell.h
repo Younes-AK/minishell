@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/01 14:39:05 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:50:36 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,4 +206,7 @@ char *check_path(char **paths, char *cmd);
 bool check_is_builtin(char *type);
 void exec_builtins(char **cmd, t_prog *p);
 void ft_heredoc(t_prog *p);
+
+void    ft_sign(void);
+void    sig_here_doc(void);
 #endif
