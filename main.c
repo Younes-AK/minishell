@@ -29,8 +29,9 @@ void	function_handler(int signum)
 	printf("\n");
 	sigint_received = 0;
 
-	// rl_replace_line("", 0);
-    // rl_redisplay();
+	rl_on_new_line();
+	rl_replace_line("", 0);
+    rl_redisplay();
 	(void)signum;
 	return ;
 }
@@ -80,6 +81,7 @@ int main(int ac, char **av, char **envp)
 	handler.sa_flags = SA_RESTART;
 	// signal(SIG)
 	signal(SIGQUIT, sig_ign);
+	sigaction(SIGINT, &handler, NULL);
 	// atexit(f);
 	t_prog prog;
 	ft_init(ac, av);
@@ -88,10 +90,6 @@ int main(int ac, char **av, char **envp)
 	rl_catch_signals = 0;
 	while (true)
 	{
-		if (sigint_received) {
-            continue;
-        }
-		sigaction(SIGINT, &handler, NULL);
 		loop(&prog, envp);
 	}
 
