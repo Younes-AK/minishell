@@ -1,5 +1,5 @@
 #include "../minishell.h"
-
+extern int exit_status;
 static void save_restore_fds(int *save_fd, bool save)
 {
     static const int fds[] = {STDIN_FILENO, STDOUT_FILENO};
@@ -74,7 +74,7 @@ void execution(t_prog *p, t_exec_list *list)
             {
                 setup_pipes(prev_pipe, curr_pipe, is_first, is_last);
                 execute_command(node->redir, node->cmd, p);
-                exit(p->error_status);
+                // exit(p->error_status);
             }
             else if (pid < 0)
             {
@@ -97,6 +97,6 @@ void execution(t_prog *p, t_exec_list *list)
     while (wait(&status) > 0)
     {
         if (WIFEXITED(status))
-            p->error_status = WEXITSTATUS(status);
+            exit_status = WEXITSTATUS(status);
     }
 }

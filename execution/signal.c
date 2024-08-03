@@ -11,14 +11,12 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
-extern int G_VAR;
+extern int exit_status;
 void    sig_int_here(int sig_num)
 {
     (void)sig_num;
-    // ft_status(1, true);
-    G_VAR = 1;
+    exit_status = 130;
     close(0);
-    printf("\n");
 }
 
 void    ft_handl_quit(int sig_num)
@@ -26,12 +24,12 @@ void    ft_handl_quit(int sig_num)
     int        status;
     pid_t    pid;
 
+    exit_status = 131;
     if (sig_num == SIGQUIT)
     {
         pid = wait(&status);
         if (pid > 0)
         {
-            // ft_status(128 + WTERMSIG(status), true);
             write(1, "Quit: 3\n", 9);
         }
     }
@@ -40,14 +38,12 @@ void    ft_handl_quit(int sig_num)
 void    sig_int(int sig_num)
 {
     (void)sig_num;
-    if (G_VAR == 0)
-    {
-        // ft_status(1, true);
-        printf("\n");
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-    }
+    exit_status = 130;
+    printf("\n");
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+    
 }
 
 void    ft_sign(void)
@@ -57,8 +53,9 @@ void    ft_sign(void)
     rl_catch_signals = 0;
 }
 
-void    sig_here_doc(void)
+void    sig_here_doc(t_prog *p)
 {
     signal(SIGINT, sig_int_here);
     signal(SIGQUIT, SIG_IGN);
+    p->to_restart_stdin = 1;
 }

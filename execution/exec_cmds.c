@@ -76,7 +76,6 @@ void execute(char **cmd, t_prog *p)
         fprintf(stderr, "Failed to split PATH\n");
         return;
     }
-
     execute_cmd(cmd, p);
     free_double_ptr(p->all_paths);
 }

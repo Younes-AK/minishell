@@ -65,11 +65,11 @@ void	redirect_input(char *file, int flags)
 
 static void make_redirect(char *redirect, char *file)
 {
-    if (!strcmp(redirect, ">"))
+    if (!ft_strcmp(redirect, ">"))
         redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
-    else if (!strcmp(redirect, ">>"))
+    else if (!ft_strcmp(redirect, ">>"))
         redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
-    else if (!strcmp(redirect, "<") || !strcmp(redirect, "<<"))
+    else if (!ft_strcmp(redirect, "<") || !ft_strcmp(redirect, "<<"))
         redirect_input(file, O_RDONLY | O_CREAT);
 }
 
@@ -111,28 +111,31 @@ bool check_is_builtin(char *type)
 {
     if (!type)
         return (false);
-    if (!(strcmp(type, "echo\0")) || !(strcmp(type, "cd\0"))
-        || !(strcmp(type, "pwd")) || !(strcmp(type, "export"))
-        || !(strcmp(type, "unset")) || !(strcmp(type, "env"))
-        || !(strcmp(type, "exit")))
+    if (!(ft_strcmp(type, "echo\0")) || !(ft_strcmp(type, "cd\0"))
+        || !(ft_strcmp(type, "pwd")) || !(ft_strcmp(type, "export"))
+        || !(ft_strcmp(type, "unset")) || !(ft_strcmp(type, "env"))
+        || !(ft_strcmp(type, "exit")))
 	        return (true);
     return (false);
 }
 
 void exec_builtins(char **cmd, t_prog *p)
 {
-    if (!(strcmp(cmd[0], "echo\0")))
+    if (!(ft_strcmp(cmd[0], "echo\0")))
 		echo(cmd);
-    else if (!(strcmp(cmd[0], "cd\0")))
+    else if (!(ft_strcmp(cmd[0], "cd\0")))
 		cd(cmd, p->env_list);
-    else if (!(strcmp(cmd[0], "pwd\0")))
+    else if (!(ft_strcmp(cmd[0], "pwd\0")))
 		pwd();
-    else if (!(strcmp(cmd[0], "unset\0")))
+    else if (!(ft_strcmp(cmd[0], "unset\0")))
 		ft_unset(cmd, p->env_list);
-    else if (!(strcmp(cmd[0], "export\0")))
+    else if (!(ft_strcmp(cmd[0], "export\0")))
 		ft_export(cmd + 1, p);
-    else if (!(strcmp(cmd[0], "env\0")))
+    else if (!(ft_strcmp(cmd[0], "env\0")))
 		env(p->env_list);
-    // else if (!(strcmp(cmd[0], "exit\0")))
-	// 	exit(p->env_list);
+    else if (!(ft_strcmp(cmd[0], "exit\0")))
+    {
+		// exit(p->env_list);
+        p->exit_status = 0;
+    }
 }

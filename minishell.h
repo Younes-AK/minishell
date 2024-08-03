@@ -106,8 +106,12 @@ typedef struct s_prog
     int original_stdin;
     int original_heredoc;
     int original_stdout;
-    int error_status;
+    int exit_status;
+    bool concatanate;
+    int to_restart_stdin;
 }	t_prog;
+
+extern t_prog	g_prog;
 
  
 
@@ -159,14 +163,14 @@ void        free_env_list(t_env *list) ;
 // =================== end parssing part ======================
 
 // =================== start expanding part ======================
-void        expand(t_tokenze *list, t_env *env_list);
+void expand(t_tokenze *list, t_env *env_list);
 bool        is_env_var(char *content);
 char        *remove_qoutes(char *content);
-char        *get_env_value(const char *var_name, t_env *env_list) ;
+char *get_env_value(const char *var_name, t_env *env_list);
 char        *extract_var_name(const char **start);
 char        *append_value(char *res, const char *value, size_t *res_size);
 char        *append_char(char *res, char c, size_t *res_size);
-char        *replace(char *str, t_env *env_list);
+char *replace(char *str, t_env *env_list);
 bool        check_var_exist(char *str, t_env **env);
 // =================== end expanding part ======================
 
@@ -183,7 +187,7 @@ int         cd(char **args, t_env *env);
 void        pwd(void);
 int         env(t_env *env);
 int ft_export(char **args, t_prog *p);
-int ft_unset(char **args, t_env *env);
+int         ft_unset(char **args, t_env *env);
 // =================== end builtins part ======================
 
 // =================== start execution part ======================
@@ -208,5 +212,5 @@ void exec_builtins(char **cmd, t_prog *p);
 void ft_heredoc(t_prog *p);
 
 void    ft_sign(void);
-void    sig_here_doc(void);
+void    sig_here_doc(t_prog *p);
 #endif

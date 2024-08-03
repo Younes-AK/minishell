@@ -11,38 +11,13 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-int G_VAR = 0;
+// int G_VAR = 0;
+int exit_status;
 void f()
 {
 	system("leaks minishell");
 }
-<<<<<<< HEAD
- 
- void	sig_ign(int signum)
- {
-	(void) signum;
-	return ;
- }
 
-void	function_handler(int signum)
-{
-	printf("\n");
-	sigint_received = 0;
-
-	rl_on_new_line();
-	rl_replace_line("", 0);
-    rl_redisplay();
-	(void)signum;
-	return ;
-}
-void ft_exit(int signum)
-{
-	printf("signum: %d\n", signum);
-	printf("eof: %d\n", EOF);
-	exit(signum);
-}
-=======
->>>>>>> 5ed68ae43fffdc485e640ca79398217ede72ad5a
 
 void loop(t_prog *prog, char **envp)
 {
@@ -74,18 +49,6 @@ void loop(t_prog *prog, char **envp)
 }
 int main(int ac, char **av, char **envp)
 {
-<<<<<<< HEAD
-	struct  sigaction handler;
-	
-	
-	handler.sa_handler = &function_handler;
-
-	handler.sa_flags = SA_RESTART;
-	// signal(SIG)
-	signal(SIGQUIT, sig_ign);
-	sigaction(SIGINT, &handler, NULL);
-=======
->>>>>>> 5ed68ae43fffdc485e640ca79398217ede72ad5a
 	// atexit(f);
 	rl_catch_signals = 0;
 	 
@@ -95,10 +58,7 @@ int main(int ac, char **av, char **envp)
     store_secret_env(envp, &prog);
 	while (true)
 	{
-<<<<<<< HEAD
-=======
 		ft_sign();
->>>>>>> 5ed68ae43fffdc485e640ca79398217ede72ad5a
 		loop(&prog, envp);
 	}
 } 
