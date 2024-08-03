@@ -25,6 +25,7 @@ MAND_SRC := main.c \
             functions/ft_split.c \
             functions/ft_strlen.c \
             functions/ft_strjoin.c \
+            functions/ft_strjoin_space.c \
             functions/ft_strdup.c \
             functions/ft_strndup.c \
             functions/ft_strcmp.c \

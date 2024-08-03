@@ -100,6 +100,7 @@ typedef struct s_prog
     char *path;
     char **all_paths;
     char *access_path;
+    bool is_env_cmd;
     int heredoc_fd;
     int fd_in;
     int fd_out;

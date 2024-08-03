@@ -70,7 +70,7 @@ static void make_redirect(char *redirect, char *file)
     else if (!ft_strcmp(redirect, ">>"))
         redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
     else if (!ft_strcmp(redirect, "<") || !ft_strcmp(redirect, "<<"))
-        redirect_input(file, O_RDONLY | O_CREAT);
+        redirect_input(file, O_RDONLY);
 }
 
 bool check_heredoc(t_exec_list *list)
@@ -130,7 +130,9 @@ void exec_builtins(char **cmd, t_prog *p)
     else if (!(ft_strcmp(cmd[0], "unset\0")))
 		ft_unset(cmd, p->env_list);
     else if (!(ft_strcmp(cmd[0], "export\0")))
+    {
 		ft_export(cmd + 1, p);
+    }
     else if (!(ft_strcmp(cmd[0], "env\0")))
 		env(p->env_list);
     else if (!(ft_strcmp(cmd[0], "exit\0")))

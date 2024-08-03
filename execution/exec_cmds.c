@@ -42,17 +42,24 @@ char * get_path(t_env *env_list, char *key)
 static void execute_cmd(char **cmd, t_prog *p)
 {
     char **env_variables;
+    char **new_cmd;
 
+    printf("***** %d\n", p->is_env_cmd);
     if (!cmd || !*cmd) return;
-
-    p->access_path = check_path(p->all_paths, cmd[0]);
+    if (p->is_env_cmd)
+    {
+        new_cmd = ft_split(cmd[0], ' ');
+    }
+    else
+        new_cmd = cmd;
+    p->access_path = check_path(p->all_paths, new_cmd[0]);
     if (!p->access_path)
     {
-        fprintf(stderr, "Command not found: %s\n", cmd[0]);
+        fprintf(stderr, "Command not found: %s\n", new_cmd[0]);
         exit(127);
     }
     env_variables = convert_env_list(p->env_list);
-    execve(p->access_path, cmd, env_variables);
+    execve(p->access_path, new_cmd, env_variables);
     perror("execve");
     free(p->access_path);
     free_double_ptr(env_variables);

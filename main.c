@@ -44,8 +44,8 @@ void loop(t_prog *prog, char **envp)
 			}
 		}
 	}
-	// free_env_list(prog->env_list);
-	// free_env_list(prog->secret_env);
+	//free_env_list(prog->env_list);
+	//free_env_list(prog->secret_env);
 }
 int main(int ac, char **av, char **envp)
 {
