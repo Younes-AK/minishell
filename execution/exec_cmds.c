@@ -1,4 +1,6 @@
 #include "../minishell.h"
+#include <fcntl.h>
+#include <unistd.h>
 
 char *check_path(char **paths, char *cmd)
 {
@@ -41,15 +43,22 @@ char * get_path(t_env *env_list, char *key)
 
 static void execute_cmd(char **cmd, t_prog *p)
 {
-    char **env_variables;
-    char **new_cmd;
+    char	**env_variables;
+    char	**new_cmd;
+	char	buffer[2];
+	int		fd;
 
-    printf("***** %d\n", p->is_env_cmd);
     if (!cmd || !*cmd) return;
-    if (p->is_env_cmd)
+	fd = open(FILE_BUIL, O_RDONLY);
+	read(fd, buffer, 1);
+    if (buffer[0] == '1')
     {
         new_cmd = ft_split(cmd[0], ' ');
-    }
+		close(fd);
+		fd = open(FILE_BUIL, O_WRONLY);
+		write(fd, "2", 1); // so to prevent the next command from splitting, if it is not a builtin
+		close(fd);
+	}
     else
         new_cmd = cmd;
     p->access_path = check_path(p->all_paths, new_cmd[0]);

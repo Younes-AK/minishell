@@ -28,6 +28,8 @@
 
 #define BUFFER_SIZE 5
 #define PROMPT "\033[34m[minishell]~> \033[0m"
+#define FILE_BUIL "bufferBuil.txt"	// this file will have one number (1, or 2) at offset 0, if 1 is found ,
+									// the command should be splited, otherwise rest the same 
 typedef enum e_token 
 {
     WORD,

@@ -1,4 +1,6 @@
 #include "../minishell.h"
+#include <stdbool.h>
+#include <unistd.h>
 extern int exit_status;
 static void save_restore_fds(int *save_fd, bool save)
 {
@@ -59,8 +61,10 @@ void execution(t_prog *p, t_exec_list *list)
         return;
 
     int prev_pipe[2], curr_pipe[2];
+	int	fd;
     t_exec_node *node = list->head;
     bool is_first = true;
+	fd = open(FILE_BUIL, O_WRONLY | O_CREAT, 00600);
 
     while (node)
     {
@@ -70,11 +74,12 @@ void execution(t_prog *p, t_exec_list *list)
             pipe(curr_pipe);
         if (check_is_builtin(node->cmd[0]))
         {
-            p->is_env_cmd = true;
+			write(fd , "1", 1); // to split the cmd
+			close(fd);
         }
         if (check_is_builtin(node->cmd[0]) && is_first && is_last)
         {
-            exec_builtin_parent(node->cmd, node->redir, p);
+			exec_builtin_parent(node->cmd, node->redir, p);
         }
         else
         {
@@ -90,7 +95,7 @@ void execution(t_prog *p, t_exec_list *list)
                 else
                 {
                     execute_command(node->redir, node->cmd, p);
-                }
+				}
             }
             else if (pid < 0)
             {
@@ -110,6 +115,7 @@ void execution(t_prog *p, t_exec_list *list)
         node = node->next;
     }
 
+	//p->is_env_cmd = false;
     int status;
     while (wait(&status) > 0)
     {
