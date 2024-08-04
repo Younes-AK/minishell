@@ -35,7 +35,7 @@ char *add_quotes(char *s)
     ret[i] = '\0';
     return (ret);
 }
-void    update_var_value(char *key, char *value, t_env **env, char *state)
+void    update_var_value(char *key, char *value, t_env **env, t_prog *p)
 {
     t_env *iter;
 
@@ -46,7 +46,7 @@ void    update_var_value(char *key, char *value, t_env **env, char *state)
     {
         if (!ft_strcmp(iter->key, key))
         {
-            if (!strcmp(state, "concat"))
+            if (p->concatanate)
             {
                 char *s = ft_strcat(remove_qoutes(iter->value), value);
                 iter->value = add_quotes(s);
@@ -81,18 +81,18 @@ void print_env(t_env *env)
         iter = iter->next;
     }
 }
-void add_to_env(char *str, t_env **env)
+void add_to_env(char *str, t_env **env, t_prog *p)
 {
     t_env *new_node;
     char **var;
-    bool conc;
-    conc = false;
+    
+    p->concatanate = false;
     new_node = malloc(sizeof(t_env));
     var = ft_split(str, '=');
     if (var[0][ft_strlen(var[0]) - 1] == '+')
     {
         var[0][ft_strlen(var[0]) - 1] = '\0';
-        conc = true;
+        p->concatanate = true;
     }
     new_node->key = ft_strdup(var[0]);
     new_node->next = NULL;
@@ -104,10 +104,10 @@ void add_to_env(char *str, t_env **env)
         new_node->value = add_quotes(ft_strchr(str, '=') + 1);
     if (check_var_exist(var[0], env) && search(str, '='))
     {
-        if (conc)
-            update_var_value(var[0], ft_strchr(str, '=') + 1, env, "concat");
+        if (p->concatanate)
+            update_var_value(var[0], ft_strchr(str, '=') + 1, env, p);
         else
-            update_var_value(var[0], ft_strchr(str, '=') + 1, env, "update");
+            update_var_value(var[0], ft_strchr(str, '=') + 1, env, p);
         return ;
     }
     ft_lstadd_back(env, new_node);
@@ -156,7 +156,9 @@ int ft_export(char **args, t_prog *p)
     while (i < nbr_args)
     {
         if (check_valid_identifier(args[i]))
-            add_to_env(args[i], &p->env_list);
+        {
+            add_to_env(args[i], &p->env_list, p);
+        }
         else
             ft_putstr_fd("export: not a valid identifier\n", 1);
         i++;

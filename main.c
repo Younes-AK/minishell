@@ -6,18 +6,18 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/27 22:41:32 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/02 12:10:32 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
+// int G_VAR = 0;
+int exit_status;
 void f()
 {
 	system("leaks minishell");
 }
- 
+
 
 void loop(t_prog *prog, char **envp)
 {
@@ -28,7 +28,7 @@ void loop(t_prog *prog, char **envp)
 	prog->exec_list = init_exec_list();
 	prog->r_line = readline("\033[34m[minishell]~> \033[0m");
 	if (!prog->r_line)
-		error_msg1("Error#\n");
+		exit(0);
 	if (ft_strlen(prog->r_line) > 0)
 		add_history(prog->r_line);
 	if (prog->r_line[0] != '\0')
@@ -36,7 +36,7 @@ void loop(t_prog *prog, char **envp)
 		if(parssing(prog))
 		{
 			lexer(prog, prog->list_tok);
-			if (parser(prog, envp, prog->exec_list))
+			if (parser(prog, envp))
 			{
 				execution(prog, prog->exec_list);
 				free_tok_list(prog->list_tok);
@@ -44,40 +44,21 @@ void loop(t_prog *prog, char **envp)
 			}
 		}
 	}
-		// (void)envp;
-		// char **strs  = ft_split(prog->r_line, ' ');
-		// if (*strs && !ft_strcmp(*strs, "cd"))
-		// 	cd(strs, prog->env_list);
-		// if (*strs && !ft_strcmp(*strs, "echo"))
-		// 	echo(strs);
-		// else if (*strs && !ft_strcmp(*strs, "pwd"))
-		// 	pwd();
-		// else if (*strs && !ft_strcmp(*strs, "env"))
-		// 	env(prog->env_list);
-		// else if (*strs && !ft_strcmp(*strs, "exit"))
-		// 	exit(0);
-		// else if (*strs && !ft_strcmp(*strs, "export"))
-		// 	ft_export(strs + 1, prog);
-		// else if (*strs && !ft_strcmp(*strs, "unset"))
-		// 	ft_unset(strs + 1, prog->env_list);
-
-	// free_env_list(prog->env_list);
-	// free_env_list(prog->secret_env);
+	//free_env_list(prog->env_list);
+	//free_env_list(prog->secret_env);
 }
 int main(int ac, char **av, char **envp)
 {
 	// atexit(f);
+	rl_catch_signals = 0;
 	t_prog prog;
 	ft_init(ac, av);
 	store_env(envp, &prog);
     store_secret_env(envp, &prog);
 	while (true)
 	{
+		prog.is_env_cmd = false;
+		ft_sign();
 		loop(&prog, envp);
 	}
-		
-
 } 
-
-// !!!!! :    < main.c << end  | wc -l
-// <<end1 << end2 > a #! doesn't redirect to a

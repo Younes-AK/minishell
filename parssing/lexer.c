@@ -76,7 +76,7 @@ void  lexer(t_prog *p, t_tokenze *list)
     in_quotes = false;
     current_quote = '\0';
     cmd_line = p->cmd_line;
-    while (*cmd_line)
+    while (*cmd_line) // echo "home"|ls >file
     {
         if (is_quote(*cmd_line))
             process_quotes(&cmd_line, &in_quotes, &current_quote, &len);

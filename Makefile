@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/07/07 14:28:34 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/02 11:29:16 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ MAND_SRC := main.c \
             functions/ft_split.c \
             functions/ft_strlen.c \
             functions/ft_strjoin.c \
+            functions/ft_strjoin_space.c \
             functions/ft_strdup.c \
             functions/ft_strndup.c \
             functions/ft_strcmp.c \
@@ -63,10 +64,12 @@ MAND_SRC := main.c \
             execution/exec_cmds.c \
             execution/execution_utils.c \
             execution/here_doc.c \
-            get_next_line/get_next_line.c \
-            get_next_line/get_next_line_utils.c
+            execution/signal.c 
 
 MAND_OBJ := $(patsubst %.c,$(OBJ_DIR)/%.o,$(MAND_SRC))
+
+    READLINE_L = ~/.brew/opt/readline/lib
+    READLINE_I = ~/.brew/opt/readline/include
 
 .PHONY: all clean fclean re
 
@@ -74,12 +77,13 @@ all: $(NAME)
 
 $(NAME): $(MAND_OBJ)
 	@echo "Compiling... Please wait."
-	@$(CC) $(CFLAGS) $(MAND_OBJ) -lreadline -o $(NAME)
+	@$(CC) $(CFLAGS) $(MAND_OBJ) -L $(READLINE_L) -lreadline -o $(NAME)
 	@echo "$(COLOR_GREEN)✅ Done$(COLOR_RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c minishell.h
+
 	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -I $(READLINE_I) -o $@
 
 clean:
 	@echo "🧹 Cleaning object files..."

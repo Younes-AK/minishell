@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/21 19:42:56 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/02 11:50:36 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,15 +100,19 @@ typedef struct s_prog
     char *path;
     char **all_paths;
     char *access_path;
+    bool is_env_cmd;
     int heredoc_fd;
     int fd_in;
     int fd_out;
     int original_stdin;
     int original_heredoc;
     int original_stdout;
-    int error_status;
-	int	herdoc_del;
+    int exit_status;
+    bool concatanate;
+    int to_restart_stdin;
 }	t_prog;
+
+extern t_prog	g_prog;
 
  
 
@@ -150,7 +154,7 @@ char        *process_spaces(char *input, int *i, int j);
 void		lexer(t_prog *p, t_tokenze *list);
 void        free_tok_list(t_tokenze *list);
 void		ft_init(int ac, char **av);
-bool		parser(t_prog *p, char **env, t_exec_list *exec_list);
+bool		parser(t_prog *p, char **env);
 void		free_double_ptr(char **str);
 void        free_exec_list(t_exec_list *exec_list);
 t_exec_list *init_exec_list();
@@ -160,14 +164,14 @@ void        free_env_list(t_env *list) ;
 // =================== end parssing part ======================
 
 // =================== start expanding part ======================
-void        expand(t_tokenze *list, t_env *env_list);
+void expand(t_tokenze *list, t_env *env_list, t_prog *p);
 bool        is_env_var(char *content);
 char        *remove_qoutes(char *content);
-char        *get_env_value(const char *var_name, t_env *env_list) ;
+char *get_env_value(const char *var_name, t_env *env_list);
 char        *extract_var_name(const char **start);
 char        *append_value(char *res, const char *value, size_t *res_size);
 char        *append_char(char *res, char c, size_t *res_size);
-char        *replace(char *str, t_env *env_list);
+char *replace(char *str, t_env *env_list);
 bool        check_var_exist(char *str, t_env **env);
 // =================== end expanding part ======================
 
@@ -184,12 +188,11 @@ int         cd(char **args, t_env *env);
 void        pwd(void);
 int         env(t_env *env);
 int ft_export(char **args, t_prog *p);
-int ft_unset(char **args, t_env *env);
+int         ft_unset(char **args, t_env *env);
 // =================== end builtins part ======================
 
 // =================== start execution part ======================
 void        execution(t_prog *p, t_exec_list *list);
-char        *get_next_line(int fd);
 char        *ft_strjoin2(char *s1, char *s2);
 int         ft_found_newline(char *str);
 bool        exec_cmds(t_prog *path, t_exec_list *exec_list, t_env *env_list);
@@ -202,9 +205,13 @@ void	execute(char **cmd, t_prog *p);
 // static void	make_redirect(char *redirect, char *file, int *save_fd);
  void	redirect_output(char *file, int flags);
  void	redirect_input(char *file, int flags);
-void check_redirects(char **redirs, int *save_fd, t_prog *p);
+void check_redirects(char **redirs, t_prog *p);
 char *check_path(char **paths, char *cmd);
-void here_doc_input(char *eof, int *save_fd, t_prog *p);
+// void here_doc_input(char *eof, int *save_fd, t_prog *p);
 bool check_is_builtin(char *type);
 void exec_builtins(char **cmd, t_prog *p);
+void ft_heredoc(t_prog *p);
+
+void    ft_sign(void);
+void    sig_here_doc(t_prog *p);
 #endif

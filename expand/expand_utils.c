@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
+extern int exit_status;
 char *extract_var_name(const char **start) 
 {
     const char *end = *start + 1;
@@ -100,22 +100,23 @@ char *remove_qoutes(char *content)
     return (str);
 }
 
-char *get_env_value(const char *var_name, t_env *env_list) 
+char *get_env_value(const char *var_name, t_env *env_list)
 {
     t_env *iter;
     char *pid_str;
-    
+    char *result;
+
     if (ft_strcmp(var_name, "$$") == 0)
     {
-        pid_str = safe_allocation(sizeof(char), 20);
-        pid_str = ft_itoa(getpid());
+        pid_str = ft_strdup(var_name + 1);
         return (pid_str);
     }
-    // if (strcmp(var_name, "$?") == 0) {
-    //     result = safe_allocation(sizeof(char), 4);
-    //     sprintf(result, "%d", get_last_exit_status());
-    //     return result
-    // }
+    if (strcmp(var_name, "$?") == 0) 
+    {
+        result = safe_allocation(sizeof(char), 4);
+        result = ft_itoa(exit_status);
+        return (result);
+    }
     iter = env_list;
     while (iter) 
     {

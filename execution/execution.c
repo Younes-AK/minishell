@@ -1,9 +1,12 @@
 #include "../minishell.h"
-
+extern int exit_status;
 static void save_restore_fds(int *save_fd, bool save)
 {
     static const int fds[] = {STDIN_FILENO, STDOUT_FILENO};
-    for (int i = 0; i < 2; i++)
+    int i;
+
+    i = 0;
+    while (i < 2)
     {
         if (save)
             save_fd[i] = dup(fds[i]);
@@ -12,6 +15,7 @@ static void save_restore_fds(int *save_fd, bool save)
             dup2(save_fd[i], fds[i]);
             close(save_fd[i]);
         }
+        i++;
     }
 }
 
@@ -34,19 +38,17 @@ static void execute_command(char **redirs, char **cmds, t_prog *p)
 {
     int save_fd[2];
     save_restore_fds(save_fd, true);
-    check_redirects(redirs, save_fd, p);
+    check_redirects(redirs, p);
     execute(cmds, p);
     free_double_ptr(cmds);
     save_restore_fds(save_fd, false);
 }
 
- 
-
 static void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
 {
     int save_fd[2];
     save_restore_fds(save_fd, true);
-    check_redirects(redirs, save_fd, p);
+    check_redirects(redirs, p);
     exec_builtins(cmd, p);
     save_restore_fds(save_fd, false);
 }
@@ -63,10 +65,8 @@ void execution(t_prog *p, t_exec_list *list)
     while (node)
     {
         bool is_last = (node->next == NULL);
-
         if (!is_last)
             pipe(curr_pipe);
-
         if (check_is_builtin(node->cmd[0]) && is_first && is_last)
             exec_builtin_parent(node->cmd, node->redir, p);
         else
@@ -75,8 +75,15 @@ void execution(t_prog *p, t_exec_list *list)
             if (pid == 0)
             {
                 setup_pipes(prev_pipe, curr_pipe, is_first, is_last);
-                execute_command(node->redir, node->cmd, p);
-                exit(p->error_status);
+                if (check_is_builtin(node->cmd[0]))
+                {
+                    exec_builtins(node->cmd, p);
+                    exit(exit_status);
+                }
+                else
+                {
+                    execute_command(node->redir, node->cmd, p);
+                }
             }
             else if (pid < 0)
             {
@@ -95,10 +102,11 @@ void execution(t_prog *p, t_exec_list *list)
         is_first = false;
         node = node->next;
     }
+
     int status;
     while (wait(&status) > 0)
     {
         if (WIFEXITED(status))
-            p->error_status = WEXITSTATUS(status);
+            exit_status = WEXITSTATUS(status);
     }
 }

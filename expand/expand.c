@@ -50,17 +50,19 @@ bool to_expand(char *content, t_token type)
     return (false);
 }
 
-void expand(t_tokenze *list, t_env *env_list) 
+void expand(t_tokenze *list, t_env *env_list, t_prog *p)
 {   
     char *expanded_var;
     t_tok_node *iter;
     t_tok_node *prev;
     char *tmp;
-
+    (void)p;
     iter = list->head;
     prev = iter;
-    while (iter) 
+    while (iter)
     {
+        if (is_env_var(iter->content))
+            p->is_env_cmd = true;
         if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC) 
         {
             expanded_var = get_env_val(iter->content, env_list);

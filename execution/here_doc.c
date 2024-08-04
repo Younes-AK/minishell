@@ -1,94 +1,109 @@
 #include "../minishell.h"
-#include <stdio.h>
 
 #define TMP_FILE	"/tmp/minihell_temporary_file"
-
-static int create_temporary_file(void)
-{
-    int fd = open(TMP_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-    if (fd == -1)
-        error_msg1("Error creating temporary file\n");
-    return fd;
-}
 
 static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 {
     char *input;
 	char *delemitre;
 	bool to_expand = true;
+
+    if (is_quote(*eof))
+        to_expand = false;
     while (true)
     {
+        sig_here_doc(p);
         input = readline("> ");
-		delemitre = remove_qoutes(eof);
-		if (is_quote(*input))
-			to_expand = false;
         if (!input)
         {
             close(tmp_fd);
-            exit(130);
+            break;
         }
-
-		if (to_expand && is_env_var(input))
-            input = replace(input, p->env_list);
-		
-		ft_putendl_fd(input, tmp_fd);
+		delemitre = remove_qoutes(eof);
         if (strcmp(input, delemitre) == 0)
         {
             close(tmp_fd);
             free(input);
-			if (p->herdoc_del == 0)
-				exit(0);
-			break;
+            break;
         }
+		if (to_expand && is_env_var(input))
+            input = replace(input, p->env_list);
+        ft_putendl_fd(input, tmp_fd);
         free(input);
     }
 }
 
-static void clear_tmp_file_input(void)
+// static void clear_tmp_file_input(void)
+// {
+//     int tmp_fd = open(TMP_FILE, O_WRONLY | O_TRUNC, 0600);
+//     if (tmp_fd != -1)
+//         close(tmp_fd);
+// }
+
+// static void make_tmp_file_input(void)
+// {
+//     int tmp_fd = open(TMP_FILE, O_RDONLY);
+//     if (tmp_fd != -1)
+//     {
+//         unlink(TMP_FILE);
+//         dup2(tmp_fd, STDIN_FILENO);
+//         close(tmp_fd);
+//     }
+// }
+static int create_temporary_file(char *filename)
 {
-    int tmp_fd = open(TMP_FILE, O_WRONLY | O_TRUNC, 0600);
-    if (tmp_fd != -1)
-        close(tmp_fd);
+    int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+    if (fd == -1)
+        error_msg1("Error creating temporary file\n");
+    return fd;
 }
-
-static void make_tmp_file_input(void)
+char *generate_name(int i)
 {
-    int tmp_fd = open(TMP_FILE, O_RDONLY);
-    if (tmp_fd != -1)
-    {
-        unlink(TMP_FILE);
-        dup2(tmp_fd, STDIN_FILENO);
-        close(tmp_fd);
-    }
+    char *ret;
+    ret = ft_strjoin(TMP_FILE, ft_itoa(i));
+    return (ret);
 }
-
-void here_doc_input(char *eof, int *save_fd, t_prog *p)
+void here_doc_input(t_exec_node *node, t_prog *p, int j)
 {
-    int tmp_fd = create_temporary_file();
-    if (tmp_fd == -1)
-        return;
+    int i;
+    int fd;
 
-    int save_fd_out = dup(STDOUT_FILENO);
-    dup2(save_fd[1], STDOUT_FILENO);
-	p->herdoc_del--;
-    pid_t pid = fork();
-    if (pid == 0)
-        get_and_write_input(tmp_fd, eof, p);
-    else if (pid > 0)
+    i = 0;
+    char *filename; 
+
+    filename = generate_name(j);
+    while(node->redir[i])
     {
-        int status;
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status))
+        if (!ft_strcmp(node->redir[i], "<<"))
         {
-            if (WEXITSTATUS(status) == 130)
-                clear_tmp_file_input();
-            else
-                make_tmp_file_input();
+            fd = create_temporary_file(filename);
+            get_and_write_input(fd, node->redir[i + 1], p);
+            node->redir[i + 1] = ft_strdup(filename);
+            close(fd);
         }
+        i+=2;
     }
-    else
-        error_msg1("Fork failed in here_doc_input\n");
-    dup2(save_fd_out, STDOUT_FILENO);
-    close(save_fd_out);
-    close(tmp_fd);
+    free(filename);
+}
+
+void ft_heredoc(t_prog *p)
+{
+    t_exec_node *node;
+    int i;
+
+    i = 0;
+    p->original_stdin = dup(STDIN_FILENO);
+    node = p->exec_list->head;
+    while (node)
+    {
+        if (node->redir)
+            here_doc_input(node, p, i);
+        node = node->next;
+        i++;
+    }
+    if (p->to_restart_stdin == 1)
+    {
+        dup2(p->original_stdin, 0);
+        p->to_restart_stdin = 0;
+    }
 }
