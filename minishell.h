@@ -26,8 +26,10 @@
 #include <fcntl.h>
 #include <signal.h>
 
-#define BUFFER_SIZE 5
 #define PROMPT "\033[34m[minishell]~> \033[0m"
+#define ERROR -1
+#define SUCCESS 0
+
 typedef enum e_token 
 {
     WORD,
@@ -110,6 +112,7 @@ typedef struct s_prog
     int exit_status;
     bool concatanate;
     int to_restart_stdin;
+    
 }	t_prog;
 
 extern t_prog	g_prog;
@@ -138,6 +141,7 @@ char        *ft_strrchr(const char *s, int c);
 char        *ft_strncpy(char *dst, const char *src, size_t len);
 int         ft_strncmp(const char *s1, const char *s2, size_t n);
 char        *ft_itoa(int n);
+char        *ft_trim(char *str);
 
 void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
@@ -187,8 +191,11 @@ int         echo(char **args);
 int         cd(char **args, t_env *env);
 void        pwd(void);
 int         env(t_env *env);
-int ft_export(char **args, t_prog *p);
+int         ft_export(char **args, t_prog *p);
 int         ft_unset(char **args, t_env *env);
+int         is_in_env(t_env *env, const char *key);
+void        env_add(const char *new_var, t_env *env);
+void        ft_memdel(void *ptr);
 // =================== end builtins part ======================
 
 // =================== start execution part ======================

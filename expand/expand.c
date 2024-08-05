@@ -56,7 +56,6 @@ void expand(t_tokenze *list, t_env *env_list, t_prog *p)
     t_tok_node *iter;
     t_tok_node *prev;
     char *tmp;
-    (void)p;
     iter = list->head;
     prev = iter;
     while (iter)
@@ -66,6 +65,8 @@ void expand(t_tokenze *list, t_env *env_list, t_prog *p)
         if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC) 
         {
             expanded_var = get_env_val(iter->content, env_list);
+            if (p->is_env_cmd)
+                expanded_var = ft_trim(expanded_var);
             if (expanded_var) 
             {
                 tmp = remove_qoutes(expanded_var);

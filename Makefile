@@ -48,6 +48,7 @@ MAND_SRC := main.c \
             functions/ft_strncpy.c \
             functions/ft_strncmp.c \
             functions/ft_itoa.c \
+            functions/ft_trim.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
             parssing/parssing.c \
@@ -58,6 +59,7 @@ MAND_SRC := main.c \
             minishell_utils/help_func3.c \
             expand/expand.c expand/expand_utils.c \
             builtins/echo.c  builtins/cd.c \
+            builtins/builtins_utils.c \
             builtins/pwd.c builtins/env.c \
             builtins/ft_export.c builtins/ft_unset.c \
             execution/execution.c \

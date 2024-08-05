@@ -12,79 +12,99 @@
 
 #include "../minishell.h"
 
-void set_env_value(const char *key, const char *value, t_env **env)
+static void print_error(char **args) 
 {
-    t_env *current;
-    char *new_value;
-    t_env *new_node;
-
-    current = *env;
-    while (current)
-    {
-        if (ft_strcmp(current->key, key) == 0)
-        {
-            free(current->value);
-            current->value = ft_strdup(value);
-            return;
-        }
-        current = current->next;
+    ft_putstr_fd("cd: ", 2);
+    if (args[2])
+        ft_putstr_fd("string not in pwd: ", 2);
+    else {
+        ft_putstr_fd(strerror(errno), 2);
+        ft_putstr_fd(": ", 2);
     }
-    new_value = ft_strjoin(key, "=");
-    new_value = ft_strjoin(new_value, value);
-    new_node = ft_lstnew(ft_strdup(key), new_value);
-    if (new_node)
-        ft_lstadd_back(env, new_node);
+    ft_putendl_fd(args[1], 2);
 }
-static int update_oldpwd(t_env *env)
+
+static char *get_env_path(t_env *env, const char *key) 
+{
+    while (env) 
+    {
+        if (strcmp(env->key, key) == 0)
+            return strdup(env->value);
+        env = env->next;
+    }
+    return NULL;
+}
+
+static int update_oldpwd(t_env *env) 
 {
     char cwd[PATH_MAX];
     char *oldpwd;
 
     if (getcwd(cwd, PATH_MAX) == NULL)
-        return (1);
-    oldpwd = ft_strjoin("OLDPWD=", cwd);
-    if (!oldpwd)
-        return (1);
-    set_env_value("OLDPWD", cwd, &env);
+        return ERROR;
+    if (!(oldpwd = ft_strjoin("OLDPWD=", cwd)))
+        return ERROR;
+    if (is_in_env(env, "OLDPWD") == 0)
+        env_add(oldpwd, env);
+    else 
+    {
+        while (env) 
+        {
+            if (strcmp(env->key, "OLDPWD") == 0) 
+            {
+                free(env->value);
+                env->value = strdup(cwd);
+                break;
+            }
+            env = env->next;
+        }
+    }
     free(oldpwd);
-    return (00);
+    return SUCCESS;
 }
 
-int cd(char **args, t_env *env)
+static int go_to_path(int option, t_env *env) 
 {
-    int args_nbr;
-    char curr_path[PATH_MAX];
-    static char prev_path[PATH_MAX];
-    
-    args_nbr = get_args_nbr(args);
-    if (getcwd(curr_path, PATH_MAX) == NULL)
-        return (ft_putstr_fd("Error: Unable to get current directory\n", 2), 1);
-    if (args_nbr == 1 || (args_nbr == 2 && !ft_strcmp(args[1], "~")))
-    {
-        char *home = get_env_value("HOME", env);
-        if (!home)
-            return (ft_putstr_fd("cd: HOME not set\n", 2), 1);
-        if (chdir(home) != 0)
-            return (ft_putstr_fd("Error: chdir() failed\n", 2), 1);
+    int ret;
+    char *env_path = NULL;
+
+    if (option == 0) {
+        update_oldpwd(env);
+        env_path = get_env_path(env, "HOME");
+        if (!env_path) {
+            ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
+            return ERROR;
+        }
+    } else if (option == 1) {
+        env_path = get_env_path(env, "OLDPWD");
+        if (!env_path) {
+            ft_putendl_fd("minishell: cd: OLDPWD not set", STDERR_FILENO);
+            return ERROR;
+        }
+        update_oldpwd(env);
     }
-    else if (args_nbr == 2 && !ft_strcmp(args[1], "-"))
+    ret = chdir(env_path);
+    free(env_path);
+    return ret;
+}
+
+int cd(char **args, t_env *env) 
+{
+    int cd_ret;
+
+    if (!args[1])
+        return go_to_path(0, env);
+    if (strcmp(args[1], "-") == 0)
+        cd_ret = go_to_path(1, env);
+    else 
     {
-        if (prev_path[0] == '\0')
-            return (ft_putstr_fd("minishell: OLDPWD not set\n", 2), 1);
-        if (chdir(prev_path) != 0)
-            return (ft_putstr_fd("Error: chdir() failed to find path\n", 2), 1);
-        ft_putendl_fd(prev_path, 1);
+        update_oldpwd(env);
+        cd_ret = chdir(args[1]);
+        if (cd_ret < 0) 
+        {
+            print_error(args);
+            return cd_ret;
+        }
     }
-    else if (args_nbr == 2)
-    {
-        if (!ft_strcmp(args[1], "''") || !ft_strcmp(args[1], "\"\""))
-            return (0);
-        if (chdir(args[1]) != 0)
-            return (ft_putstr_fd("minishell: cd: No such file or directory\n", 2), 1);
-    }
-    else if (args_nbr > 2)
-        return (ft_putstr_fd("cd: too many arguments\n", 2), 1);
-    update_oldpwd(env);
-    ft_strcpy(prev_path, curr_path);
-    return (0);
+    return SUCCESS;
 }

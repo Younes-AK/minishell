@@ -63,7 +63,7 @@ void	redirect_input(char *file, int flags)
 	}
 }
 
-static void make_redirect(char *redirect, char *file)
+static void make_redirect(char *redirect, char *file, t_prog *p __attribute__ ((unused)))
 {
     if (!ft_strcmp(redirect, ">"))
         redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
@@ -101,7 +101,7 @@ void check_redirects(char **redirs, t_prog *p)
     {
         if (redirs[i + 1])
         {
-            make_redirect(redirs[i], redirs[i + 1]);
+            make_redirect(redirs[i], redirs[i + 1], p);
         }
         i += 2;
     }

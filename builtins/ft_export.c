@@ -9,7 +9,7 @@ void print_env(t_env *env)
     {
         ft_putstr_fd("declare -x ", STDOUT_FILENO);
         ft_putstr_fd(iter->key, STDOUT_FILENO);
-        if (iter->value)
+        if (iter->value && iter->value[0] != '\0')
         {
             ft_putstr_fd("=\"", STDOUT_FILENO);
             ft_putstr_fd(iter->value, STDOUT_FILENO);
@@ -89,21 +89,18 @@ int update_env(t_env **env, const char *arg)
 
 void add_to_env(t_env **env, const char *arg)
 {
-    t_env *new_node = malloc(sizeof(t_env));
+    t_env *new_node;
+
+    new_node = malloc(sizeof(t_env));
+    char name[BUFF_SIZE];
     if (!new_node)
         return;
-
-    char name[BUFF_SIZE];
     get_env_name(name, arg);
-
     new_node->key = ft_strdup(name);
     new_node->value = strchr(arg, '=') ? ft_strdup(strchr(arg, '=') + 1) : ft_strdup("");
     new_node->next = NULL;
-
     if (!*env)
-    {
         *env = new_node;
-    }
     else
     {
         t_env *current = *env;
