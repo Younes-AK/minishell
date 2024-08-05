@@ -15,7 +15,7 @@ extern int exit_status;
 void    sig_int_here(int sig_num)
 {
     (void)sig_num;
-    exit_status = 130;
+    exit_status = 1;
     close(0);
 }
 
@@ -38,7 +38,7 @@ void    ft_handl_quit(int sig_num)
 void    sig_int(int sig_num)
 {
     (void)sig_num;
-    exit_status = 130;
+    exit_status = 1;
     printf("\n");
     rl_on_new_line();
     rl_replace_line("", 0);

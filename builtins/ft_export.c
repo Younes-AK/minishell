@@ -1,169 +1,140 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_export.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/01 14:36:16 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/21 21:15:22 by yakazdao         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../minishell.h"
-
-
- bool search(const char *str, char c)
-{
-    if (*str == '\0')
-        return false;
-    if (*str == c)
-        return true;
-    return search(str + 1, c);
-}
-
-char *add_quotes(char *s)
-{
-    char *ret;
-    int i = 0;
-    ret = safe_allocation(sizeof(char), ft_strlen(s) + 3);
-
-    ret[i++] = '"';
-    while (*s)
-        ret[i++] = *s++;
-    ret[i++] = '"';
-    ret[i] = '\0';
-    return (ret);
-}
-void    update_var_value(char *key, char *value, t_env **env, t_prog *p)
-{
-    t_env *iter;
-
-    iter = *env;
-    if (is_env_var(value))
-        value = replace(ft_strdup(value), *env);
-    while (iter)
-    {
-        if (!ft_strcmp(iter->key, key))
-        {
-            if (p->concatanate)
-            {
-                char *s = ft_strcat(remove_qoutes(iter->value), value);
-                iter->value = add_quotes(s);
-                free(s);
-            }
-            else
-            {
-                free(iter->value);
-                iter->value = add_quotes(value);
-            }
-            return;
-        }
-        iter = iter->next;
-    }
-}
+#define BUFF_SIZE 1024
 
 void print_env(t_env *env)
 {
-    t_env *iter;
+    t_env *iter = env;
 
-    iter = env;
     while (iter)
     {
-        ft_putstr_fd("declare -x ", 1);
-        ft_putstr_fd(iter->key, 1);
+        ft_putstr_fd("declare -x ", STDOUT_FILENO);
+        ft_putstr_fd(iter->key, STDOUT_FILENO);
         if (iter->value)
         {
-            ft_putstr_fd("=",1);
-            ft_putstr_fd(iter->value, 1);
+            ft_putstr_fd("=\"", STDOUT_FILENO);
+            ft_putstr_fd(iter->value, STDOUT_FILENO);
+            ft_putstr_fd("\"", STDOUT_FILENO);
         }
-        ft_putstr_fd("\n",1);
+        ft_putstr_fd("\n", STDOUT_FILENO);
         iter = iter->next;
     }
 }
-void add_to_env(char *str, t_env **env, t_prog *p)
-{
-    t_env *new_node;
-    char **var;
-    
-    p->concatanate = false;
-    new_node = malloc(sizeof(t_env));
-    var = ft_split(str, '=');
-    if (var[0][ft_strlen(var[0]) - 1] == '+')
-    {
-        var[0][ft_strlen(var[0]) - 1] = '\0';
-        p->concatanate = true;
-    }
-    new_node->key = ft_strdup(var[0]);
-    new_node->next = NULL;
-    if (str[ft_strlen(str) - 1] == '=')
-        new_node->value = ft_strdup("\"\"");
-    else if (!check_var_exist(var[0], env) && !search(str, '='))
-        new_node->value = ft_strdup("");
-    else if (!check_var_exist(var[0], env) && search(str, '='))
-        new_node->value = add_quotes(ft_strchr(str, '=') + 1);
-    if (check_var_exist(var[0], env) && search(str, '='))
-    {
-        if (p->concatanate)
-            update_var_value(var[0], ft_strchr(str, '=') + 1, env, p);
-        else
-            update_var_value(var[0], ft_strchr(str, '=') + 1, env, p);
-        return ;
-    }
-    ft_lstadd_back(env, new_node);
-}
- 
-bool check_valid_identifier(char *identifier)
-{
-    if (!identifier || *identifier == '=')
-        return (false);
-    while (*identifier && *identifier != '=' && *identifier != ' ')
-    {
-        if (!ft_isalnum(*identifier) && *identifier != '_' && *identifier != '+')
-            return (false);
-        identifier++;
-    }
-    return (true);
-}
 
-bool ft_toprint(char **args, int *i)
+static int print_error(int error, const char *arg)
 {
-    bool to_print;
+    if (error == -1)
+        ft_putstr_fd("export: not valid in this context: ", STDERR_FILENO);
+    else if (error == 0 || error == -3)
+        ft_putstr_fd("export: not a valid identifier: ", STDERR_FILENO);
 
-    to_print = false;
-    while (*args)
+    int i = 0;
+    while (arg[i] && (arg[i] != '=' || error == -3))
     {
-        if (!ft_strcmp(*args, ""))
-        {
-            *i += 1;
-            to_print = true;
-        }
-        else
-            to_print = false;
-        args++;
-    }
-    return (to_print);
-}
-int ft_export(char **args, t_prog *p)
-{
-    int nbr_args;
-    int i;
-    
-    i = 0;
-    nbr_args = get_args_nbr(args);
-    if (nbr_args == 0 || ft_toprint(args, &i))
-        return (print_env(p->env_list), 0);
-    while (i < nbr_args)
-    {
-        if (check_valid_identifier(args[i]))
-        {
-            add_to_env(args[i], &p->env_list, p);
-        }
-        else
-            ft_putstr_fd("export: not a valid identifier\n", 1);
+        write(STDERR_FILENO, &arg[i], 1);
         i++;
     }
-    return (0);
+    write(STDERR_FILENO, "\n", 1);
+    return (1);
 }
 
- 
+char *get_env_name(char *dest, const char *src)
+{
+    int i = 0;
+    while (src[i] && src[i] != '=' && i < BUFF_SIZE - 1)
+    {
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i] = '\0';
+    return dest;
+}
+
+int is_valid_env(const char *arg)
+{
+    char name[BUFF_SIZE];
+    get_env_name(name, arg);
+
+    if (!*name)
+        return -3;
+    if (!isalpha(*name) && *name != '_')
+        return 0;
+
+    for (int i = 1; name[i]; i++)
+    {
+        if (!isalnum(name[i]) && name[i] != '_')
+            return 0;
+    }
+
+    return strchr(arg, '=') ? 2 : 1;
+}
+
+int update_env(t_env **env, const char *arg)
+{
+    char name[BUFF_SIZE];
+    get_env_name(name, arg);
+
+    t_env *current = *env;
+    while (current)
+    {
+        if (strcmp(current->key, name) == 0)
+        {
+            free(current->value);
+            current->value = strchr(arg, '=') ? ft_strdup(strchr(arg, '=') + 1) : ft_strdup("");
+            return 1;
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+void add_to_env(t_env **env, const char *arg)
+{
+    t_env *new_node = malloc(sizeof(t_env));
+    if (!new_node)
+        return;
+
+    char name[BUFF_SIZE];
+    get_env_name(name, arg);
+
+    new_node->key = ft_strdup(name);
+    new_node->value = strchr(arg, '=') ? ft_strdup(strchr(arg, '=') + 1) : ft_strdup("");
+    new_node->next = NULL;
+
+    if (!*env)
+    {
+        *env = new_node;
+    }
+    else
+    {
+        t_env *current = *env;
+        while (current->next)
+            current = current->next;
+        current->next = new_node;
+    }
+}
+
+int ft_export(char **args, t_prog *p)
+{
+    int exit_status = 0;
+    if (!args[1])
+    {
+        print_env(p->env_list);
+        return 0;
+    }
+
+    for (int i = 1; args[i]; i++)
+    {
+        int error_ret = is_valid_env(args[i]);
+        if (error_ret <= 0)
+        {
+            exit_status = print_error(error_ret, args[i]);
+            continue;
+        }
+        if (!update_env(&p->env_list, args[i]))
+            add_to_env(&p->env_list, args[i]);
+        if (!update_env(&p->secret_env, args[i]))
+            add_to_env(&p->secret_env, args[i]);
+    }
+
+    return exit_status;
+}
