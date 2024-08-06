@@ -1,26 +1,103 @@
 
 
 #include "../minishell.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <unistd.h>
 
-void	mini_exit(t_prg *mini, char **cmd)
+extern int exit_status;
+
+
+long int	modulo(long int nbr)
 {
-	mini->exit = 1;
-	ft_putstr_fd("exit ", STDERR);
-	cmd[1] ? ft_putendl_fd("❤️", STDERR) : ft_putendl_fd("💚", STDERR);
-	if (cmd[1] && cmd[2])
+	long int result;
+
+	result = nbr%256;
+	if (result < 0)
+		result += 256;
+	return (result);
+}
+
+static int	check_overflow(char *nbr)
+{
+	size_t	len;
+	int		res;
+
+	len = ft_strlen(nbr);
+	res = (nbr[len - 3] - '0') * 100 + (nbr[len - 2] - '0') * 10 + (nbr[len - 1] - '0');
+
+	if ((nbr[0] != '-' && len == 19 && res > 807) || (len > 19 && nbr[0] != '-'))
+		return (1);
+	if ((nbr[0] == '-' && len == 20 && res > 808) || len > 20)
+		return (1);
+	return (0);
+}
+
+static long int	ft_atoi(char *nb)
+{
+	long int	result;
+	size_t		i;
+	bool		flag;
+	int			sign;
+	char		*nbr;
+
+	i = 0;
+	result = 0;
+	flag = true;
+	sign = 1;
+	nbr = ft_trim(nb);
+	
+	if (nbr[i] == '-' || nbr[i] == '+')
 	{
-		mini->ret = 1;
-		ft_putendl_fd("minishell: exit: too many arguments", STDERR);
+		if (nbr[i] == '-')
+			sign = -1;
+		i++;
 	}
-	else if (cmd[1] && ft_strisnum(cmd[1]) == 0)
+	while (nbr[i])
 	{
-		mini->ret = 255;
-		ft_putstr_fd("minishell: exit: ", STDERR);
-		ft_putstr_fd(cmd[1], STDERR);
-		ft_putendl_fd(": numeric argument required", STDERR);
+		flag = false;
+		if (ft_isdigit(nbr[i]))
+			result = result * 10 + nbr[i] - '0';
+		if (check_overflow(nbr) || !ft_isdigit(nbr[i]))
+			return -1;
+		i++;
 	}
-	else if (cmd[1])
-		mini->ret = ft_atoi(cmd[1]);
+	result *= sign;
+	if (flag)
+		return -1;
+	return (modulo(result));
+}
+
+static size_t	count_args(char **args)
+{
+	size_t	i;
+
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
+}
+
+void	ft_exit(char **args __attribute__ ((unused)), t_prog *prog __attribute__ ((unused)))
+{
+	size_t		args_len;
+	long int	num;
+
+	args_len = count_args(args);
+	num = -3;
+	if (args_len >= 2)
+		num = ft_atoi(args[1]);
 	else
-		mini->ret = 0;
+		exit(exit_status);
+	if (args_len > 2 && num != -1)
+	{
+		ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
+		return ;
+	}
+	else if (num == -1)
+	{
+		ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
+		exit(2);
+	}
+	exit(num);
 }

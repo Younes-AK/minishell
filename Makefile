@@ -61,6 +61,7 @@ MAND_SRC := main.c \
             builtins/echo.c  builtins/cd.c \
             builtins/builtins_utils.c \
             builtins/pwd.c builtins/env.c \
+			builtins/ft_exit.c \
             builtins/ft_export.c builtins/ft_unset.c \
             execution/execution.c \
             execution/exec_cmds.c \
