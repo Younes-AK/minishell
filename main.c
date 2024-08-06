@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-// int G_VAR = 0;
 int exit_status;
 void f()
 {
@@ -21,14 +20,15 @@ void f()
 
 void loop(t_prog *prog, char **envp)
 {
-	prog->nbr_pipe = 0;
-	prog->fd_in = -1;
-	prog->fd_out = -1;
-	prog->list_tok = init_token_list();
-	prog->exec_list = init_exec_list();
 	prog->r_line = readline("\033[34m[minishell]~> \033[0m");
 	if (!prog->r_line)
-		exit(0);
+	{
+		free_env_list(prog->env_list);
+		free_env_list(prog->secret_env);
+		ft_free_lists(prog, "exit");
+		close(prog->original_stdin);
+		exit(1);
+	}
 	if (ft_strlen(prog->r_line) > 0)
 		add_history(prog->r_line);
 	if (prog->r_line[0] != '\0')
@@ -39,13 +39,9 @@ void loop(t_prog *prog, char **envp)
 			if (parser(prog, envp))
 			{
 				execution(prog, prog->exec_list);
-				free_tok_list(prog->list_tok);
-				free_exec_list(prog->exec_list);
 			}
 		}
 	}
-	//free_env_list(prog->env_list);
-	//free_env_list(prog->secret_env);
 }
 int main(int ac, char **av, char **envp)
 {
@@ -55,10 +51,19 @@ int main(int ac, char **av, char **envp)
 	ft_init(ac, av);
 	store_env(envp, &prog);
     store_secret_env(envp, &prog);
+    prog.original_stdin = dup(STDIN_FILENO);
 	while (true)
 	{
+		prog.list_tok = init_token_list();
+		prog.exec_list = init_exec_list();
 		prog.is_env_cmd = false;
+		prog.nbr_pipe = 0;
 		ft_sign();
 		loop(&prog, envp);
+		ft_free_lists(&prog, "free");
+		free(prog.r_line);
+		// free(prog.cmd_line);
 	}
+
 } 
+ 

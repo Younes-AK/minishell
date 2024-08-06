@@ -7,14 +7,12 @@ char **convert_env_list(t_env *env_list)
     char **env_array = malloc((env_size + 1) * sizeof(char *));
     if (!env_array)
         return NULL;
-
     t_env *iter = env_list;
     size_t i = 0;
     while (iter && i < env_size)
     {
         size_t key_len = ft_strlen(iter->key);
         size_t value_len = ft_strlen(iter->value);
-        
         env_array[i] = malloc(key_len + value_len + 2); 
         if (!env_array[i])
         {
@@ -23,11 +21,9 @@ char **convert_env_list(t_env *env_list)
             free(env_array);
             return NULL;
         }
-        
         ft_strcpy(env_array[i], iter->key);
         env_array[i][key_len] = '=';
         ft_strcpy(env_array[i] + key_len + 1, iter->value);
-        
         i++;
         iter = iter->next;
     }
@@ -62,49 +58,53 @@ void	redirect_input(char *file, int flags)
 		close(fd_file);
 	}
 }
-
-static void make_redirect(char *redirect, char *file, t_prog *p __attribute__ ((unused)))
+bool is_ambiguous(const char *filename) 
 {
+    int count = 0;
+    const char *ptr;
+
+    ptr = filename;
+    while (*ptr) 
+    {
+        while (*ptr && (*ptr == ' ' || *ptr == '\t'))
+            ptr++;
+        if (*ptr)
+            count++;
+        while (*ptr && (*ptr != ' ' && *ptr != '\t'))
+            ptr++;
+    }
+    return (count > 1);
+}
+
+static bool make_redirect(char *redirect, char *file, t_prog *p)
+{
+    if ((is_ambiguous(file) && p->is_env_cmd) || !ft_strcmp(file, "")) 
+    {
+        ft_putstr_fd("ambiguous redirect\n", STDERR_FILENO);
+        return (false);
+    }
     if (!ft_strcmp(redirect, ">"))
         redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
     else if (!ft_strcmp(redirect, ">>"))
         redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
     else if (!ft_strcmp(redirect, "<") || !ft_strcmp(redirect, "<<"))
         redirect_input(file, O_RDONLY);
+    return (true);
 }
 
-bool check_heredoc(t_exec_list *list)
-{
-    t_exec_node *iter;
-    int i;
-
-    iter = list->head;
-    while (iter)
-    {
-        i = 0;
-        while (iter->redir[i])
-        {
-            if (!ft_strcmp(iter->redir[i], "<<"))
-                return (true);
-            i++;
-        }
-        iter = iter->next;
-    }
-    return (false);
-}
-void check_redirects(char **redirs, t_prog *p)
+bool check_redirects(char **redirs, t_prog *p)
 {
     int i = 0;
-    (void)p;
-    //bool is_heredoc = check_heredoc(p->exec_list);
     while (redirs[i])
     {
         if (redirs[i + 1])
         {
-            make_redirect(redirs[i], redirs[i + 1], p);
+            if (make_redirect(redirs[i], redirs[i + 1], p) == false)
+                return (false);
         }
         i += 2;
     }
+    return (true);
 }
 
 bool check_is_builtin(char *type)

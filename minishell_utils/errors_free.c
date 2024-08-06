@@ -71,6 +71,8 @@ void free_env_list(t_env *env_list)
 {
     t_env *current = env_list;
     t_env *next;
+    if (!env_list)
+        return;
     while (current) 
 	{
         next = current->next; 
@@ -85,7 +87,8 @@ void free_tok_list(t_tokenze *list)
 {
     t_tok_node *curr;
     t_tok_node *next;
-	
+	if (!list)
+        return;
 	curr = list->head;
     while (curr) 
 	{

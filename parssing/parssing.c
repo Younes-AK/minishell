@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
+extern int exit_status;
 
 bool check_quotes(char *p)
 {
@@ -59,44 +60,44 @@ int count_new_str(char *line)
 
 void add_spaces(t_prog *p, int len) 
 {    
-    int i;
-    int j;
-
-	i = 0;
-	j = 0;
+	p->i = 0;
+	p->j = 0;
     p->cmd_line = safe_allocation(sizeof(p->cmd_line), len + 1);
-    while (p->tmp[i] && j < len)
+	if (!p->cmd_line)
+		ft_free_lists(p, "exit");
+    while (p->tmp[p->i] && p->j < len)
 	{
-        if (is_operator(p->tmp[i]))
+        if (is_operator(p->tmp[p->i]))
 		{
-            if (i != 0 && !is_whait_spaces(p->tmp[i - 1]) && !is_operator(p->tmp[i - 1]))
-                p->cmd_line[j++] = ' ';
-            p->cmd_line[j++] = p->tmp[i];
-            if (!is_whait_spaces(p->tmp[i + 1]) && !is_operator(p->tmp[i + 1]) && p->tmp[i + 1])
-                p->cmd_line[j++] = ' ';
+            if (p->i != 0 && !is_whait_spaces(p->tmp[p->i - 1]) && !is_operator(p->tmp[p->i - 1]))
+                p->cmd_line[p->j++] = ' ';
+            p->cmd_line[p->j++] = p->tmp[p->i];
+            if (!is_whait_spaces(p->tmp[p->i + 1]) && !is_operator(p->tmp[p->i + 1]) && p->tmp[p->i + 1])
+                p->cmd_line[p->j++] = ' ';
         }
 		else
 		{
-			if (is_whait_spaces(p->tmp[i]))
-				p->cmd_line[j++] = ' ';
+			if (is_whait_spaces(p->tmp[p->i]))
+				p->cmd_line[p->j++] = ' ';
 			else
-            	p->cmd_line[j++] = p->tmp[i];
+            	p->cmd_line[p->j++] = p->tmp[p->i];
 		}
-        i++;
+        p->i++;
     }
-    p->cmd_line[j] = '\0';
+    p->cmd_line[p->j] = '\0';
 }
 
 char	*inject_spaces(char *input)
 {
 	int		i;
 	int		j;
-
+	char	*ret;
 	i = 0;
 	while (is_whait_spaces(input[i]))
 		i++;
 	j = count_orignal_space(input, &i);
-	return (process_spaces(input, &i, j));
+	ret = process_spaces(input, &i, j);
+	return (ret);
 }
 
 bool parssing(t_prog *p)
@@ -107,6 +108,8 @@ bool parssing(t_prog *p)
 	if (check_quotes(p->r_line))
 	{
 		p->tmp = inject_spaces(p->r_line);
+		if (!p->tmp)
+			ft_free_lists(p, "exit");
 		len = count_new_str(p->tmp);
 		add_spaces(p, len);
 		free(p->tmp);
@@ -115,6 +118,7 @@ bool parssing(t_prog *p)
 	else
 	{
 		write(2, "minishell: syntax error near unexpected quote \n", 48);
+		exit_status = 2;
 		return (false);
 	}
 }

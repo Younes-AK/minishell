@@ -1,23 +1,6 @@
 #include "../minishell.h"
 extern int exit_status;
-static void save_restore_fds(int *save_fd, bool save)
-{
-    static const int fds[] = {STDIN_FILENO, STDOUT_FILENO};
-    int i;
 
-    i = 0;
-    while (i < 2)
-    {
-        if (save)
-            save_fd[i] = dup(fds[i]);
-        else
-        {
-            dup2(save_fd[i], fds[i]);
-            close(save_fd[i]);
-        }
-        i++;
-    }
-}
 
 static void setup_pipes(int *prev_pipe, int *curr_pipe, bool is_first, bool is_last)
 {
@@ -36,32 +19,28 @@ static void setup_pipes(int *prev_pipe, int *curr_pipe, bool is_first, bool is_l
 
 static void execute_command(char **redirs, char **cmds, t_prog *p)
 {
-    int save_fd[2];
-    save_restore_fds(save_fd, true);
-    check_redirects(redirs, p);
+    if (!check_redirects(redirs, p))
+    {
+        return ;
+    }
     execute(cmds, p);
     free_double_ptr(cmds);
-    save_restore_fds(save_fd, false);
 }
 
 static void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
 {
-    int save_fd[2];
-    save_restore_fds(save_fd, true);
     check_redirects(redirs, p);
     exec_builtins(cmd, p);
-    save_restore_fds(save_fd, false);
 }
 
 void execution(t_prog *p, t_exec_list *list)
 {
     if (!list || !list->head)
         return;
-
+    
     int prev_pipe[2], curr_pipe[2];
     t_exec_node *node = list->head;
     bool is_first = true;
-
     while (node)
     {
         bool is_last = (node->next == NULL);
@@ -82,6 +61,8 @@ void execution(t_prog *p, t_exec_list *list)
                 }
                 else
                 {
+                    while (!ft_strcmp(*node->cmd, ""))
+                        node->cmd++;
                     execute_command(node->redir, node->cmd, p);
                 }
             }

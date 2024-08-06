@@ -22,7 +22,6 @@ bool should_expand(const char* command)
     while (i < ft_strlen(command)) 
     {
         c = command[i];
-        
         if (c == '\'') 
         {
             if (!in_d_quotes)
@@ -34,10 +33,10 @@ bool should_expand(const char* command)
                 in_d_quotes = !in_d_quotes;
         } 
         else if (c == '$' && !in_s_quotes)
-            return true;
+            return (true);
         i++;
     }
-    return false;
+    return (false);
 }
 
 bool to_expand(char *content, t_token type)

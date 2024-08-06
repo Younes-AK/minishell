@@ -11,20 +11,18 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-
+extern int exit_status;
 
 void _init_exec_list(t_prog *p, t_exec_list *exec_list)
 {
     t_tok_node *iter;
     t_tok_node *prev;
-    int i = 0;
-
+    p->i = 0;
     iter = p->list_tok->head;
     prev = iter;
     if (iter)
     {
-        while (i < p->nbr_pipe + 1)
+        while (p->i < p->nbr_pipe + 1)
         {
             p->nbr_cmd = 0;
             p->nbr_redir = 0;
@@ -38,10 +36,10 @@ void _init_exec_list(t_prog *p, t_exec_list *exec_list)
                 prev = iter;
                 iter = iter->next;
             }
-            append_exec_list(p, i, exec_list);
+            append_exec_list(p, p->i, exec_list);
             if (iter)
                 iter = iter->next;
-            i++;
+            p->i++;
         }
     }
 }
@@ -77,13 +75,12 @@ bool check_syntax(t_prog *p)
 
 bool parser(t_prog *p, char **env)
 {
-	// store_env(env, p);
-    // store_secret_env(env, p);
     (void)env;
 
 	if (!check_syntax(p))
 	{
 		write(2, "minishell: syntax error near unexpected token\n", 47);
+        exit_status = 2;
 		return (false);
 	}
 	else

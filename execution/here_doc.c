@@ -92,7 +92,6 @@ void ft_heredoc(t_prog *p)
     int i;
 
     i = 0;
-    p->original_stdin = dup(STDIN_FILENO);
     node = p->exec_list->head;
     while (node)
     {
