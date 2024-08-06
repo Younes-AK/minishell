@@ -32,20 +32,22 @@ t_tokenze *init_token_list()
 	return (list);
 }
 
-void append_node(t_tokenze *list, char *content, int len, t_token type)
+void append_node(t_prog *p, char *content, int len, t_token type)
 {
 	t_tok_node *new_node;
 	new_node = safe_allocation(sizeof(t_tok_node), 1);
+	if (!new_node)
+		ft_free_lists(p, "exit");
 	new_node->content = ft_strndup(content, len);
 	new_node->len = len;
 	new_node->type = type;
 	new_node->next = NULL;
-	if (list->tail)
-		list->tail->next = new_node;
+	if (p->list_tok->tail)
+		p->list_tok->tail->next = new_node;
 	else
-		list->head = new_node;
-	list->tail = new_node;
-	list->size++;
+		p->list_tok->head = new_node;
+	p->list_tok->tail = new_node;
+	p->list_tok->size++;
 }
 
 t_exec_list *init_exec_list()

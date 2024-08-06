@@ -95,7 +95,8 @@ typedef struct s_prog
 	int nbr_cmd;
 	int nbr_redir;
 	int nbr_pipe;
-
+    int i;
+    int j;
     int pid;
     int end[2];
     char *line;
@@ -147,7 +148,7 @@ void		error_msg(char *msg);
 bool		is_whait_spaces(char c);
 bool		is_str_spaces(char *line);
 t_tokenze 	*init_token_list();
-void		append_node(t_tokenze *list, char *content, int len, t_token type);
+void		append_node(t_prog *p, char *content, int len, t_token type);
 bool		is_operator(char c);
 bool		is_quote(char c);
 void		*safe_allocation(size_t size, size_t lenght);
@@ -165,6 +166,7 @@ t_exec_list *init_exec_list();
 void        append_exec_list(t_prog *p, int index, t_exec_list *exec_list);
 void        append_exec(t_exec_list *list, t_exec_node *new_node);
 void        free_env_list(t_env *list) ;
+void        ft_free_lists(t_prog *prog, char *state);
 // =================== end parssing part ======================
 
 // =================== start expanding part ======================
@@ -192,6 +194,7 @@ int         cd(char **args, t_env *env);
 void        pwd(void);
 int         env(t_env *env);
 int         ft_export(char **args, t_prog *p);
+void        ft_exit(char **args);
 int         ft_unset(char **args, t_env *env);
 int         is_in_env(t_env *env, const char *key);
 void        env_add(const char *new_var, t_env *env);
@@ -212,7 +215,7 @@ void	execute(char **cmd, t_prog *p);
 // static void	make_redirect(char *redirect, char *file, int *save_fd);
  void	redirect_output(char *file, int flags);
  void	redirect_input(char *file, int flags);
-void check_redirects(char **redirs, t_prog *p);
+bool check_redirects(char **redirs, t_prog *p);
 char *check_path(char **paths, char *cmd);
 // void here_doc_input(char *eof, int *save_fd, t_prog *p);
 bool check_is_builtin(char *type);

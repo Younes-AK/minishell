@@ -13,35 +13,35 @@
 #include "../minishell.h"
 
 
-void tokenize_word(int *len, char *line, t_tokenze *list, char *type)
+void tokenize_word(int *len, char *line, t_prog *p, char *type)
 {
 	if (!ft_strcmp(type, "WORD"))
 	{
-		append_node(list, line, *len, WORD);
+		append_node(p, line, *len, WORD);
 	}
 	*len = 0;
 }
 
 
-void tokenize_operator(t_tokenze *list, char **cmd_line, t_prog *p, int *len)
+void tokenize_operator(char **cmd_line, t_prog *p, int *len)
 {
     if (**cmd_line == '>' && *(*cmd_line + 1) == '>')
     {
-        append_node(list, ">>", 2, REDIR_APPEND);
+        append_node(p, ">>", 2, REDIR_APPEND);
         (*cmd_line)++;
     }
     else if (**cmd_line == '<' && *(*cmd_line + 1) == '<')
     {
-        append_node(list, "<<", 2, REDIR_HEREDOC);
+        append_node(p, "<<", 2, REDIR_HEREDOC);
         (*cmd_line)++;
     }
     else if (**cmd_line == '>')
-        append_node(list, ">", 1, REDIR_OUT);
+        append_node(p, ">", 1, REDIR_OUT);
     else if (**cmd_line == '<')
-        append_node(list, "<", 1, REDIR_IN);
+        append_node(p, "<", 1, REDIR_IN);
     else if (**cmd_line == '|')
     {
-        append_node(list, "|", 1, PIPE_LINE);
+        append_node(p, "|", 1, PIPE_LINE);
         p->nbr_pipe++;
     }
     *len = 0;
@@ -70,13 +70,13 @@ void  lexer(t_prog *p, t_tokenze *list)
     bool    in_quotes;
     char    current_quote;
     char    *cmd_line;
-
+    (void)list;
     len = 0;
     start = p->cmd_line;
     in_quotes = false;
     current_quote = '\0';
     cmd_line = p->cmd_line;
-    while (*cmd_line) // echo "home"|ls >file
+    while (*cmd_line)
     {
         if (is_quote(*cmd_line))
             process_quotes(&cmd_line, &in_quotes, &current_quote, &len);
@@ -85,12 +85,12 @@ void  lexer(t_prog *p, t_tokenze *list)
         else if (is_whait_spaces(*cmd_line))
         {
             if (len > 0)
-                tokenize_word(&len, start, list, "WORD");
+                tokenize_word(&len, start, p, "WORD");
             start = cmd_line + 1;
         }
         else if (is_operator(*cmd_line))
         {
-            tokenize_operator(list, &cmd_line, p, &len);
+            tokenize_operator(&cmd_line, p, &len);
             start = cmd_line + 1;
         }
         cmd_line++;
@@ -98,7 +98,7 @@ void  lexer(t_prog *p, t_tokenze *list)
             start = cmd_line;
     }
     if (len > 0)
-        tokenize_word(&len, start, list, "WORD");
+        tokenize_word(&len, start, p, "WORD");
     free(p->cmd_line);
 }
 

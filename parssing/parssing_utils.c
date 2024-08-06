@@ -39,7 +39,7 @@ char	*process_spaces(char *input, int *i, int j)
 	in_dquotes = false;
 	ret = safe_allocation(sizeof(char), j + 1);
 	if (!ret)
-		exit(1);
+		return (NULL);
 	j = 0;
 	while (input[*i])
 	{
@@ -56,4 +56,16 @@ char	*process_spaces(char *input, int *i, int j)
 		j--;
 	ret[j] = '\0';
 	return (ret);
+}
+
+void ft_free_lists(t_prog *prog, char *state)
+{
+	if (!ft_strcmp(state, "exit"))
+	{
+		free_tok_list(prog->list_tok);
+		free_exec_list(prog->exec_list);
+		exit(EXIT_FAILURE);
+	}
+	free_tok_list(prog->list_tok);
+	free_exec_list(prog->exec_list);
 }
