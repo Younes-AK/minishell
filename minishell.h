@@ -194,6 +194,7 @@ int         cd(char **args, t_env *env);
 void        pwd(void);
 int         env(t_env *env);
 int         ft_export(char **args, t_prog *p);
+void        ft_exit(char **args);
 int         ft_unset(char **args, t_env *env);
 int         is_in_env(t_env *env, const char *key);
 void        env_add(const char *new_var, t_env *env);
