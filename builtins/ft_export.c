@@ -1,5 +1,4 @@
 #include "../minishell.h"
-#define BUFF_SIZE 1024
 
 void print_env(t_env *env)
 {
@@ -22,13 +21,14 @@ void print_env(t_env *env)
 
 static int print_error(int error, const char *arg)
 {
+    int i;
+    
+    i = 0;
     if (error == -1)
         ft_putstr_fd("export: not valid in this context: ", STDERR_FILENO);
-    else if (error == 0 || error == -3)
+    else if (error == 0 || error == -2)
         ft_putstr_fd("export: not a valid identifier: ", STDERR_FILENO);
-
-    int i = 0;
-    while (arg[i] && (arg[i] != '=' || error == -3))
+    while (arg[i] && (arg[i] != '=' || error == -2))
     {
         write(STDERR_FILENO, &arg[i], 1);
         i++;
@@ -46,26 +46,27 @@ char *get_env_name(char *dest, const char *src)
         i++;
     }
     dest[i] = '\0';
-    return dest;
+    return (dest);
 }
 
-int is_valid_env(const char *arg)
+int check_valid_env(const char *arg)
 {
     char name[BUFF_SIZE];
+    int i;
+
+    i = 0;
     get_env_name(name, arg);
-
     if (!*name)
-        return -3;
-    if (!isalpha(*name) && *name != '_')
-        return 0;
-
-    for (int i = 1; name[i]; i++)
+        return (-2);
+    if (!ft_isalpha(*name) && *name != '_')
+        return (0);
+    while (name[i])
     {
-        if (!isalnum(name[i]) && name[i] != '_')
-            return 0;
+        if (!ft_isalnum(name[i]) && name[i] != '_')
+            return (0);
+        i++;
     }
-
-    return strchr(arg, '=') ? 2 : 1;
+    return ft_strchr(arg, '=') ? 2 : 1;
 }
 
 int update_env(t_env **env, const char *arg)
@@ -76,11 +77,14 @@ int update_env(t_env **env, const char *arg)
     t_env *current = *env;
     while (current)
     {
-        if (strcmp(current->key, name) == 0)
+        if (ft_strcmp(current->key, name) == 0)
         {
             free(current->value);
-            current->value = strchr(arg, '=') ? ft_strdup(strchr(arg, '=') + 1) : ft_strdup("");
-            return 1;
+            if (ft_strchr(arg, '='))
+                current->value = ft_strdup(strchr(arg, '=') + 1);
+            else
+                current->value = ft_strdup("");
+            return (1);
         }
         current = current->next;
     }
@@ -90,48 +94,43 @@ int update_env(t_env **env, const char *arg)
 void add_to_env(t_env **env, const char *arg)
 {
     t_env *new_node;
-
     new_node = malloc(sizeof(t_env));
     char name[BUFF_SIZE];
     if (!new_node)
         return;
     get_env_name(name, arg);
     new_node->key = ft_strdup(name);
-    new_node->value = strchr(arg, '=') ? ft_strdup(strchr(arg, '=') + 1) : ft_strdup("");
+    if (ft_strchr(arg, '='))
+        new_node->value = ft_strdup(ft_strchr(arg, '=') + 1);
+    else
+        new_node->value = ft_strdup("");
     new_node->next = NULL;
     if (!*env)
         *env = new_node;
     else
-    {
-        t_env *current = *env;
-        while (current->next)
-            current = current->next;
-        current->next = new_node;
-    }
+        ft_lstadd_back(env, new_node);
 }
 
 int ft_export(char **args, t_prog *p)
 {
     int exit_status = 0;
-    if (!args[1])
-    {
-        print_env(p->env_list);
-        return 0;
-    }
+    int i;
 
-    for (int i = 1; args[i]; i++)
+    i = 1;
+    if (!args[1])
+        return (print_env(p->env_list), 0);
+    while (args[i])
     {
-        int error_ret = is_valid_env(args[i]);
+        int error_ret = check_valid_env(args[i]);
         if (error_ret <= 0)
         {
             exit_status = print_error(error_ret, args[i]);
+            i++;
             continue;
         }
         if (!update_env(&p->env_list, args[i]))
             add_to_env(&p->env_list, args[i]);
-        if (!update_env(&p->secret_env, args[i]))
-            add_to_env(&p->secret_env, args[i]);
+        i++;
     }
-
     return exit_status;
 }

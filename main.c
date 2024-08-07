@@ -24,7 +24,6 @@ void loop(t_prog *prog, char **envp)
 	if (!prog->r_line)
 	{
 		free_env_list(prog->env_list);
-		free_env_list(prog->secret_env);
 		ft_free_lists(prog, "exit");
 		close(prog->original_stdin);
 		exit(1);
@@ -50,7 +49,6 @@ int main(int ac, char **av, char **envp)
 	t_prog prog;
 	ft_init(ac, av);
 	store_env(envp, &prog);
-    store_secret_env(envp, &prog);
     prog.original_stdin = dup(STDIN_FILENO);
 	while (true)
 	{
