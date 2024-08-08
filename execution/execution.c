@@ -1,30 +1,15 @@
 #include "../minishell.h"
 extern int exit_status;
 
-
-static void setup_pipes(int *prev_pipe, int *curr_pipe, bool is_first, bool is_last)
-{
-    if (!is_first)
-    {
-        dup2(prev_pipe[0], STDIN_FILENO);
-        close(prev_pipe[0]);
-    }
-    if (!is_last)
-    {
-        dup2(curr_pipe[1], STDOUT_FILENO);
-        close(curr_pipe[1]);
-        close(curr_pipe[0]);
-    }
-}
-
-static void execute_command(char **redirs, char **cmds, t_prog *p)
+static bool execute_command(char **redirs, char **cmds, t_prog *p)
 {
     if (!check_redirects(redirs, p))
     {
-        return ;
+        return false;
     }
     execute(cmds, p);
     free_double_ptr(cmds);
+    return true;
 }
 
 static void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
@@ -33,61 +18,99 @@ static void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
     exec_builtins(cmd, p);
 }
 
-void execution(t_prog *p, t_exec_list *list)
+static void close_pipes(t_prog *p)
 {
-    if (!list || !list->head)
-        return;
-    
-    int prev_pipe[2], curr_pipe[2];
-    t_exec_node *node = list->head;
-    bool is_first = true;
-    while (node)
+    if (!p->is_first)
+        close(p->prev_pipe[0]);
+    if (!p->is_last)
     {
-        bool is_last = (node->next == NULL);
-        if (!is_last)
-            pipe(curr_pipe);
-        if (check_is_builtin(node->cmd[0]) && is_first && is_last)
-            exec_builtin_parent(node->cmd, node->redir, p);
-        else
-        {
-            pid_t pid = fork();
-            if (pid == 0)
-            {
-                setup_pipes(prev_pipe, curr_pipe, is_first, is_last);
-                if (check_is_builtin(node->cmd[0]))
-                {
-                    exec_builtins(node->cmd, p);
-                    exit(exit_status);
-                }
-                else
-                {
-                    while (!ft_strcmp(*node->cmd, ""))
-                        node->cmd++;
-                    execute_command(node->redir, node->cmd, p);
-                }
-            }
-            else if (pid < 0)
-            {
-                perror("fork");
-                break;
-            }
-        }
-
-        if (!is_first)
-            close(prev_pipe[0]);
-        if (!is_last)
-        {
-            prev_pipe[0] = curr_pipe[0];
-            close(curr_pipe[1]);
-        }
-        is_first = false;
-        node = node->next;
+        close(p->curr_pipe[1]);
+        p->prev_pipe[0] = p->curr_pipe[0];
     }
+}
 
+static void setup_child_pipes(t_prog *p)
+{
+    if (!p->is_first)
+    {
+        dup2(p->prev_pipe[0], STDIN_FILENO);
+        close(p->prev_pipe[0]);
+    }
+    if (!p->is_last)
+    {
+        dup2(p->curr_pipe[1], STDOUT_FILENO);
+        close(p->curr_pipe[1]);
+        close(p->curr_pipe[0]);
+    }
+}
+
+static void handle_child_process(t_exec_node *node, t_prog *p)
+{
+    setup_child_pipes(p);
+    if (check_is_builtin(node->cmd[0]))
+    {
+        exec_builtins(node->cmd, p);
+        exit(exit_status);
+    }
+    while (*node->cmd && !ft_strcmp(*node->cmd, ""))
+        node->cmd++;
+    if (!execute_command(node->redir, node->cmd, p))
+    {
+        if (!p->is_last)
+        {
+            close(p->curr_pipe[1]);
+            dup2(p->curr_pipe[0], STDIN_FILENO);
+        }
+        exit(1);
+    }
+    exit(0);
+}
+
+static void wait_for_children(void)
+{
     int status;
     while (wait(&status) > 0)
     {
         if (WIFEXITED(status))
             exit_status = WEXITSTATUS(status);
     }
+}
+
+static void fork_and_execute(t_exec_node *node, t_prog *p)
+{
+    pid_t pid = fork();
+    if (pid == 0)
+    {
+        handle_child_process(node, p);
+    }
+    else if (pid < 0)
+    {
+        ft_putstr_fd("fork function fialled\n", 2);
+    }
+}
+
+void execution(t_prog *p, t_exec_list *list)
+{
+    t_exec_node *node;
+    if (!list || !list->head)
+        return;
+    p->original_stdout = dup(1);
+    p->is_first = true;
+    node = list->head;
+    while (node)
+    {
+        p->is_last = (node->next == NULL);
+        if (!p->is_last)
+            pipe(p->curr_pipe);
+        if (check_is_builtin(node->cmd[0]) && p->is_first && p->is_last)
+            exec_builtin_parent(node->cmd, node->redir, p);
+        else
+            fork_and_execute(node, p);
+        close_pipes(p);
+        p->is_first = false;
+        node = node->next;
+    }
+    wait_for_children();
+    dup2(p->original_stdout, STDOUT_FILENO);
+    close(p->original_stdout);
 }

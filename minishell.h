@@ -113,7 +113,10 @@ typedef struct s_prog
     int exit_status;
     bool concatanate;
     int to_restart_stdin;
-    
+    int prev_pipe[2];
+    int curr_pipe[2];
+    bool is_first;
+    bool is_last;
 }	t_prog;
 
 extern t_prog	g_prog;

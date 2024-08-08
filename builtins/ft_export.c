@@ -81,7 +81,7 @@ int update_env(t_env **env, const char *arg)
         {
             free(current->value);
             if (ft_strchr(arg, '='))
-                current->value = ft_strdup(strchr(arg, '=') + 1);
+                current->value = ft_strdup(ft_strchr(arg, '=') + 1);
             else
                 current->value = ft_strdup("");
             return (1);
