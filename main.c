@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdio.h>
 // int G_VAR = 0;
 int exit_status;
 void f()
@@ -55,6 +56,12 @@ int main(int ac, char **av, char **envp)
 	ft_init(ac, av);
 	store_env(envp, &prog);
     store_secret_env(envp, &prog);
+	printf("\t\t\t\t ____    ____   _             _          __             __   __    \n");
+	printf("\t\t\t\t|_   \\  /   _| (_)           (_)        [  |           [  | [  |   \n");
+	printf("\t\t\t\t  |   \\/   |   __   _ .--.   __   .--.   | |--.  .---.  | |  | |   \n");
+	printf("\t\t\t\t  | |\\  /| |  [  | [ `.-. | [  | ( (`\\]  | .-. |/ /__\\\\ | |  | |   \n");
+	printf("\t\t\t\t _| |_\\/_| |_  | |  | | | |  | |  `'.'.  | | | || \\__., | |  | |   \n");
+	printf("\t\t\t\t|_____||_____|[___][___||__][___][\\__) )[___]|__]'.__.'[___][___]  \n");
 	while (true)
 	{
 		prog.is_env_cmd = false;

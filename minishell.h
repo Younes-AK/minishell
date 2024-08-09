@@ -91,7 +91,7 @@ typedef struct s_prog
 	t_env		*env_list;
 	t_env		*secret_env;
 	t_exec_list	*exec_list;
-	
+
 	int nbr_cmd;
 	int nbr_redir;
 	int nbr_pipe;

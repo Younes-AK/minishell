@@ -1,137 +1,125 @@
 #include "../minishell.h"
-#define BUFF_SIZE 1024
+#include <stdbool.h>
 
-void print_env(t_env *env)
+
+/*
+ *	validity of identifier was done correctly
+ *	and all case tested was identical to bash
+ *	
+ *	still need to implement function to add key val to export and env
+ * */
+
+
+/*
+ *	not a valid identifier
+ *	export =a
+ *	export {number}*
+ *	export *{special char execpt _}*
+ *	export var=name=value
+ *	export var_name =value
+ *
+ * */
+
+ /*
+  *	export var= --> export-> var="" | env->  var=
+  *	export var --> export->var | env->
+  *	
+  * */
+
+char	*ft_copy(char *src, size_t start, size_t end)
 {
-    t_env *iter = env;
+	char	*res;
+	size_t	i;
 
-    while (iter)
-    {
-        ft_putstr_fd("declare -x ", STDOUT_FILENO);
-        ft_putstr_fd(iter->key, STDOUT_FILENO);
-        if (iter->value && iter->value[0] != '\0')
-        {
-            ft_putstr_fd("=\"", STDOUT_FILENO);
-            ft_putstr_fd(iter->value, STDOUT_FILENO);
-            ft_putstr_fd("\"", STDOUT_FILENO);
-        }
-        ft_putstr_fd("\n", STDOUT_FILENO);
-        iter = iter->next;
-    }
+	i = 0;
+	res = malloc(sizeof(char) * (end - start + 1));
+	while (start < end)
+	{
+		res[i] = src[start];
+		start++;
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
 }
 
-static int print_error(int error, const char *arg)
+bool	contain_space(char *str)
 {
-    if (error == -1)
-        ft_putstr_fd("export: not valid in this context: ", STDERR_FILENO);
-    else if (error == 0 || error == -3)
-        ft_putstr_fd("export: not a valid identifier: ", STDERR_FILENO);
+	size_t	i;
 
-    int i = 0;
-    while (arg[i] && (arg[i] != '=' || error == -3))
-    {
-        write(STDERR_FILENO, &arg[i], 1);
-        i++;
-    }
-    write(STDERR_FILENO, "\n", 1);
-    return (1);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == ' ')
+			return (true);
+		++i;
+	}
+	return (false);
 }
 
-char *get_env_name(char *dest, const char *src)
+void	split_val(char *arg, char **key, char **value)
 {
-    int i = 0;
-    while (src[i] && src[i] != '=' && i < BUFF_SIZE - 1)
-    {
-        dest[i] = src[i];
-        i++;
-    }
-    dest[i] = '\0';
-    return dest;
+	size_t	start;
+	size_t	end;
+	size_t	i;
+
+	i = 0;
+	start = 0;
+	while (arg[i] && arg[i] != '=')
+		i++;
+	end = i;
+	*key = ft_copy(arg, start, end);
+	*value = ft_copy(arg, end, ft_strlen(arg));	
 }
 
-int is_valid_env(const char *arg)
+bool	is_special_char(char *str)
 {
-    char name[BUFF_SIZE];
-    get_env_name(name, arg);
+	size_t	i;
 
-    if (!*name)
-        return -3;
-    if (!isalpha(*name) && *name != '_')
-        return 0;
-
-    for (int i = 1; name[i]; i++)
-    {
-        if (!isalnum(name[i]) && name[i] != '_')
-            return 0;
-    }
-
-    return strchr(arg, '=') ? 2 : 1;
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (true);
+		++i;
+	}
+	return (false);
 }
 
-int update_env(t_env **env, const char *arg)
+bool	is_valid_identifier(char *key)
 {
-    char name[BUFF_SIZE];
-    get_env_name(name, arg);
-
-    t_env *current = *env;
-    while (current)
-    {
-        if (strcmp(current->key, name) == 0)
-        {
-            free(current->value);
-            current->value = strchr(arg, '=') ? ft_strdup(strchr(arg, '=') + 1) : ft_strdup("");
-            return 1;
-        }
-        current = current->next;
-    }
-    return 0;
+	if (contain_space(key) || key[0] == '\0' || ft_isdigit(key[0]) || is_special_char(key))
+		return (false);
+	return (true);
 }
 
-void add_to_env(t_env **env, const char *arg)
+void	add_to_export(char *key, char *value)
 {
-    t_env *new_node;
 
-    new_node = malloc(sizeof(t_env));
-    char name[BUFF_SIZE];
-    if (!new_node)
-        return;
-    get_env_name(name, arg);
-    new_node->key = ft_strdup(name);
-    new_node->value = strchr(arg, '=') ? ft_strdup(strchr(arg, '=') + 1) : ft_strdup("");
-    new_node->next = NULL;
-    if (!*env)
-        *env = new_node;
-    else
-    {
-        t_env *current = *env;
-        while (current->next)
-            current = current->next;
-        current->next = new_node;
-    }
 }
 
-int ft_export(char **args, t_prog *p)
+void	add_to_env(char *key, char *value)
 {
-    int exit_status = 0;
-    if (!args[1])
-    {
-        print_env(p->env_list);
-        return 0;
-    }
 
-    for (int i = 1; args[i]; i++)
-    {
-        int error_ret = is_valid_env(args[i]);
-        if (error_ret <= 0)
-        {
-            exit_status = print_error(error_ret, args[i]);
-            continue;
-        }
-        if (!update_env(&p->env_list, args[i]))
-            add_to_env(&p->env_list, args[i]);
-        if (!update_env(&p->secret_env, args[i]))
-            add_to_env(&p->secret_env, args[i]);
-    }
+}
 
-    return exit_status;
+int	ft_export(char **cmd, t_prog *p __attribute__ ((unused)))
+{
+	int		i;
+	char	*key;
+	char	*value;
+	i = 1;
+	while (cmd[i])
+	{
+		split_val(cmd[i], &key, &value);
+		if (is_valid_identifier(key))
+		{
+			add_to_export(key, value);
+			add_to_env(key, value);
+		}
+		else
+			printf("not a valid identifier\n");
+		i++;
+	}
+	return (0);
 }
