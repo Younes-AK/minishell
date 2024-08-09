@@ -46,13 +46,11 @@ static void execute_cmd(char **cmd, t_prog *p)
   
     if (!cmd || !*cmd) return;
     if (p->is_env_cmd)
-    {
         new_cmd = ft_split(cmd[0], ' ');
-    }
     else
         new_cmd = cmd;
     p->access_path = check_path(p->all_paths, new_cmd[0]);
-    if (!p->access_path)
+    if (!p->access_path )
     {
         ft_putstr_fd(new_cmd[0], 2);
         ft_putstr_fd(" : Command not found\n", 2);
@@ -71,18 +69,7 @@ void execute(char **cmd, t_prog *p)
     if (!cmd || !*cmd) return;
 
     p->path = get_path(p->env_list, "PATH");
-    if (!p->path)
-    {
-        ft_putstr_fd("PATH not set\n", 2);
-        return;
-    }
-
     p->all_paths = ft_split(p->path, ':');
-    if (!p->all_paths)
-    {
-        ft_putstr_fd("Failed to split PATH\n", 2);
-        return;
-    }
     execute_cmd(cmd, p);
     free_double_ptr(p->all_paths);
 }

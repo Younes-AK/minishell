@@ -24,25 +24,6 @@ int get_args_nbr(char **args)
 
 void store_env(char **env, t_prog *p)
 {
-	p->secret_env = NULL;
-	char **tmp;
-	t_env *node;
-	int i;
-	char *str;
-	i = 0;
-	while(env[i])
-	{
-		tmp = ft_split(env[i], '=');
-		str = ft_strdup(tmp[0]); 
-		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
-		ft_lstadd_back(&p->secret_env, node);
-		free_double_ptr(tmp);
-		i++;
-	}
-}
-
-void store_secret_env(char **env, t_prog *p)
-{
 	p->env_list = NULL;
 	char **tmp;
 	t_env *node;

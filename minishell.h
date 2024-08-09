@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #include <signal.h>
 
+#define BUFF_SIZE 1024
 #define PROMPT "\033[34m[minishell]~> \033[0m"
 #define ERROR -1
 #define SUCCESS 0
@@ -89,7 +90,6 @@ typedef struct s_prog
 	char		*tmp;
 	t_tokenze	*list_tok;
 	t_env		*env_list;
-	t_env		*secret_env;
 	t_exec_list	*exec_list;
 	
 	int nbr_cmd;
@@ -113,7 +113,10 @@ typedef struct s_prog
     int exit_status;
     bool concatanate;
     int to_restart_stdin;
-    
+    int prev_pipe[2];
+    int curr_pipe[2];
+    bool is_first;
+    bool is_last;
 }	t_prog;
 
 extern t_prog	g_prog;
@@ -182,7 +185,6 @@ bool        check_var_exist(char *str, t_env **env);
 // =================== end expanding part ======================
 
 void        store_env(char **env, t_prog *p);
-void        store_secret_env(char **env, t_prog *p);
 void	    ft_putstr_fd(char *s, int fd);
 void        ft_putendl_fd(char *s, int fd);
 void	    ft_putchar_fd(char c, int fd);
