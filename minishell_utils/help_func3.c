@@ -33,7 +33,9 @@ void store_env(char **env, t_prog *p)
 	while(env[i])
 	{
 		tmp = ft_split(env[i], '=');
-		str = ft_strdup(tmp[0]); 
+		printf("tmp[0]: %s, tmp[1]: %s\n", tmp[0], tmp[1]);
+		str = ft_strdup(tmp[0]);
+		printf("strchr: %s\n", strchr(env[i], '=') + 1);
 		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
 		ft_lstadd_back(&p->secret_env, node);
 		free_double_ptr(tmp);
@@ -59,7 +61,6 @@ void store_secret_env(char **env, t_prog *p)
 		i++;
 	}
 }
-
 
 bool is_env_var(char *content)
 {

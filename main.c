@@ -48,6 +48,17 @@ void loop(t_prog *prog, char **envp)
 	//free_env_list(prog->env_list);
 	//free_env_list(prog->secret_env);
 }
+
+void	print(t_env *env)
+{
+	while(env)
+	{
+		printf("key= %s\n", env->key);
+		printf("value= %s\n", env->value);
+		env = env->next;
+	}
+}
+
 int main(int ac, char **av, char **envp)
 {
 	// atexit(f);

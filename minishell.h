@@ -88,8 +88,8 @@ typedef struct s_prog
 	char 		*cmd_line;
 	char		*tmp;
 	t_tokenze	*list_tok;
-	t_env		*env_list;
-	t_env		*secret_env;
+	t_env		*env_list;		 // used for env
+	t_env		*secret_env;	// used for export 
 	t_exec_list	*exec_list;
 
 	int nbr_cmd;
