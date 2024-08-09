@@ -16,13 +16,13 @@ int env(t_env *env)
 {
     while (env)
     {
-        if (env->value && env->value[0] != '\0')
-        {
-            ft_putstr_fd(env->key, 1);
-            ft_putstr_fd("=", 1);
-            ft_putstr_fd(env->value, 1);
-            ft_putstr_fd("\n", 1);
-        }
+        //if (env->value && env->value[0] != '\0')
+        //{
+        ft_putstr_fd(env->key, 1);
+        ft_putstr_fd("=", 1);
+        ft_putstr_fd(env->value, 1);
+        ft_putstr_fd("\n", 1);
+        //}
         env = env->next;
     }
     return (0);
