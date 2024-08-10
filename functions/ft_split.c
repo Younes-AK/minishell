@@ -74,7 +74,7 @@ static char	**ft_word(char const *s, char c, char **array, int words_count)
 	return (array);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c, t_prog *p)
 {
 	char	**strings;
 	int		words;
@@ -84,7 +84,9 @@ char	**ft_split(char const *s, char c)
 	words = ft_numofword(s, c);
 	strings = (char **)malloc(sizeof(char *) * (words + 1));
 	if (!strings)
-		return (NULL);
+	{
+		ft_free_lists(p, "exit");
+	}
 	strings = ft_word(s, c, strings, words);
 	return (strings);
 }

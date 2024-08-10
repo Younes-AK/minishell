@@ -32,10 +32,43 @@ void store_env(char **env, t_prog *p)
 	i = 0;
 	while(env[i])
 	{
-		tmp = ft_split(env[i], '=');
+		tmp = ft_split(env[i], '=', p);
+        if (!tmp)
+            exit(EXIT_FAILURE);
 		str = ft_strdup(tmp[0]); 
+        if (!str)
+        {
+            free_double_ptr(tmp);
+            exit(EXIT_FAILURE);
+        }
 		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
 		ft_lstadd_back(&p->env_list, node);
+		free_double_ptr(tmp);
+		i++;
+	}
+}
+
+void store_secret_env(char **env, t_prog *p)
+{
+	p->secret_env = NULL;
+	char **tmp;
+	t_env *node;
+	int i;
+	char *str;
+	i = 0;
+	while(env[i])
+	{
+		tmp = ft_split(env[i], '=', p);
+        if (!tmp)
+            exit(EXIT_FAILURE);
+		str = ft_strdup(tmp[0]); 
+        if (!str)
+        {
+            free_double_ptr(tmp);
+            exit(EXIT_FAILURE);
+        }
+		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
+		ft_lstadd_back(&p->secret_env, node);
 		free_double_ptr(tmp);
 		i++;
 	}

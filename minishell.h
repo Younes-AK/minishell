@@ -90,6 +90,7 @@ typedef struct s_prog
 	char		*tmp;
 	t_tokenze	*list_tok;
 	t_env		*env_list;
+    t_env       *secret_env;
 	t_exec_list	*exec_list;
 	
 	int nbr_cmd;
@@ -119,7 +120,14 @@ typedef struct s_prog
     bool is_last;
 }	t_prog;
 
-extern t_prog	g_prog;
+typedef struct s_lexer_state 
+{
+    char *cmd_line;
+    char *start;
+    int len;
+    bool in_quotes;
+    char current_quote;
+} t_lexer_state;
 
  
 
@@ -129,7 +137,7 @@ char		*ft_strjoin(char const *s1, char const *s2);
 size_t		ft_strlen(const char *str);
 int			ft_strcmp(const char *str1, const char *str2);
 char	 	*ft_substr(const char *s, unsigned int start, size_t len);
-char		**ft_split(char const *s, char c);
+char		**ft_split(char const *s, char c, t_prog *p);
 char		*ft_strndup(const char *str, int len);
 void		ft_lstadd_back(t_env **lst, t_env *new);
 t_env		*ft_lstnew(char *key, char *value);
@@ -148,9 +156,10 @@ char        *ft_itoa(int n);
 char        *ft_trim(char *str);
 
 void		error_msg(char *msg);
+void        error_msg2(char *msg, char *arg);
 bool		is_whait_spaces(char c);
 bool		is_str_spaces(char *line);
-t_tokenze 	*init_token_list();
+t_tokenze 	*init_token_list(t_prog *p);
 void		append_node(t_prog *p, char *content, int len, t_token type);
 bool		is_operator(char c);
 bool		is_quote(char c);
@@ -159,32 +168,41 @@ void		*safe_allocation(size_t size, size_t lenght);
 bool		parssing(t_prog *p);
 int         count_orignal_space(char *input, int *index);
 char        *process_spaces(char *input, int *i, int j);
-void		lexer(t_prog *p, t_tokenze *list);
+void		lexer(t_prog *p);
 void        free_tok_list(t_tokenze *list);
 void		ft_init(int ac, char **av);
-bool		parser(t_prog *p, char **env);
+bool		parser(t_prog *p);
 void		free_double_ptr(char **str);
 void        free_exec_list(t_exec_list *exec_list);
-t_exec_list *init_exec_list();
+t_exec_list *init_exec_list(t_prog *);
 void        append_exec_list(t_prog *p, int index, t_exec_list *exec_list);
 void        append_exec(t_exec_list *list, t_exec_node *new_node);
 void        free_env_list(t_env *list) ;
 void        ft_free_lists(t_prog *prog, char *state);
-// =================== end parssing part ======================
+// =================== end parssing part =========================
+
+// =================== start lexer part ==========================
+void        tokenize_word(int *len, char *line, t_prog *p, char *type);
+void        init_lexer_state(t_lexer_state *state, t_prog *p);
+
+// =================== end lexer part ============================
 
 // =================== start expanding part ======================
-void expand(t_tokenze *list, t_env *env_list, t_prog *p);
+void        expand(t_tokenze *list, t_env *env_list, t_prog *p);
 bool        is_env_var(char *content);
-char        *remove_qoutes(char *content);
-char *get_env_value(const char *var_name, t_env *env_list);
+char        *remove_qoutes(char *content, t_prog *p);
+char        *get_env_value(const char *var_name, t_env *env_list);
 char        *extract_var_name(const char **start);
 char        *append_value(char *res, const char *value, size_t *res_size);
 char        *append_char(char *res, char c, size_t *res_size);
-char *replace(char *str, t_env *env_list);
+char        *replace(char *str, t_env *env_list);
 bool        check_var_exist(char *str, t_env **env);
+char        *extract_var_name(const char **start);
 // =================== end expanding part ======================
 
 void        store_env(char **env, t_prog *p);
+void        store_secret_env(char **env, t_prog *p);
+void        free_envirement(t_prog *p);
 void	    ft_putstr_fd(char *s, int fd);
 void        ft_putendl_fd(char *s, int fd);
 void	    ft_putchar_fd(char c, int fd);
@@ -209,6 +227,9 @@ char        *ft_strjoin2(char *s1, char *s2);
 int         ft_found_newline(char *str);
 bool        exec_cmds(t_prog *path, t_exec_list *exec_list, t_env *env_list);
 char        **convert_env_list(t_env *env_list);
+bool        execute_command(char **redirs, char **cmds, t_prog *p);
+void        exec_builtin_parent(char **cmd, char **redirs, t_prog *p);
+void        close_pipes(t_prog *p);
 void        error_msg1(char *msg);
 // =================== start execution part ======================
 
@@ -226,4 +247,5 @@ void ft_heredoc(t_prog *p);
 
 void    ft_sign(void);
 void    sig_here_doc(t_prog *p);
+
 #endif

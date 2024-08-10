@@ -54,10 +54,14 @@ MAND_SRC := main.c \
             parssing/parssing.c \
             parssing/parssing_utils.c \
             parssing/create_exec_list.c \
-            parssing/lexer.c  parssing/parser.c \
+            parssing/lexer.c  \
+            parssing/lexer_utils.c  \
+            parssing/parser.c \
             minishell_utils/help_func2.c \
             minishell_utils/help_func3.c \
-            expand/expand.c expand/expand_utils.c \
+            expand/expand.c \
+            expand/expand_utils.c \
+            expand/expand_utils2.c \
             builtins/echo.c  builtins/cd.c \
             builtins/ft_exit.c \
             builtins/builtins_utils.c \
@@ -66,6 +70,7 @@ MAND_SRC := main.c \
             execution/execution.c \
             execution/exec_cmds.c \
             execution/execution_utils.c \
+            execution/execution_utils2.c \
             execution/here_doc.c \
             execution/signal.c 
 

@@ -1,34 +1,6 @@
 #include "../minishell.h"
 extern int exit_status;
 
-static bool execute_command(char **redirs, char **cmds, t_prog *p)
-{
-    if (!check_redirects(redirs, p))
-    {
-        return false;
-    }
-    execute(cmds, p);
-    free_double_ptr(cmds);
-    return true;
-}
-
-static void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
-{
-    check_redirects(redirs, p);
-    exec_builtins(cmd, p);
-}
-
-static void close_pipes(t_prog *p)
-{
-    if (!p->is_first)
-        close(p->prev_pipe[0]);
-    if (!p->is_last)
-    {
-        close(p->curr_pipe[1]);
-        p->prev_pipe[0] = p->curr_pipe[0];
-    }
-}
-
 static void setup_child_pipes(t_prog *p)
 {
     if (!p->is_first)

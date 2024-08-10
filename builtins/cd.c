@@ -106,5 +106,5 @@ int cd(char **args, t_env *env)
             return cd_ret;
         }
     }
-    return SUCCESS;
+    return (0);
 }

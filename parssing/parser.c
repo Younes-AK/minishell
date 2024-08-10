@@ -73,10 +73,8 @@ bool check_syntax(t_prog *p)
 }
 
 
-bool parser(t_prog *p, char **env)
+bool parser(t_prog *p)
 {
-    (void)env;
-
 	if (!check_syntax(p))
 	{
 		write(2, "minishell: syntax error near unexpected token\n", 47);
