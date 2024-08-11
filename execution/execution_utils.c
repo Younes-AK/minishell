@@ -28,7 +28,7 @@ char **convert_env_list(t_env *env_list)
         iter = iter->next;
     }
     env_array[env_size] = NULL;
-    return env_array;
+    return (env_array);
 }
 
 void	redirect_output(char *file, int flags)
@@ -51,7 +51,10 @@ void	redirect_input(char *file, int flags)
     
 	fd_file = open(file, flags);
 	if (fd_file == -1)
-		error_msg2("No such file or directory", file);
+    {
+		error_msg2(" No such file or directory", file);
+        exit(EXIT_FAILURE);
+    }
 	else
 	{
 		dup2(fd_file, 0);

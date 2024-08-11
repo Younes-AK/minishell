@@ -1,5 +1,5 @@
 #include "../minishell.h"
-
+extern int exit_status;
 char	*ft_copy(char *src, size_t start, size_t end)
 {
 	char	*res;
@@ -196,9 +196,13 @@ int	ft_export(char **cmd, t_prog *p __attribute__ ((unused)))
 		{
 			add_to_export(key, value, &p->secret_env);
 			add_to_env(key, &p->secret_env, &p->env_list);
+			exit_status = 0;
 		}
 		else
-			printf("not a valid identifier\n");
+		{
+			ft_putstr_fd("not a valid identifier\n", 2);
+			exit_status = 1;
+		}
 		free(key);
 		free(value);
 		i++;

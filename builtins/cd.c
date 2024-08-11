@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
+extern int exit_status;
 
 static void print_error(char **args) 
 {
@@ -22,6 +23,7 @@ static void print_error(char **args)
         ft_putstr_fd(": ", 2);
     }
     ft_putendl_fd(args[1], 2);
+    exit_status = 1;
 }
 
 static char *get_env_path(t_env *env, const char *key) 
@@ -73,13 +75,14 @@ static int go_to_path(int option, t_env *env)
         env_path = get_env_path(env, "HOME");
         if (!env_path) {
             ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
-            return ERROR;
+            return (ERROR);
         }
     } else if (option == 1) {
         env_path = get_env_path(env, "OLDPWD");
         if (!env_path) {
             ft_putendl_fd("minishell: cd: OLDPWD not set", STDERR_FILENO);
-            return ERROR;
+            exit_status = 1;
+            return (ERROR);
         }
         update_oldpwd(env);
     }
@@ -92,6 +95,11 @@ int cd(char **args, t_env *env)
 {
     int cd_ret;
 
+    if (get_args_nbr(args) > 2)
+    {
+        exit_status = 1;
+        return (ft_putstr_fd("bash: cd: too many arguments\n", 2), 1);
+    }
     if (!args[1])
         return go_to_path(0, env);
     if (strcmp(args[1], "-") == 0)
@@ -103,8 +111,9 @@ int cd(char **args, t_env *env)
         if (cd_ret < 0) 
         {
             print_error(args);
-            return cd_ret;
+            return (cd_ret);
         }
+        exit_status = 0;
     }
     return (0);
 }

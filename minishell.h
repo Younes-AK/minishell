@@ -35,7 +35,7 @@ typedef enum e_token
 {
     WORD,
     WHITE_SPACE,
-    ENV,
+    TO_EXPAND,
     PIPE_LINE,
     REDIR_IN,
     REDIR_OUT,
@@ -104,7 +104,8 @@ typedef struct s_prog
     char *path;
     char **all_paths;
     char *access_path;
-    bool is_env_cmd;
+    bool    is_env_cmd;
+    // char    **new_cmd;
     int heredoc_fd;
     int fd_in;
     int fd_out;
@@ -241,11 +242,12 @@ void	execute(char **cmd, t_prog *p);
 bool check_redirects(char **redirs, t_prog *p);
 char *check_path(char **paths, char *cmd);
 // void here_doc_input(char *eof, int *save_fd, t_prog *p);
-bool check_is_builtin(char *type);
+bool check_is_builtin(char **type, int *index);
 void exec_builtins(char **cmd, t_prog *p);
 void ft_heredoc(t_prog *p);
 
 void    ft_sign(void);
 void    sig_here_doc(t_prog *p);
+void free_envirement(t_prog *p);
 
 #endif

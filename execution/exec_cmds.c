@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+#include "../minishell.h"
+
 char *check_path(char **paths, char *cmd)
 {
     char *full_path;
@@ -57,7 +59,7 @@ static void execute_cmd(char **cmd, t_prog *p)
     }
     env_variables = convert_env_list(p->env_list);
     execve(p->access_path, new_cmd, env_variables);
-    perror("execve");
+    error_msg2(" : command not found", new_cmd[0]);
     free(p->access_path);
     free_double_ptr(env_variables);
     exit(126);

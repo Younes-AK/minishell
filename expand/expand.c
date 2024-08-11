@@ -54,7 +54,6 @@ static void process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t
 {
     char *expanded_var;
     char *tmp;
-
     if (is_env_var(iter->content))
         p->is_env_cmd = true;
     if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC)

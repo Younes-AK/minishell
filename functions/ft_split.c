@@ -85,6 +85,7 @@ char	**ft_split(char const *s, char c, t_prog *p)
 	strings = (char **)malloc(sizeof(char *) * (words + 1));
 	if (!strings)
 	{
+		ft_putstr_fd("malloc fialled alocate memory\n", 2);
 		ft_free_lists(p, "exit");
 	}
 	strings = ft_word(s, c, strings, words);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
+extern int exit_status;
 
 int env(t_env *env)
 {
@@ -22,5 +23,6 @@ int env(t_env *env)
         ft_putstr_fd("\n", 1);
         env = env->next;
     }
+    exit_status = 0;
     return (0);
 }

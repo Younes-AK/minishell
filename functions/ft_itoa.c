@@ -34,6 +34,7 @@ char	*ft_itoa(int n)
     if(nbr == 0)
     {
         *str = '0';
+        str[1] = '\0';
         return(str);
     }
     if(nbr < 0)

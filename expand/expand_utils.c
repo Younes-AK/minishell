@@ -85,15 +85,14 @@ char *get_env_value(const char *var_name, t_env *env_list)
     t_env *iter;
     char *pid_str;
     char *result;
-
     if (ft_strcmp(var_name, "$$") == 0)
     {
         pid_str = ft_strdup(var_name + 1);
         return (pid_str);
     }
-    if (strcmp(var_name, "$?") == 0) 
+    if (ft_strcmp(var_name, "$?") == 0) 
     {
-        result = safe_allocation(sizeof(char), 4);
+        result = safe_allocation(sizeof(char), 1);
         result = ft_itoa(exit_status);
         return (result);
     }
@@ -118,14 +117,14 @@ char *replace(char *str, t_env *env_list)
     result = safe_allocation(sizeof(char), result_size);
     result[0] = '\0';
     start = str;
-    while (*start)
+   while (*start)
     {
-        if (*start == '$')
+        if (*start == '$' && *(start + 1) && !is_whait_spaces(*(start + 1)) && *(start + 1) != '"' && *(start + 1) != '\'')
         {
             var_name = extract_var_name(&start);
             var_value = get_env_value(var_name, env_list);
             result = append_value(result, var_value, &result_size);
-            free (var_name);
+            free(var_name);
         }
         else
         {
