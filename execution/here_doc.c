@@ -7,7 +7,7 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
     char *input;
 	char *delemitre;
 	bool to_expand = true;
-    if (is_quote(*eof))
+    if (is_quote(*eof) || is_quote(eof[ft_strlen(eof) - 1]))
         to_expand = false;
     while (true)
     {
