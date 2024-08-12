@@ -118,6 +118,7 @@ typedef struct s_prog
     int curr_pipe[2];
     bool is_first;
     bool is_last;
+    char **env_variables;
     t_tokenze *new_tok_list;
 }	t_prog;
 

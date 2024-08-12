@@ -1,7 +1,5 @@
 #include "../minishell.h"
 
-#include "../minishell.h"
-
 char *check_path(char **paths, char *cmd)
 {
     char *full_path;
@@ -9,8 +7,8 @@ char *check_path(char **paths, char *cmd)
     int i;
 
     i = 0;
-    if (access(cmd, X_OK) == 0)
-        return ft_strdup(cmd);
+    if ((*cmd == '.' && *(cmd + 1) == '/') || *cmd == '/')
+        return (cmd);
     cmd_path = ft_strjoin("/", cmd);
     while(paths && paths[i])
     {
@@ -44,7 +42,7 @@ char * get_path(t_env *env_list, char *key)
 static void execute_cmd(char **cmd, t_prog *p)
 {
     char **env_variables;
-  
+    
     if (!cmd || !*cmd) return;
     p->access_path = check_path(p->all_paths, cmd[0]);
     if (!p->access_path)

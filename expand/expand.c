@@ -83,8 +83,8 @@ static bool process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t
             ft_putstr_fd("ambiguous redirect\n", STDERR_FILENO);
             is_valid = false;
         }
-        // if (p->is_env_cmd)
-        //     expanded_var = ft_trim(expanded_var);
+        if (p->is_env_cmd)
+            expanded_var = ft_trim(expanded_var);
         if (expanded_var)
         {
             tmp = remove_qoutes(expanded_var, p);
