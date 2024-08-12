@@ -56,12 +56,9 @@ void exec_builtins(char **cmd, t_prog *p)
     else if (!(ft_strcmp(cmd[0], "pwd\0")))
 		pwd();
     else if (!(ft_strcmp(cmd[0], "unset\0")))
-		ft_unset(cmd, p->env_list);
+		  ft_unset(cmd, p->env_list, p->secret_env);
     else if (!(ft_strcmp(cmd[0], "export\0")))
-    {
-        // p->is_env_cmd = true;
 		    ft_export(cmd, p);
-    }
     else if (!(ft_strcmp(cmd[0], "env\0")))
 		env(p->env_list);
     else if (!(ft_strcmp(cmd[0], "exit\0")))

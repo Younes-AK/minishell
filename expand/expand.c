@@ -49,21 +49,53 @@ bool to_expand(char *content, t_token type)
     }
     return (false);
 }
-
-static void process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t_prog *p)
+bool is_ambiguous(const char *filename) 
 {
-    char *expanded_var;
+    int count = 0;
+    const char *ptr;
+
+    ptr = filename;
+    while (*ptr) 
+    {
+        while (*ptr && (*ptr == ' ' || *ptr == '\t'))
+            ptr++;
+        if (*ptr)
+            count++;
+        while (*ptr && (*ptr != ' ' && *ptr != '\t'))
+            ptr++;
+    }
+    return (count > 1);
+}
+static bool process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t_prog *p)
+{
+    char *expanded_var = NULL;
     char *tmp;
+    bool is_valid = true;
+
     if (is_env_var(iter->content))
         p->is_env_cmd = true;
-    if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC)
+    if (to_expand(iter->content, iter->type) && iter->type != REDIR_HEREDOC)
     {
         expanded_var = get_env_val(iter->content, env_list);
-        if (p->is_env_cmd)
-            expanded_var = ft_trim(expanded_var);
+        if ((prev->type == REDIR_OUT && is_ambiguous(expanded_var) && p->is_env_cmd)
+            || (prev->type == REDIR_OUT && !ft_strcmp(expanded_var, "") && p->is_env_cmd))
+        {
+            ft_putstr_fd("ambiguous redirect\n", STDERR_FILENO);
+            is_valid = false;
+        }
+        // if (p->is_env_cmd)
+        //     expanded_var = ft_trim(expanded_var);
         if (expanded_var)
         {
             tmp = remove_qoutes(expanded_var, p);
+            char **tt = ft_split(tmp, ' ', p);
+            char **tt_start = tt;
+            while (*tt)
+            {
+                append_node11(p, *tt, ft_strlen(*tt), iter->type);
+                tt++;
+            }
+            free(tt_start); 
             free(expanded_var);
             iter->content = tmp;
         }
@@ -73,10 +105,14 @@ static void process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t
         expanded_var = remove_qoutes(iter->content, p);
         free(iter->content);
         iter->content = expanded_var;
+        append_node11(p, iter->content, ft_strlen(iter->content), iter->type);
     }
+    else
+        append_node11(p, iter->content, ft_strlen(iter->content), iter->type);
+    return (is_valid);
 }
 
-void expand(t_tokenze *list, t_env *env_list, t_prog *p)
+bool expand(t_tokenze *list, t_env *env_list, t_prog *p)
 {
     t_tok_node *iter;
     t_tok_node *prev;
@@ -85,10 +121,11 @@ void expand(t_tokenze *list, t_env *env_list, t_prog *p)
     prev = iter;
     while (iter)
     {
-        process_token(iter, prev, env_list, p);
+        if (!process_token(iter, prev, env_list, p))
+            return (false);
         prev = iter;
         iter = iter->next;
     }
+    return (true);
 }
-
 

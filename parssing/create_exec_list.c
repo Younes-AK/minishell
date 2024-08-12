@@ -60,7 +60,7 @@ void append_exec_list(t_prog *p, int index, t_exec_list *exec_list)
     t_tok_node *iter;
     t_exec_node *node;
 
-    iter = p->list_tok->head;
+    iter = p->new_tok_list->head;
     node = safe_allocation(sizeof(t_exec_node), 1);
     if (!node)
         ft_free_lists(p, "exit");

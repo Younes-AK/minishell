@@ -30,7 +30,6 @@
 #define PROMPT "\033[34m[minishell]~> \033[0m"
 #define ERROR -1
 #define SUCCESS 0
-
 typedef enum e_token 
 {
     WORD,
@@ -119,6 +118,7 @@ typedef struct s_prog
     int curr_pipe[2];
     bool is_first;
     bool is_last;
+    t_tokenze *new_tok_list;
 }	t_prog;
 
 typedef struct s_lexer_state 
@@ -189,7 +189,7 @@ void        init_lexer_state(t_lexer_state *state, t_prog *p);
 // =================== end lexer part ============================
 
 // =================== start expanding part ======================
-void        expand(t_tokenze *list, t_env *env_list, t_prog *p);
+bool        expand(t_tokenze *list, t_env *env_list, t_prog *p);
 bool        is_env_var(char *content);
 char        *remove_qoutes(char *content, t_prog *p);
 char        *get_env_value(const char *var_name, t_env *env_list);
@@ -216,7 +216,7 @@ void        pwd(void);
 int         env(t_env *env);
 int         ft_export(char **args, t_prog *p);
 void        ft_exit(char **args);
-int         ft_unset(char **args, t_env *env);
+int         ft_unset(char **args, t_env *env, t_env *s_env);
 int         is_in_env(t_env *env, const char *key);
 void        env_add(const char *new_var, t_env *env);
 void        ft_memdel(void *ptr);
@@ -249,5 +249,5 @@ void ft_heredoc(t_prog *p);
 void    ft_sign(void);
 void    sig_here_doc(t_prog *p);
 void free_envirement(t_prog *p);
-
+void append_node11(t_prog *p, char *content, int len, t_token type);
 #endif

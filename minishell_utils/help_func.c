@@ -75,6 +75,29 @@ void append_node(t_prog *p, char *content, int len, t_token type)
 	p->list_tok->size++;
 }
 
+void append_node11(t_prog *p, char *content, int len, t_token type)
+{
+	t_tok_node *new_node;
+	new_node = safe_allocation(sizeof(t_tok_node), 1);
+	if (!new_node)
+		ft_free_lists(p, "exit");
+	new_node->content = ft_strndup(content, len);
+	if (!new_node)
+	{
+		free(new_node);
+		ft_free_lists(p, "exit");
+	}
+	new_node->len = len;
+	new_node->type = type;
+	new_node->next = NULL;
+	if (p->new_tok_list->tail)
+		p->new_tok_list->tail->next = new_node;
+	else
+		p->new_tok_list->head = new_node;
+	p->new_tok_list->tail = new_node;
+	p->new_tok_list->size++;
+}
+
 
 void append_exec(t_exec_list *list, t_exec_node *new_node)
 {	

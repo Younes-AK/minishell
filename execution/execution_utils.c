@@ -61,31 +61,32 @@ void	redirect_input(char *file, int flags)
 		close(fd_file);
 	}
 }
-bool is_ambiguous(const char *filename) 
-{
-    int count = 0;
-    const char *ptr;
+// bool is_ambiguous(const char *filename) 
+// {
+//     int count = 0;
+//     const char *ptr;
 
-    ptr = filename;
-    while (*ptr) 
-    {
-        while (*ptr && (*ptr == ' ' || *ptr == '\t'))
-            ptr++;
-        if (*ptr)
-            count++;
-        while (*ptr && (*ptr != ' ' && *ptr != '\t'))
-            ptr++;
-    }
-    return (count > 1);
-}
+//     ptr = filename;
+//     while (*ptr) 
+//     {
+//         while (*ptr && (*ptr == ' ' || *ptr == '\t'))
+//             ptr++;
+//         if (*ptr)
+//             count++;
+//         while (*ptr && (*ptr != ' ' && *ptr != '\t'))
+//             ptr++;
+//     }
+//     return (count > 1);
+// }
 
 static bool make_redirect(char *redirect, char *file, t_prog *p)
 {
-    if ((is_ambiguous(file) && p->is_env_cmd) || !ft_strcmp(file, "")) 
-    {
-        ft_putstr_fd("ambiguous redirect\n", STDERR_FILENO);
-        return (false);
-    }
+    // if ((is_ambiguous(file) && p->is_env_cmd) || !ft_strcmp(file, "")) 
+    // {
+    //     ft_putstr_fd("ambiguous redirect\n", STDERR_FILENO);
+    //     return (false);
+    // }
+    (void)p;
     if (!ft_strcmp(redirect, ">"))
         redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
     else if (!ft_strcmp(redirect, ">>"))

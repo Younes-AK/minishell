@@ -47,8 +47,8 @@ int main(int ac, char **av, char **envp)
 	prog.original_stdin = dup(STDIN_FILENO);
 	while (true)
 	{
-		prog.is_env_cmd = false;
 		prog.list_tok = init_token_list(&prog);
+		prog.new_tok_list = init_token_list(&prog);
 		prog.exec_list = init_exec_list(&prog);
 		prog.nbr_pipe = 0;
 		ft_sign();

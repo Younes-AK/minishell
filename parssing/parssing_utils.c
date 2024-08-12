@@ -70,9 +70,11 @@ void ft_free_lists(t_prog *prog, char *state)
 	{
 		free_envirement(prog);
 		free_tok_list(prog->list_tok);
+		free_tok_list(prog->new_tok_list);
 		free_exec_list(prog->exec_list);
 		exit(EXIT_FAILURE);
 	}
 	free_tok_list(prog->list_tok);
+	free_tok_list(prog->new_tok_list);
 	free_exec_list(prog->exec_list);
 }

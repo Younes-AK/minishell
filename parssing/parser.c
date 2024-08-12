@@ -18,7 +18,7 @@ void _init_exec_list(t_prog *p, t_exec_list *exec_list)
     t_tok_node *iter;
     t_tok_node *prev;
     p->i = 0;
-    iter = p->list_tok->head;
+    iter = p->new_tok_list->head;
     prev = iter;
     if (iter)
     {
@@ -83,7 +83,8 @@ bool parser(t_prog *p)
 	}
 	else
 	{
-		expand(p->list_tok, p->env_list, p);
+		if (!expand(p->list_tok, p->env_list, p))
+            return (false);
 		_init_exec_list(p, p->exec_list);
         ft_heredoc(p);
 		return (true);
