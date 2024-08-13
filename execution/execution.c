@@ -46,11 +46,11 @@ void wait_for_children(void)
     int status;
     while (wait(&status) > 0)
     {
-        // if (exit_status != 130)
-        // {
+        if (exit_status != 130)
+        {
             if (WIFEXITED(status))
                 exit_status = WEXITSTATUS(status);
-        // }
+        }
     }
 }
 

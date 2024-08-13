@@ -36,12 +36,15 @@ bool check_is_builtin(char **type, int *index)
         return (false);
     while (*type)
     {
-      if (!(ft_strcmp(*type, "echo\0")) || !(ft_strcmp(*type, "cd\0"))
+      if (!(ft_strcmp(*type, "echo")) || !(ft_strcmp(*type, "cd"))
           || !(ft_strcmp(*type, "pwd")) || !(ft_strcmp(*type, "export"))
           || !(ft_strcmp(*type, "unset")) || !(ft_strcmp(*type, "env"))
           || !(ft_strcmp(*type, "exit")))
             return (true);
-      type++;
+      if (!ft_strcmp(*type, ""))
+        type++;
+      else
+        return (false);
       *index += 1;
     }
     return (false);
@@ -49,18 +52,18 @@ bool check_is_builtin(char **type, int *index)
 
 void exec_builtins(char **cmd, t_prog *p)
 {
-    if (!(ft_strcmp(cmd[0], "echo\0")))
+    if (!(ft_strcmp(cmd[0], "echo")))
 		echo(cmd);
-    else if (!(ft_strcmp(cmd[0], "cd\0")))
+    else if (!(ft_strcmp(cmd[0], "cd")))
 		cd(cmd, p->env_list);
-    else if (!(ft_strcmp(cmd[0], "pwd\0")))
+    else if (!(ft_strcmp(cmd[0], "pwd")))
 		pwd();
-    else if (!(ft_strcmp(cmd[0], "unset\0")))
+    else if (!(ft_strcmp(cmd[0], "unset")))
 		  ft_unset(cmd, &p->env_list, &p->secret_env);
-    else if (!(ft_strcmp(cmd[0], "export\0")))
+    else if (!(ft_strcmp(cmd[0], "export")))
 		    ft_export(cmd, p);
-    else if (!(ft_strcmp(cmd[0], "env\0")))
+    else if (!(ft_strcmp(cmd[0], "env")))
 		env(p->env_list);
-    else if (!(ft_strcmp(cmd[0], "exit\0")))
+    else if (!(ft_strcmp(cmd[0], "exit")))
 		ft_exit(cmd);
 }

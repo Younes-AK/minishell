@@ -30,9 +30,7 @@ void loop(t_prog *prog)
 		{
 			lexer(prog);
 			if (parser(prog))
-			{
 				execution(prog, prog->exec_list);
-			}
 		}
 	}
 }
