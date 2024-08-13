@@ -64,6 +64,7 @@ void here_doc_input(t_exec_node *node, t_prog *p, int j)
         {
             fd = create_temporary_file(filename);
             get_and_write_input(fd, node->redir[i + 1], p);
+            free(node->redir[i + 1]);
             node->redir[i + 1] = filename;
             close(fd);
         }

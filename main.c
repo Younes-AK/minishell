@@ -58,3 +58,23 @@ int main(int ac, char **av, char **envp)
 	}
 
 } 
+
+
+
+// [minishell]~> export x="a  b"
+// [minishell]~> ls >$x
+// ambiguous redirect
+// free(): double free detected in tcache 2
+// Aborted (core dumped)
+
+
+// $SDFGHJ  $ASDFGHJK => exit stat/
+
+
+// exportr x="a  b"
+// export x="a  b"$x
+
+
+// x="export y='cat     main.c'"
+
+// unset _

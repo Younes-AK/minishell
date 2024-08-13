@@ -16,11 +16,13 @@ static void process_quote(t_lexer_state *state)
 {
     if (state->in_quotes && *state->cmd_line == state->current_quote)
     {
+        // printf("***\n");
         state->in_quotes = false;
         state->current_quote = '\0';
     }
     else if (!state->in_quotes)
     {
+        // printf("$$$$\n");
         state->in_quotes = true;
         state->current_quote = *state->cmd_line;
     }
@@ -86,10 +88,8 @@ void lexer(t_prog *p)
     {
         process_token(&state, p);
     }
-
     if (state.len > 0)
         append_node(p, state.start, state.len, WORD);
-
     free(p->cmd_line);
 }
 
