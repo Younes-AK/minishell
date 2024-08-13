@@ -73,7 +73,10 @@ void free_env_list(t_env *env_list)
         return;
     while (current) 
 	{
-        next = current->next; 
+        if (current->next)
+            next = current->next;
+        else 
+            next = NULL;
         free(current->key); 
         free(current->value); 
         free(current); 
