@@ -119,6 +119,10 @@ typedef struct s_prog
     bool is_first;
     bool is_last;
     char **env_variables;
+    char *expanded_var;
+    bool is_valid;
+    int dot_count;
+    bool has_non_dot_or_slash;
     t_tokenze *new_tok_list;
 }	t_prog;
 
@@ -200,6 +204,10 @@ char        *append_char(char *res, char c, size_t *res_size);
 char        *replace(char *str, t_env *env_list);
 bool        check_var_exist(char *str, t_env **env);
 char        *extract_var_name(const char **start);
+bool        to_expand(char *content, t_token type);
+bool        should_expand(const char* command);
+char        *get_env_val(char *str, t_env *env_list);
+bool        is_ambiguous(const char *filename);
 // =================== end expanding part ======================
 
 void        store_env(char **env, t_prog *p);
@@ -217,7 +225,7 @@ void        pwd(void);
 int         env(t_env *env);
 int         ft_export(char **args, t_prog *p);
 void        ft_exit(char **args);
-int         ft_unset(char **args, t_env *env, t_env *s_env);
+int         ft_unset(char **args, t_env **env, t_env **s_env);
 int         is_in_env(t_env *env, const char *key);
 void        env_add(const char *new_var, t_env *env);
 void        ft_memdel(void *ptr);
@@ -240,7 +248,7 @@ void	execute(char **cmd, t_prog *p);
 // static void	make_redirect(char *redirect, char *file, int *save_fd);
  void	redirect_output(char *file, int flags);
  void	redirect_input(char *file, int flags);
-bool check_redirects(char **redirs, t_prog *p);
+bool check_redirects(char **redirs);
 char *check_path(char **paths, char *cmd);
 // void here_doc_input(char *eof, int *save_fd, t_prog *p);
 bool check_is_builtin(char **type, int *index);

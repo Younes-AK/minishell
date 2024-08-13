@@ -47,6 +47,8 @@ int main(int ac, char **av, char **envp)
 	prog.original_stdin = dup(STDIN_FILENO);
 	while (true)
 	{
+		prog.expanded_var = NULL;
+    	prog.is_valid = true;
 		prog.list_tok = init_token_list(&prog);
 		prog.new_tok_list = init_token_list(&prog);
 		prog.exec_list = init_exec_list(&prog);
@@ -58,4 +60,3 @@ int main(int ac, char **av, char **envp)
 	}
 
 } 
- 

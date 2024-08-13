@@ -1,5 +1,7 @@
 #include "../minishell.h"
 extern int exit_status;
+
+
 char	*ft_copy(char *src, size_t start, size_t end)
 {
 	char	*res;
@@ -86,7 +88,11 @@ static char	*get_value(char *str1, char *str2)
 	char	*res;
 
 	i = 0;
-	while (str2[i] == '+' || str2[i] == '=')
+	//while (str2[i] == '+' || str2[i] == '=')
+		//i++;
+	if (str2[i] == '+')
+		i++;
+	if (str2[i] == '=')
 		i++;
 	len = ft_strlen(str1) + ft_strlen(str2) - i;
 	res = malloc(sizeof(char) * (len + 1));
@@ -131,7 +137,7 @@ void	add_to_export(char *key, char *value, t_env **env)
 	{
 		node = malloc(sizeof(t_env));
 		node->key = ft_strdup(key);
-		node->value = ft_strdup(out_val); 
+		node->value = ft_strdup(out_val);
 		ft_lstadd_back(env, node);
 	}
 	free(out_val);
@@ -180,7 +186,7 @@ void	print_envi(t_env *env)
 	}
 }
 
-int	ft_export(char **cmd, t_prog *p __attribute__ ((unused)))
+int	ft_export(char **cmd, t_prog *p)
 {
 	int		i;
 	char	*key;

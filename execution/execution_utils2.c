@@ -4,7 +4,7 @@
 
 bool execute_command(char **redirs, char **cmds, t_prog *p)
 {
-    if (!check_redirects(redirs, p))
+    if (!check_redirects(redirs))
     {
         return false;
     }
@@ -15,7 +15,7 @@ bool execute_command(char **redirs, char **cmds, t_prog *p)
 
 void exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
 {
-    check_redirects(redirs, p);
+    check_redirects(redirs);
     exec_builtins(cmd, p);
 }
 
@@ -56,7 +56,7 @@ void exec_builtins(char **cmd, t_prog *p)
     else if (!(ft_strcmp(cmd[0], "pwd\0")))
 		pwd();
     else if (!(ft_strcmp(cmd[0], "unset\0")))
-		  ft_unset(cmd, p->env_list, p->secret_env);
+		  ft_unset(cmd, &p->env_list, &p->secret_env);
     else if (!(ft_strcmp(cmd[0], "export\0")))
 		    ft_export(cmd, p);
     else if (!(ft_strcmp(cmd[0], "env\0")))
