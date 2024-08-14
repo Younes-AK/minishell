@@ -27,7 +27,6 @@ void env_add(const char *new_var, t_env *env)
     new_node->key = strndup(new_var, key_len);
     new_node->value = strdup(delimiter + 1);
     new_node->next = NULL;
-
     while (env->next)
         env = env->next;
     env->next = new_node;

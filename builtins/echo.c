@@ -13,7 +13,6 @@
 #include "../minishell.h"
 extern int exit_status;
 
-
 static bool parse_echo_options(char **args, int *i)
 {
     bool option_n = false;
@@ -46,7 +45,6 @@ static void print_echo_args(char **args, int i, bool option_n)
         first = false;
         i++;
     }
-
     if (!option_n)
         ft_putchar_fd('\n', STDOUT_FILENO);
 }
@@ -59,35 +57,3 @@ int echo(char **args)
     exit_status = 0;
     return 0;
 }
-
-
-// int echo(char **args)
-// {
-//     int     args_nbr;
-//     bool    option;
-//     printf("---===|%s|\n", args[1]);
-//     option = false;
-//     args_nbr = get_args_nbr(args);
-//     if (args_nbr > 0)
-//     {
-//         while (*args && (ft_strcmp(*args, "echo")))
-//             args++;
-//         if (*args && !ft_strcmp(*args, "echo"))
-//             args++;
-//         while (*args && ft_strcmp(*args, "-n") == 0)
-//         {
-//             option = true;
-//             args++;
-//         }
-//         while (*args)
-//         {
-//             ft_putstr_fd(*args, 1);
-//             if (*(args + 1))
-//                 ft_putstr_fd(" ", 1);
-//             args++;
-//         }
-//         if (!option)
-//             ft_putstr_fd("\n", 1);
-//     }
-//     return (0);
-// }

@@ -23,6 +23,14 @@ void error_msg1(char *msg)
 	write(2, msg, ft_strlen(msg));
 }
 
+void error_msg2(char *msg, char *arg)
+{
+    ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(arg, 2);
+    ft_putstr_fd(msg, 2);
+    ft_putstr_fd("\n", 2);
+}
+
 void free_double_ptr(char **str)
 {
 	int	i;
@@ -38,33 +46,23 @@ void free_double_ptr(char **str)
 
 void free_exec_list(t_exec_list *exec_list)
 {
+    t_exec_node *curr;
+    t_exec_node *next;
+
     if (!exec_list)
         return;
-    t_exec_node *curr = exec_list->head;
-    t_exec_node *next;
-    int i;
-	
+    curr = exec_list->head;
     while (curr)
     {
         next = curr->next;
-        i = 0;
         if (curr->cmd)
-        {
-            while (curr->cmd[i])
-                free(curr->cmd[i++]);
-            free(curr->cmd);
-        }
-        i = 0;
+            free_double_ptr(curr->cmd);
         if (curr->redir)
-        {
-            while (curr->redir[i])
-                free(curr->redir[i++]);
-            free(curr->redir);
-        }
+            free_double_ptr(curr->redir);
         free(curr);
         curr = next;
     }
-    exec_list->head = exec_list->tail = NULL;
+    free(exec_list);
 }
 
 void free_env_list(t_env *env_list) 
@@ -75,7 +73,10 @@ void free_env_list(t_env *env_list)
         return;
     while (current) 
 	{
-        next = current->next; 
+        if (current->next)
+            next = current->next;
+        else 
+            next = NULL;
         free(current->key); 
         free(current->value); 
         free(current); 

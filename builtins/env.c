@@ -11,19 +11,18 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
+extern int exit_status;
 
 int env(t_env *env)
 {
     while (env)
     {
-        if (env->value && env->value[0] != '\0')
-        {
-            ft_putstr_fd(env->key, 1);
-            ft_putstr_fd("=", 1);
-            ft_putstr_fd(env->value, 1);
-            ft_putstr_fd("\n", 1);
-        }
+        ft_putstr_fd(env->key, 1);
+        ft_putstr_fd("=", 1);
+        ft_putstr_fd(env->value, 1);
+        ft_putstr_fd("\n", 1);
         env = env->next;
     }
+    exit_status = 0;
     return (0);
 }

@@ -12,21 +12,15 @@
 
 #include "minishell.h"
 int exit_status;
-void f()
-{
-	system("leaks minishell");
-}
 
-
-void loop(t_prog *prog, char **envp)
+void loop(t_prog *prog)
 {
 	prog->r_line = readline("\033[34m[minishell]~> \033[0m");
 	if (!prog->r_line)
 	{
-		free_env_list(prog->env_list);
-		ft_free_lists(prog, "exit");
 		close(prog->original_stdin);
-		exit(1);
+		rl_clear_history();
+		ft_free_lists(prog, "exit");
 	}
 	if (ft_strlen(prog->r_line) > 0)
 		add_history(prog->r_line);
@@ -34,34 +28,53 @@ void loop(t_prog *prog, char **envp)
 	{
 		if(parssing(prog))
 		{
-			lexer(prog, prog->list_tok);
-			if (parser(prog, envp))
-			{
+			lexer(prog);
+			if (parser(prog))
 				execution(prog, prog->exec_list);
-			}
 		}
 	}
 }
 int main(int ac, char **av, char **envp)
 {
-	// atexit(f);
 	rl_catch_signals = 0;
 	t_prog prog;
 	ft_init(ac, av);
 	store_env(envp, &prog);
-    prog.original_stdin = dup(STDIN_FILENO);
+	store_secret_env(envp, &prog);
+	exit_status = 0;
+	prog.original_stdin = dup(STDIN_FILENO);
 	while (true)
 	{
-		prog.list_tok = init_token_list();
-		prog.exec_list = init_exec_list();
-		prog.is_env_cmd = false;
+		prog.expanded_var = NULL;
+    	prog.is_valid = true;
+		prog.list_tok = init_token_list(&prog);
+		prog.new_tok_list = init_token_list(&prog);
+		prog.exec_list = init_exec_list(&prog);
 		prog.nbr_pipe = 0;
 		ft_sign();
-		loop(&prog, envp);
+		loop(&prog);
 		ft_free_lists(&prog, "free");
 		free(prog.r_line);
-		// free(prog.cmd_line);
 	}
 
 } 
- 
+
+
+
+// [minishell]~> export x="a  b"
+// [minishell]~> ls >$x
+// ambiguous redirect
+// free(): double free detected in tcache 2
+// Aborted (core dumped)
+
+
+// $SDFGHJ  $ASDFGHJK => exit stat/
+
+
+// exportr x="a  b"
+// export x="a  b"$x
+
+
+// x="export y='cat     main.c'"
+
+// unset _

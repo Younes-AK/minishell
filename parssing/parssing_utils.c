@@ -58,14 +58,23 @@ char	*process_spaces(char *input, int *i, int j)
 	return (ret);
 }
 
+void free_envirement(t_prog *p)
+{
+	free_env_list(p->env_list);
+	free_env_list(p->secret_env);
+}
+
 void ft_free_lists(t_prog *prog, char *state)
 {
 	if (!ft_strcmp(state, "exit"))
 	{
+		free_envirement(prog);
 		free_tok_list(prog->list_tok);
+		free_tok_list(prog->new_tok_list);
 		free_exec_list(prog->exec_list);
 		exit(EXIT_FAILURE);
 	}
 	free_tok_list(prog->list_tok);
+	free_tok_list(prog->new_tok_list);
 	free_exec_list(prog->exec_list);
 }

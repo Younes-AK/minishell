@@ -7,8 +7,7 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
     char *input;
 	char *delemitre;
 	bool to_expand = true;
-
-    if (is_quote(*eof))
+    if (is_quote(*eof) || is_quote(eof[ft_strlen(eof) - 1]))
         to_expand = false;
     while (true)
     {
@@ -19,7 +18,7 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
             close(tmp_fd);
             break;
         }
-		delemitre = remove_qoutes(eof);
+		delemitre = remove_qoutes(eof, p);
         if (strcmp(input, delemitre) == 0)
         {
             close(tmp_fd);
@@ -33,23 +32,6 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
     }
 }
 
-// static void clear_tmp_file_input(void)
-// {
-//     int tmp_fd = open(TMP_FILE, O_WRONLY | O_TRUNC, 0600);
-//     if (tmp_fd != -1)
-//         close(tmp_fd);
-// }
-
-// static void make_tmp_file_input(void)
-// {
-//     int tmp_fd = open(TMP_FILE, O_RDONLY);
-//     if (tmp_fd != -1)
-//     {
-//         unlink(TMP_FILE);
-//         dup2(tmp_fd, STDIN_FILENO);
-//         close(tmp_fd);
-//     }
-// }
 static int create_temporary_file(char *filename)
 {
     int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
@@ -60,7 +42,11 @@ static int create_temporary_file(char *filename)
 char *generate_name(int i)
 {
     char *ret;
-    ret = ft_strjoin(TMP_FILE, ft_itoa(i));
+    char *ka_pa;
+
+    ka_pa = ft_itoa(i);
+    ret = ft_strjoin(TMP_FILE, ka_pa);
+    free(ka_pa);
     return (ret);
 }
 void here_doc_input(t_exec_node *node, t_prog *p, int j)
@@ -71,19 +57,19 @@ void here_doc_input(t_exec_node *node, t_prog *p, int j)
     i = 0;
     char *filename; 
 
-    filename = generate_name(j);
     while(node->redir[i])
     {
+        filename = generate_name(j);
         if (!ft_strcmp(node->redir[i], "<<"))
         {
             fd = create_temporary_file(filename);
             get_and_write_input(fd, node->redir[i + 1], p);
-            node->redir[i + 1] = ft_strdup(filename);
+            free(node->redir[i + 1]);
+            node->redir[i + 1] = filename;
             close(fd);
         }
         i+=2;
     }
-    free(filename);
 }
 
 void ft_heredoc(t_prog *p)

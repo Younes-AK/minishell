@@ -35,53 +35,63 @@ bool check_quotes(char *p)
 
 int count_new_str(char *line)
 {
-	int i;
-	int len;
+    int i;
+    int len;
+    char quote;
 
-	i = 0;
-	len = 0;
-	while (line[i] && is_whait_spaces(line[i]))
-		i++;
-	while (line[i])
-	{
-		if (is_operator(line[i]))
-		{
-			if (i > 0)
-				if (!is_whait_spaces(line[i - 1]) && !is_operator(line[i - 1]))
-					len++;
-			if (!is_whait_spaces(line[i + 1]) && !is_operator(line[i + 1]))
-				len++;
-		}
-		len++;
-		i++;
-	}
-	return (len);
+    i = 0;
+    len = 0;
+    quote = 0;
+    while (line[i] && is_whait_spaces(line[i]))
+        i++;
+    while (line[i])
+    {
+        if ((line[i] == '\'' || line[i] == '\"') && !quote)
+            quote = line[i];
+        else if (line[i] == quote)
+            quote = 0;
+        if (!quote && is_operator(line[i]))
+        {
+            if (i > 0 && !is_whait_spaces(line[i - 1]) && !is_operator(line[i - 1]))
+                len++;
+            if (!is_whait_spaces(line[i + 1]) && !is_operator(line[i + 1]) && line[i + 1])
+                len++;
+        }
+        len++;
+        i++;
+    }
+    return (len);
 }
 
 void add_spaces(t_prog *p, int len) 
 {    
-	p->i = 0;
-	p->j = 0;
-    p->cmd_line = safe_allocation(sizeof(p->cmd_line), len + 1);
-	if (!p->cmd_line)
-		ft_free_lists(p, "exit");
+    p->i = 0;
+    p->j = 0;
+    char quote = 0;
+    p->cmd_line = safe_allocation(sizeof(char), len + 1);
+    if (!p->cmd_line)
+        ft_free_lists(p, "exit");
     while (p->tmp[p->i] && p->j < len)
-	{
-        if (is_operator(p->tmp[p->i]))
-		{
+    {
+        if ((p->tmp[p->i] == '\'' || p->tmp[p->i] == '\"') && !quote)
+            quote = p->tmp[p->i];
+        else if (p->tmp[p->i] == quote)
+            quote = 0;
+        if (!quote && is_operator(p->tmp[p->i]))
+        {
             if (p->i != 0 && !is_whait_spaces(p->tmp[p->i - 1]) && !is_operator(p->tmp[p->i - 1]))
                 p->cmd_line[p->j++] = ' ';
             p->cmd_line[p->j++] = p->tmp[p->i];
             if (!is_whait_spaces(p->tmp[p->i + 1]) && !is_operator(p->tmp[p->i + 1]) && p->tmp[p->i + 1])
                 p->cmd_line[p->j++] = ' ';
         }
-		else
-		{
-			if (is_whait_spaces(p->tmp[p->i]))
-				p->cmd_line[p->j++] = ' ';
-			else
-            	p->cmd_line[p->j++] = p->tmp[p->i];
-		}
+        else
+        {
+            if (!quote && is_whait_spaces(p->tmp[p->i]))
+                p->cmd_line[p->j++] = ' ';
+            else
+                p->cmd_line[p->j++] = p->tmp[p->i];
+        }
         p->i++;
     }
     p->cmd_line[p->j] = '\0';

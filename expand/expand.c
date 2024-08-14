@@ -1,90 +1,79 @@
 
 #include "../minishell.h"
 
-char *get_env_val(char *str, t_env *env_list) 
-{
-    char *tmp;
-    // tmp = remove_qoutes(str);
-    tmp = replace(str, env_list);
-    return (tmp);
-}
 
-bool should_expand(const char* command) 
+void append_expanded_tokens(t_tok_node *iter, char **tokens, t_prog *p)
 {
-    bool    in_s_quotes;
-    bool    in_d_quotes;
-    char    c;
-    size_t  i;
-
-    in_s_quotes = false;
-    in_d_quotes = false;
-    i = 0;
-    while (i < ft_strlen(command)) 
+    char **token_start = tokens;
+    while (*tokens)
     {
-        c = command[i];
-        if (c == '\'') 
-        {
-            if (!in_d_quotes)
-                in_s_quotes = !in_s_quotes;
-        } 
-        else if (c == '"') 
-        {
-            if (!in_s_quotes)
-                in_d_quotes = !in_d_quotes;
-        } 
-        else if (c == '$' && !in_s_quotes)
-            return (true);
-        i++;
+        append_node11(p, *tokens, ft_strlen(*tokens), iter->type);
+        tokens++;
     }
-    return (false);
+    free(token_start);
 }
 
-bool to_expand(char *content, t_token type)
+static void expand_and_append(t_tok_node *iter, char *expanded_var, t_prog *p)
 {
-    if (type == WORD) 
-    {
-        if (should_expand(content) && is_env_var(content))
-            return (true);
-    }
-    return (false);
+    char *tmp = remove_qoutes(expanded_var, p);
+    char **tt = ft_split(tmp, ' ', p);
+    append_expanded_tokens(iter, tt, p);
+    free(expanded_var);
+    iter->content = tmp;
 }
 
-void expand(t_tokenze *list, t_env *env_list, t_prog *p)
-{   
-    char *expanded_var;
+static bool handle_ambiguous_redirect(t_tok_node *prev, char *expanded_var, t_prog *p)
+{
+    if (prev->type == REDIR_OUT && (is_ambiguous(expanded_var)
+        || !ft_strcmp(expanded_var, "")) && p->is_env_cmd)
+    {
+        ft_putstr_fd("ambiguous redirect\n", STDERR_FILENO);
+        return false;
+    }
+    return true;
+}
+
+static bool process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t_prog *p)
+{
+    if (is_env_var(iter->content))
+        p->is_env_cmd = true;
+    if (to_expand(iter->content, iter->type) && iter->type != REDIR_HEREDOC)
+    {
+        p->expanded_var = get_env_val(iter->content, env_list);
+        if (!handle_ambiguous_redirect(prev, p->expanded_var, p))
+            p->is_valid = false;
+        else if (p->is_env_cmd)
+        {
+            p->expanded_var = ft_trim(p->expanded_var);
+            if (p->expanded_var)
+                expand_and_append(iter, p->expanded_var, p);
+        }
+    }
+    else if (prev->type != REDIR_HEREDOC)
+    {
+        p->expanded_var = remove_qoutes(iter->content, p);
+        free(iter->content);
+        iter->content = p->expanded_var;
+        append_node11(p, iter->content, ft_strlen(iter->content), iter->type);
+    }
+    else
+        append_node11(p, iter->content, ft_strlen(iter->content), iter->type);
+    return (p->is_valid);
+}
+bool expand(t_tokenze *list, t_env *env_list, t_prog *p)
+{
     t_tok_node *iter;
     t_tok_node *prev;
-    char *tmp;
+
     iter = list->head;
     prev = iter;
     while (iter)
     {
-        if (is_env_var(iter->content))
-            p->is_env_cmd = true;
-        if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC) 
-        {
-            expanded_var = get_env_val(iter->content, env_list);
-            if (p->is_env_cmd)
-                expanded_var = ft_trim(expanded_var);
-            if (expanded_var) 
-            {
-                tmp = remove_qoutes(expanded_var);
-                //free(iter->content);
-                iter->content = tmp;
-            }
-        }
-        else
-        {
-            if (prev->type != REDIR_HEREDOC)
-            {
-                expanded_var = remove_qoutes(iter->content);
-                free(iter->content);
-                iter->content = expanded_var;
-            }
-        }
+        if (!process_token(iter, prev, env_list, p))
+            return (false);
         prev = iter;
         iter = iter->next;
     }
+    return (true);
 }
-
 

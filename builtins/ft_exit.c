@@ -87,11 +87,13 @@ void	ft_exit(char **args)
 	if (args_len > 2 && num != -1)
 	{
 		ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
+		exit_status = 1;
 		return ;
 	}
 	else if (num == -1)
 	{
 		ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
+		exit_status = 2;
 		exit(2);
 	}
 	exit(num);

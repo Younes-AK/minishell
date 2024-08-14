@@ -12,31 +12,6 @@
 
 #include "../minishell.h"
 extern int exit_status;
-char *extract_var_name(const char **start) 
-{
-    const char *end = *start + 1;
-    char *var_name;
-    size_t var_size;
-    
-    if (*end == '$' || *end == '@' || *end == '*' || *end == '#'
-        || *end == '?' || *end == '-' || *end == '!' || ft_isdigit(*end))
-    {
-        var_name = safe_allocation(sizeof(char), 3);
-        var_name[0] = '$';
-        var_name[1] = *end;
-        var_name[2] = '\0';
-        *start = end + 1;
-        return (var_name);
-    }
-    while (*end && (ft_isalpha(*end) || *end == '_'))
-        end++;
-    var_size = end - *start - 1;
-    var_name = safe_allocation(sizeof(char), var_size + 1);
-    ft_strncpy(var_name, *start + 1, var_size);
-    var_name[var_size] = '\0';
-    *start = end;
-    return (var_name);
-}
 
 char *append_value(char *res, const char *value, size_t *res_size) 
 {
@@ -76,7 +51,7 @@ char *append_char(char *res, char c, size_t *res_size)
     return (res);
 }
 
-char *remove_qoutes(char *content) 
+char *remove_qoutes(char *content, t_prog *p)
 {
     int i = 0;
     int j = 0;
@@ -84,6 +59,11 @@ char *remove_qoutes(char *content)
     bool in_single_quotes = false;
     int len = ft_strlen(content);
     char *str = safe_allocation(sizeof(char), len + 2);
+    if (!str)
+    {
+        free(content);
+        ft_free_lists(p, "exit");
+    }
     while (content[i])
     {
         if (content[i] == '"' && !in_single_quotes) 
@@ -105,15 +85,14 @@ char *get_env_value(const char *var_name, t_env *env_list)
     t_env *iter;
     char *pid_str;
     char *result;
-
     if (ft_strcmp(var_name, "$$") == 0)
     {
         pid_str = ft_strdup(var_name + 1);
         return (pid_str);
     }
-    if (strcmp(var_name, "$?") == 0) 
+    if (ft_strcmp(var_name, "$?") == 0) 
     {
-        result = safe_allocation(sizeof(char), 4);
+        result = safe_allocation(sizeof(char), 1);
         result = ft_itoa(exit_status);
         return (result);
     }
@@ -138,14 +117,14 @@ char *replace(char *str, t_env *env_list)
     result = safe_allocation(sizeof(char), result_size);
     result[0] = '\0';
     start = str;
-    while (*start)
+   while (*start)
     {
-        if (*start == '$')
+        if (*start == '$' && *(start + 1) && !is_whait_spaces(*(start + 1)) && *(start + 1) != '"' && *(start + 1) != '\'')
         {
             var_name = extract_var_name(&start);
             var_value = get_env_value(var_name, env_list);
             result = append_value(result, var_value, &result_size);
-            free (var_name);
+            free(var_name);
         }
         else
         {

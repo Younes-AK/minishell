@@ -12,93 +12,84 @@
 
 #include "../minishell.h"
 
-
-void tokenize_word(int *len, char *line, t_prog *p, char *type)
+static void process_quote(t_lexer_state *state)
 {
-	if (!ft_strcmp(type, "WORD"))
-	{
-		append_node(p, line, *len, WORD);
-	}
-	*len = 0;
+    if (state->in_quotes && *state->cmd_line == state->current_quote)
+    {
+        // printf("***\n");
+        state->in_quotes = false;
+        state->current_quote = '\0';
+    }
+    else if (!state->in_quotes)
+    {
+        // printf("$$$$\n");
+        state->in_quotes = true;
+        state->current_quote = *state->cmd_line;
+    }
+    state->len++;
 }
 
-
-void tokenize_operator(char **cmd_line, t_prog *p, int *len)
+static void process_space(t_lexer_state *state, t_prog *p)
 {
-    if (**cmd_line == '>' && *(*cmd_line + 1) == '>')
+    if (state->len > 0)
+    {
+        append_node(p, state->start, state->len, WORD);
+        state->len = 0;
+    }
+    state->start = state->cmd_line + 1;
+}
+
+static void process_operator(t_lexer_state *state, t_prog *p)
+{
+    if (*state->cmd_line == '>' && *(state->cmd_line + 1) == '>')
     {
         append_node(p, ">>", 2, REDIR_APPEND);
-        (*cmd_line)++;
+        state->cmd_line++;
     }
-    else if (**cmd_line == '<' && *(*cmd_line + 1) == '<')
+    else if (*state->cmd_line == '<' && *(state->cmd_line + 1) == '<')
     {
         append_node(p, "<<", 2, REDIR_HEREDOC);
-        (*cmd_line)++;
+        state->cmd_line++;
     }
-    else if (**cmd_line == '>')
+    else if (*state->cmd_line == '>')
         append_node(p, ">", 1, REDIR_OUT);
-    else if (**cmd_line == '<')
+    else if (*state->cmd_line == '<')
         append_node(p, "<", 1, REDIR_IN);
-    else if (**cmd_line == '|')
+    else if (*state->cmd_line == '|')
     {
         append_node(p, "|", 1, PIPE_LINE);
         p->nbr_pipe++;
     }
-    *len = 0;
+    state->len = 0;
+    state->start = state->cmd_line + 1;
 }
 
-
-void process_quotes(char **cmd_line, bool *in_quotes, char *current_quote, int *len)
+static void process_token(t_lexer_state *state, t_prog *p)
 {
-    if (*in_quotes && **cmd_line == *current_quote)
-    {
-        *in_quotes = false;
-        *current_quote = '\0';
-    }
-    else if (!*in_quotes)
-    {
-        *in_quotes = true;
-        *current_quote = **cmd_line;
-    }
-    (*len)++;
+    if (is_quote(*state->cmd_line))
+        process_quote(state);
+    else if (state->in_quotes || (!is_whait_spaces(*state->cmd_line) && !is_operator(*state->cmd_line)))
+        state->len++;
+    else if (is_whait_spaces(*state->cmd_line))
+        process_space(state, p);
+    else if (is_operator(*state->cmd_line))
+        process_operator(state, p);
+    state->cmd_line++;
+    if (state->len == 0)
+        state->start = state->cmd_line;
 }
 
-void  lexer(t_prog *p, t_tokenze *list)
+void lexer(t_prog *p)
 {
-    int     len;
-    char    *start;
-    bool    in_quotes;
-    char    current_quote;
-    char    *cmd_line;
-    (void)list;
-    len = 0;
-    start = p->cmd_line;
-    in_quotes = false;
-    current_quote = '\0';
-    cmd_line = p->cmd_line;
-    while (*cmd_line)
+    t_lexer_state state;
+
+    init_lexer_state(&state, p);
+    while (*state.cmd_line)
     {
-        if (is_quote(*cmd_line))
-            process_quotes(&cmd_line, &in_quotes, &current_quote, &len);
-        else if (in_quotes || (!is_whait_spaces(*cmd_line) && !is_operator(*cmd_line)))
-            len++;
-        else if (is_whait_spaces(*cmd_line))
-        {
-            if (len > 0)
-                tokenize_word(&len, start, p, "WORD");
-            start = cmd_line + 1;
-        }
-        else if (is_operator(*cmd_line))
-        {
-            tokenize_operator(&cmd_line, p, &len);
-            start = cmd_line + 1;
-        }
-        cmd_line++;
-        if (len == 0)
-            start = cmd_line;
+        process_token(&state, p);
     }
-    if (len > 0)
-        tokenize_word(&len, start, p, "WORD");
+    if (state.len > 0)
+        append_node(p, state.start, state.len, WORD);
     free(p->cmd_line);
 }
 

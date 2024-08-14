@@ -21,17 +21,37 @@ void *safe_allocation(size_t size, size_t lenght)
 	return (ptr);
 }
 
-t_tokenze *init_token_list()
+t_tokenze *init_token_list(t_prog *p)
 {
 	t_tokenze *list;
 
 	list = safe_allocation(sizeof(t_tokenze), 1);
+	if (!list)
+	{
+		free_envirement(p);
+		exit(EXIT_FAILURE);
+	}
 	list->head = NULL;
 	list->tail = NULL;
 	list->size = 0;
 	return (list);
 }
 
+t_exec_list *init_exec_list(t_prog *p)
+{
+	t_exec_list *list;
+
+	list = safe_allocation(sizeof(t_exec_list), 1);
+	if (!list)
+	{
+		free_envirement(p);
+		free_tok_list(p->list_tok);
+		exit(EXIT_FAILURE);
+	}
+	list->head = NULL;
+	list->tail = NULL;
+	return (list);
+}
 void append_node(t_prog *p, char *content, int len, t_token type)
 {
 	t_tok_node *new_node;
@@ -39,6 +59,11 @@ void append_node(t_prog *p, char *content, int len, t_token type)
 	if (!new_node)
 		ft_free_lists(p, "exit");
 	new_node->content = ft_strndup(content, len);
+	if (!new_node)
+	{
+		free(new_node);
+		ft_free_lists(p, "exit");
+	}
 	new_node->len = len;
 	new_node->type = type;
 	new_node->next = NULL;
@@ -50,15 +75,29 @@ void append_node(t_prog *p, char *content, int len, t_token type)
 	p->list_tok->size++;
 }
 
-t_exec_list *init_exec_list()
+void append_node11(t_prog *p, char *content, int len, t_token type)
 {
-	t_exec_list *list;
-
-	list = safe_allocation(sizeof(t_exec_list), 1);
-	list->head = NULL;
-	list->tail = NULL;
-	return (list);
+	t_tok_node *new_node;
+	new_node = safe_allocation(sizeof(t_tok_node), 1);
+	if (!new_node)
+		ft_free_lists(p, "exit");
+	new_node->content = ft_strndup(content, len);
+	if (!new_node)
+	{
+		free(new_node);
+		ft_free_lists(p, "exit");
+	}
+	new_node->len = len;
+	new_node->type = type;
+	new_node->next = NULL;
+	if (p->new_tok_list->tail)
+		p->new_tok_list->tail->next = new_node;
+	else
+		p->new_tok_list->head = new_node;
+	p->new_tok_list->tail = new_node;
+	p->new_tok_list->size++;
 }
+
 
 void append_exec(t_exec_list *list, t_exec_node *new_node)
 {	
