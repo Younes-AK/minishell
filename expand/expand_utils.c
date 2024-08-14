@@ -6,12 +6,12 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 08:42:06 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 19:06:37 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-extern int exit_status;
+extern int g_exit_status;
 
 char *append_value(char *res, const char *value, size_t *res_size) 
 {
@@ -92,8 +92,7 @@ char *get_env_value(const char *var_name, t_env *env_list)
     }
     if (ft_strcmp(var_name, "$?") == 0) 
     {
-        result = safe_allocation(sizeof(char), 1);
-        result = ft_itoa(exit_status);
+        result = ft_itoa(g_exit_status);
         return (result);
     }
     iter = env_list;

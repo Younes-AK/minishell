@@ -6,35 +6,36 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:21:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/07 14:37:02 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:51:26 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int get_args_nbr(char **args)
+int	get_args_nbr(char **args)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (args[i])
-        i++;
-    return (i);
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
 }
 
-void store_env(char **env, t_prog *p)
+void	store_env(char **env, t_prog *p)
 {
+	char	**tmp;
+	t_env	*node;
+	int	i;
+	char	*str;
+
 	p->env_list = NULL;
-	char **tmp;
-	t_env *node;
-	int i;
-	char *str;
 	i = 0;
-	while(env[i])
+	while (env[i])
 	{
 		tmp = ft_split(env[i], '=', p);
-        if (!tmp)
-            exit(EXIT_FAILURE);
+		if (!tmp)
+			exit(EXIT_FAILURE);
 		str = ft_strdup(tmp[0]); 
         if (!str)
         {

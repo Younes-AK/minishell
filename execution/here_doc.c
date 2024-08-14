@@ -37,7 +37,7 @@ static int create_temporary_file(char *filename)
 {
     int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     if (fd == -1)
-        error_msg1("Error creating temporary file\n");
+        ft_putstr_fd("Error creating temporary file\n", 2);
     return fd;
 }
 char *generate_name(int i)

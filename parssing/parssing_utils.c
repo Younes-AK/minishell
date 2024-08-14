@@ -1,31 +1,39 @@
-
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parssing_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/14 17:19:32 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/08/14 17:19:51 by yakazdao         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 
-
-int count_orignal_space(char *input, int *index)
+int	count_orignal_space(char *input, int *index)
 {
-	int	i;
-	int	j;
-    bool in_squotes;
-    bool in_dquotes;
-	
+	int		i;
+	int		j;
+	bool	in_squotes;
+	bool	in_dquotes;
+
 	j = 0;
 	i = *index;
 	in_squotes = false;
 	in_dquotes = false;
-    while (i < (int)ft_strlen(input))
-    {
-        if (input[i] == '\'') 
-            in_squotes = !in_squotes;
-		else if (input[i] == '"') 
-            in_dquotes = !in_dquotes;
-        if (!(is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1]) 
-			&& !in_squotes && !in_dquotes))
-            j++;
-        i++;
-    }
+	while (i < (int)ft_strlen(input))
+	{
+		if (input[i] == '\'')
+			in_squotes = !in_squotes;
+		else if (input[i] == '"')
+			in_dquotes = !in_dquotes;
+		if (! (is_whait_spaces(input[i]) && is_whait_spaces(input[i + 1])
+				&& !in_squotes && !in_dquotes))
+			j++;
+		i++;
+	}
 	return (j);
 }
 
@@ -58,13 +66,13 @@ char	*process_spaces(char *input, int *i, int j)
 	return (ret);
 }
 
-void free_envirement(t_prog *p)
+void	free_envirement(t_prog	*p)
 {
 	free_env_list(p->env_list);
 	free_env_list(p->secret_env);
 }
 
-void ft_free_lists(t_prog *prog, char *state)
+void	ft_free_lists(t_prog *prog, char *state)
 {
 	if (!ft_strcmp(state, "exit"))
 	{

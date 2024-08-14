@@ -6,12 +6,12 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 11:30:09 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 13:47:12 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:23:07 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-extern int exit_status;
+extern int g_exit_status;
 
 void env(t_env *env)
 {
@@ -23,5 +23,5 @@ void env(t_env *env)
         ft_putstr_fd("\n", 1);
         env = env->next;
     }
-    exit_status = 0;
+    g_exit_status = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 13:53:52 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:48:47 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ typedef struct s_prog
     int original_stdin;
     int original_heredoc;
     int original_stdout;
-    int exit_status;
+    int g_exit_status;
     bool concatanate;
     int to_restart_stdin;
     int prev_pipe[2];
@@ -176,7 +176,6 @@ int         count_orignal_space(char *input, int *index);
 char        *process_spaces(char *input, int *i, int j);
 void		lexer(t_prog *p);
 void        free_tok_list(t_tokenze *list);
-void		ft_init(int ac, char **av);
 bool		parser(t_prog *p);
 void		free_double_ptr(char **str);
 void        free_exec_list(t_exec_list *exec_list);
@@ -244,7 +243,6 @@ char        **convert_env_list(t_env *env_list);
 bool        execute_command(char **redirs, char **cmds, t_prog *p);
 void        exec_builtin_parent(char **cmd, char **redirs, t_prog *p);
 void        close_pipes(t_prog *p);
-void        error_msg1(char *msg);
 // =================== start execution part ======================
 
 // static void	make_redirect(char *redirect, char *file, int *save_fd);

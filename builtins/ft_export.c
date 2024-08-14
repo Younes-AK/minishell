@@ -1,5 +1,5 @@
 #include "../minishell.h"
-extern int exit_status;
+extern int g_exit_status;
 
 static t_env	*get_env(char *key, t_env *env)
 {
@@ -68,6 +68,7 @@ void	add_to_export(char *key, char *value, t_env **env)
 		node = malloc(sizeof(t_env));
 		node->key = ft_strdup(key);
 		node->value = ft_strdup(out_val);
+		node->next = NULL;
 		ft_lstadd_back(env, node);
 	}
 	free(out_val);
@@ -132,12 +133,12 @@ void	ft_export(char **cmd, t_prog *p)
 		{
 			add_to_export(key, value, &p->secret_env);
 			add_to_env(key, &p->secret_env, &p->env_list);
-			exit_status = 0;
+			g_exit_status = 0;
 		}
 		else
 		{
 			ft_putstr_fd("not a valid identifier\n", 2);
-			exit_status = 1;
+			g_exit_status = 1;
 		}
 		free(key);
 		free(value);

@@ -1,5 +1,5 @@
 #include "../minishell.h"
-extern int exit_status;
+extern int g_exit_status;
 
 void setup_child_pipes(t_prog *p)
 {
@@ -25,7 +25,7 @@ void handle_child_process(t_exec_node *node, t_prog *p)
     if (check_is_builtin(node->cmd, &index))
     {
         exec_builtins(node->cmd, p);
-        exit(exit_status);
+        exit(g_exit_status);
     }
     while (*node->cmd && !ft_strcmp(*node->cmd, ""))
         node->cmd++;
@@ -46,10 +46,10 @@ void wait_for_children(void)
     int status;
     while (wait(&status) > 0)
     {
-        if (exit_status != 1)
+        if (g_exit_status != 1)
         {
             if (WIFEXITED(status))
-                exit_status = WEXITSTATUS(status);
+                g_exit_status = WEXITSTATUS(status);
         }
     }
 }

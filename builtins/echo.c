@@ -6,12 +6,12 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 14:35:26 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 13:47:04 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:23:07 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-extern int exit_status;
+extern int g_exit_status;
 
 static bool parse_echo(char **args, int *i)
 {
@@ -57,5 +57,5 @@ void echo(char **args)
     
     option = parse_echo(args, &i);
     print_echo_args(args, i, option);
-    exit_status = 0;
+    g_exit_status = 0;
 }

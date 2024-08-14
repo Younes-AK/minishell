@@ -1,6 +1,6 @@
 
 #include "../minishell.h"
-extern int exit_status;
+extern int g_exit_status;
 
 void free_env_var(char *var, t_env **env)
 {
@@ -51,5 +51,5 @@ void ft_unset(char **args, t_env **env, t_env **s_env)
             free_env_var(args[i], s_env);
         i++;
     }
-    exit_status = 0;
+    g_exit_status = 0;
 }

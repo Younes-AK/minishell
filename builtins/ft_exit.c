@@ -1,7 +1,7 @@
 
 
 #include "../minishell.h"
-extern int exit_status;
+extern int g_exit_status;
 
 long int	modulo(long int nbr)
 {
@@ -83,17 +83,17 @@ void	ft_exit(char **args)
 	if (args_len >= 2)
 		num = ft_atoi(args[1]);
 	else
-		exit(exit_status);
+		exit(g_exit_status);
 	if (args_len > 2 && num != -1)
 	{
 		ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
-		exit_status = 1;
+		g_exit_status = 1;
 		return ;
 	}
 	else if (num == -1)
 	{
 		ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
-		exit_status = 2;
+		g_exit_status = 2;
 		exit(2);
 	}
 	exit(num);

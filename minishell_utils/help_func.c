@@ -6,24 +6,25 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:12:48 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 13:10:40 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:45:31 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void *safe_allocation(size_t size, size_t lenght)
+void	*safe_allocation(size_t size, size_t lenght)
 {
-	void *ptr;
+	void	*ptr;
+
 	ptr = malloc(size * lenght);
 	if (!ptr)
 		error_msg("Error : malloc fialed allocate memory\n");
 	return (ptr);
 }
 
-t_tokenze *init_token_list(t_prog *p)
+t_tokenze	*init_token_list(t_prog *p)
 {
-	t_tokenze *list;
+	t_tokenze	*list;
 
 	list = safe_allocation(sizeof(t_tokenze), 1);
 	if (!list)
@@ -37,9 +38,9 @@ t_tokenze *init_token_list(t_prog *p)
 	return (list);
 }
 
-t_exec_list *init_exec_list(t_prog *p)
+t_exec_list	*init_exec_list(t_prog *p)
 {
-	t_exec_list *list;
+	t_exec_list	*list;
 
 	list = safe_allocation(sizeof(t_exec_list), 1);
 	if (!list)
@@ -52,9 +53,11 @@ t_exec_list *init_exec_list(t_prog *p)
 	list->tail = NULL;
 	return (list);
 }
-void append_node(t_prog *p, char *content, int len, t_token type)
+
+void	append_node(t_prog *p, char *content, int len, t_token type)
 {
-	t_tok_node *new_node;
+	t_tok_node	*new_node;
+
 	new_node = safe_allocation(sizeof(t_tok_node), 1);
 	if (!new_node)
 		ft_free_lists(p, "exit");
@@ -75,9 +78,10 @@ void append_node(t_prog *p, char *content, int len, t_token type)
 	p->list_tok->size++;
 }
 
-void append_node11(t_prog *p, char *content, int len, t_token type)
+void	append_node11(t_prog *p, char *content, int len, t_token type)
 {
-	t_tok_node *new_node;
+	t_tok_node	*new_node;
+
 	new_node = safe_allocation(sizeof(t_tok_node), 1);
 	if (!new_node)
 		ft_free_lists(p, "exit");
@@ -98,9 +102,8 @@ void append_node11(t_prog *p, char *content, int len, t_token type)
 	p->new_tok_list->size++;
 }
 
-
-void append_exec(t_exec_list *list, t_exec_node *new_node)
-{	
+void	append_exec(t_exec_list *list, t_exec_node *new_node)
+{
 	if (list->tail)
 		list->tail->next = new_node;
 	else
@@ -109,5 +112,3 @@ void append_exec(t_exec_list *list, t_exec_node *new_node)
 	}
 	list->tail = new_node;
 }
-
-

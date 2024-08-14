@@ -6,95 +6,94 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/06 09:01:52 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:31:55 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-extern int exit_status;
 
-bool check_quotes(char *p)
+extern int	g_exit_status;
+
+bool	check_quotes(char *p)
 {
-    int i;
-    bool in_d_quote;
-    bool in_s_quote;
-	
-    i = 0;
+	bool	in_d_quote;
+	bool	in_s_quote;
+	int		i;
+
+	i = 0;
 	in_d_quote = false;
 	in_s_quote = false;
-    while (p[i])
-    {
-        if (p[i] == '"' && !in_s_quote)
-            in_d_quote = !in_d_quote;
-        else if (p[i] == '\'' && !in_d_quote)
-            in_s_quote = !in_s_quote;
-        i++;
-    }
-    return (!in_s_quote && !in_d_quote);
+	while (p[i])
+	{
+		if (p[i] == '"' && !in_s_quote)
+			in_d_quote = !in_d_quote;
+		else if (p[i] == '\'' && !in_d_quote)
+			in_s_quote = !in_s_quote;
+		i++;
+	}
+	return (!in_s_quote && !in_d_quote);
 }
 
-int count_new_str(char *line)
+int	count_new_str(char *line)
 {
-    int i;
-    int len;
-    char quote;
+	int		i;
+	int		len;
+	char	quote;
 
-    i = 0;
-    len = 0;
-    quote = 0;
-    while (line[i] && is_whait_spaces(line[i]))
-        i++;
-    while (line[i])
-    {
-        if ((line[i] == '\'' || line[i] == '\"') && !quote)
-            quote = line[i];
-        else if (line[i] == quote)
-            quote = 0;
-        if (!quote && is_operator(line[i]))
-        {
-            if (i > 0 && !is_whait_spaces(line[i - 1]) && !is_operator(line[i - 1]))
-                len++;
-            if (!is_whait_spaces(line[i + 1]) && !is_operator(line[i + 1]) && line[i + 1])
-                len++;
-        }
-        len++;
-        i++;
-    }
-    return (len);
+	1 && (i = 0, len = 0, quote = 0);
+	while (line[i] && is_whait_spaces(line[i]))
+		i++;
+	while (line[i])
+	{
+		if ((line[i] == '\'' || line[i] == '\"') && !quote)
+			quote = line[i];
+		else if (line[i] == quote)
+			quote = 0;
+		if (!quote && is_operator(line[i]))
+		{
+			if (i > 0 && !is_whait_spaces(line[i - 1]) && !is_operator(line[i - 1]))
+				len++;
+			if (!is_whait_spaces(line[i + 1]) && !is_operator(line[i + 1]) && line[i + 1])
+				len++;
+		}
+		len++;
+		i++;
+	}
+	return (len);
 }
 
-void add_spaces(t_prog *p, int len) 
-{    
-    p->i = 0;
-    p->j = 0;
-    char quote = 0;
-    p->cmd_line = safe_allocation(sizeof(char), len + 1);
-    if (!p->cmd_line)
-        ft_free_lists(p, "exit");
-    while (p->tmp[p->i] && p->j < len)
-    {
-        if ((p->tmp[p->i] == '\'' || p->tmp[p->i] == '\"') && !quote)
-            quote = p->tmp[p->i];
-        else if (p->tmp[p->i] == quote)
-            quote = 0;
-        if (!quote && is_operator(p->tmp[p->i]))
-        {
-            if (p->i != 0 && !is_whait_spaces(p->tmp[p->i - 1]) && !is_operator(p->tmp[p->i - 1]))
-                p->cmd_line[p->j++] = ' ';
-            p->cmd_line[p->j++] = p->tmp[p->i];
-            if (!is_whait_spaces(p->tmp[p->i + 1]) && !is_operator(p->tmp[p->i + 1]) && p->tmp[p->i + 1])
-                p->cmd_line[p->j++] = ' ';
-        }
-        else
-        {
-            if (!quote && is_whait_spaces(p->tmp[p->i]))
-                p->cmd_line[p->j++] = ' ';
-            else
-                p->cmd_line[p->j++] = p->tmp[p->i];
-        }
-        p->i++;
-    }
-    p->cmd_line[p->j] = '\0';
+void	add_spaces(t_prog *p, int len)
+{
+	char	quote;
+
+	1 && (p->i = 0, p->j = 0, quote = 0);
+	p->cmd_line = safe_allocation(sizeof(char), len + 1);
+	if (!p->cmd_line)
+		ft_free_lists(p, "exit");
+	while (p->tmp[p->i] && p->j < len)
+	{
+		if ((p->tmp[p->i] == '\'' || p->tmp[p->i] == '\"') && !quote)
+			quote = p->tmp[p->i];
+		else if (p->tmp[p->i] == quote)
+			quote = 0;
+		if (!quote && is_operator(p->tmp[p->i]))
+		{
+			if (p->i != 0 && !is_whait_spaces(p->tmp[p->i - 1]) && !is_operator(p->tmp[p->i - 1]))
+				p->cmd_line[p->j++] = ' ';
+			p->cmd_line[p->j++] = p->tmp[p->i];
+			if (!is_whait_spaces(p->tmp[p->i + 1]) && !is_operator(p->tmp[p->i + 1]) && p->tmp[p->i + 1])
+				p->cmd_line[p->j++] = ' ';
+		}
+		else
+		{
+			if (!quote && is_whait_spaces(p->tmp[p->i]))
+				p->cmd_line[p->j++] = ' ';
+			else
+				p->cmd_line[p->j++] = p->tmp[p->i];
+		}
+		p->i++;
+	}
+	p->cmd_line[p->j] = '\0';
 }
 
 char	*inject_spaces(char *input)
@@ -102,6 +101,7 @@ char	*inject_spaces(char *input)
 	int		i;
 	int		j;
 	char	*ret;
+
 	i = 0;
 	while (is_whait_spaces(input[i]))
 		i++;
@@ -110,9 +110,9 @@ char	*inject_spaces(char *input)
 	return (ret);
 }
 
-bool parssing(t_prog *p)
+bool	parssing(t_prog *p)
 {
-	int len;
+	int	len;
 
 	len = 0;
 	if (check_quotes(p->r_line))
@@ -128,7 +128,7 @@ bool parssing(t_prog *p)
 	else
 	{
 		write(2, "minishell: syntax error near unexpected quote \n", 48);
-		exit_status = 2;
+		g_exit_status = 2;
 		return (false);
 	}
 }
