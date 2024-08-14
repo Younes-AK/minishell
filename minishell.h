@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/02 11:50:36 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:53:52 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,17 +218,21 @@ void        ft_putendl_fd(char *s, int fd);
 void	    ft_putchar_fd(char c, int fd);
 
 // =================== start builtins part ======================
-int         get_args_nbr(char **args);
-int         echo(char **args);
-int         cd(char **args, t_env *env);
-void        pwd(void);
-int         env(t_env *env);
-int         ft_export(char **args, t_prog *p);
-void        ft_exit(char **args);
-int         ft_unset(char **args, t_env **env, t_env **s_env);
-int         is_in_env(t_env *env, const char *key);
-void        env_add(const char *new_var, t_env *env);
-void        ft_memdel(void *ptr);
+int     get_args_nbr(char **args);
+void    echo(char **args);
+void    cd(char **args, t_env *env);
+void    pwd(void);
+void    env(t_env *env);
+void    ft_export(char **args, t_prog *p);
+void    ft_exit(char **args);
+void    ft_unset(char **args, t_env **env, t_env **s_env);
+int     is_in_env(t_env *env, const char *key);
+void    env_add(char *new_var, t_env *env);
+bool    is_valid_identifier(char *key);
+bool    is_special_char(char *str);
+void    split_val(char *arg, char **key, char **value);
+bool	contain_space(char *str);
+char	*ft_copy(char *src, size_t start, size_t end);
 // =================== end builtins part ======================
 
 // =================== start execution part ======================

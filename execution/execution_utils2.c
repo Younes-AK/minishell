@@ -53,17 +53,17 @@ bool check_is_builtin(char **type, int *index)
 void exec_builtins(char **cmd, t_prog *p)
 {
     if (!(ft_strcmp(cmd[0], "echo")))
-		echo(cmd);
+		  echo(cmd);
     else if (!(ft_strcmp(cmd[0], "cd")))
-		cd(cmd, p->env_list);
+		  cd(cmd, p->env_list);
     else if (!(ft_strcmp(cmd[0], "pwd")))
-		pwd();
+		  pwd();
     else if (!(ft_strcmp(cmd[0], "unset")))
 		  ft_unset(cmd, &p->env_list, &p->secret_env);
     else if (!(ft_strcmp(cmd[0], "export")))
 		    ft_export(cmd, p);
     else if (!(ft_strcmp(cmd[0], "env")))
-		env(p->env_list);
+		  env(p->env_list);
     else if (!(ft_strcmp(cmd[0], "exit")))
-		ft_exit(cmd);
+		  ft_exit(cmd);
 }

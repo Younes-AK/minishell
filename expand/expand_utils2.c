@@ -34,6 +34,7 @@ char *get_env_val(char *str, t_env *env_list)
     if (str[0] == '$' && !str[1])
         return (str);
     tmp = replace(str, env_list);
+    free(str);
     return (tmp);
 }
 

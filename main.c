@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/02 12:10:32 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 14:04:17 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int main(int ac, char **av, char **envp)
 		ft_free_lists(&prog, "free");
 		free(prog.r_line);
 	}
-
 } 
 
 

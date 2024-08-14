@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/09 13:25:41 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 08:42:06 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,5 +132,5 @@ char *replace(char *str, t_env *env_list)
             start++;
         }
     }
-    return (free(str), result);
+    return (result);
 }

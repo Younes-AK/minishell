@@ -5,7 +5,7 @@
 
 char    *ft_trim(char *str)
 {
-     char *end;
+    char *end;
     while(is_whait_spaces((unsigned char)*str)) str++;
 
     if(*str == 0)

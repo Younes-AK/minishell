@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:26:50 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/02 12:03:06 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 07:40:05 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@ extern int exit_status;
 void    sig_int_here(int sig_num)
 {
     (void)sig_num;
-    exit_status = 130;
+    exit_status = 1;
     close(0);
 }
 
@@ -24,7 +24,7 @@ void    ft_handl_quit(int sig_num)
     int        status;
     pid_t    pid;
 
-    exit_status = 131;
+    exit_status = 0;
     if (sig_num == SIGQUIT)
     {
         pid = wait(&status);
@@ -38,7 +38,7 @@ void    ft_handl_quit(int sig_num)
 void    sig_int(int sig_num)
 {
     (void)sig_num;
-    exit_status = 130;
+    exit_status = 1;
     printf("\n");
     rl_on_new_line();
     rl_replace_line("", 0);

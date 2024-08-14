@@ -13,7 +13,7 @@ void free_env_var(char *var, t_env **env)
     prev = NULL;
     while (iter)
     {
-        if (!strcmp(iter->key, var))
+        if (!ft_strcmp(iter->key, var) && ft_strcmp(iter->key, "_"))
         {
             if (prev)
                 prev->next = iter->next;
@@ -30,7 +30,7 @@ void free_env_var(char *var, t_env **env)
 }
 
 
-int ft_unset(char **args, t_env **env, t_env **s_env)
+void ft_unset(char **args, t_env **env, t_env **s_env)
 {
     int nbr_args;
     int i;
@@ -44,7 +44,6 @@ int ft_unset(char **args, t_env **env, t_env **s_env)
             free_env_var(args[i], env);
         i++;
     }
-
     i = 0;
     while (i < nbr_args)
     {
@@ -53,5 +52,4 @@ int ft_unset(char **args, t_env **env, t_env **s_env)
         i++;
     }
     exit_status = 0;
-    return (0);
 }

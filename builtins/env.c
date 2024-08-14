@@ -6,14 +6,14 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 11:30:09 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/01 11:35:53 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:47:12 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 extern int exit_status;
 
-int env(t_env *env)
+void env(t_env *env)
 {
     while (env)
     {
@@ -24,5 +24,4 @@ int env(t_env *env)
         env = env->next;
     }
     exit_status = 0;
-    return (0);
 }

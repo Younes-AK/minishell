@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/02 11:29:16 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/14 13:54:58 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,9 @@ MAND_SRC := main.c \
             builtins/ft_exit.c \
             builtins/builtins_utils.c \
             builtins/pwd.c builtins/env.c \
-            builtins/ft_export.c builtins/ft_unset.c \
+            builtins/ft_export.c \
+            builtins/export_utils.c \
+            builtins/ft_unset.c \
             execution/execution.c \
             execution/exec_cmds.c \
             execution/execution_utils.c \

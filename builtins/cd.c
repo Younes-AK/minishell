@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 10:55:04 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/11 07:56:45 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:48:30 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ static char *get_env_path(t_env *env, const char *key)
 {
     while (env) 
     {
-        if (strcmp(env->key, key) == 0)
-            return strdup(env->value);
+        if (ft_strcmp(env->key, key) == 0)
+            return (ft_strdup(env->value));
         env = env->next;
     }
     return NULL;
@@ -52,7 +52,7 @@ static int update_oldpwd(t_env *env)
     {
         while (env) 
         {
-            if (strcmp(env->key, "OLDPWD") == 0) 
+            if (ft_strcmp(env->key, "OLDPWD") == 0) 
             {
                 free(env->value);
                 env->value = strdup(cwd);
@@ -62,58 +62,56 @@ static int update_oldpwd(t_env *env)
         }
     }
     free(oldpwd);
-    return SUCCESS;
+    return (SUCCESS);
 }
 
-static int go_to_path(int option, t_env *env) 
+static int move_to_path(int option, t_env *env) 
 {
     int ret;
     char *env_path = NULL;
 
-    if (option == 0) {
+    if (option == 0) 
+    {
         update_oldpwd(env);
         env_path = get_env_path(env, "HOME");
-        if (!env_path) {
-            ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
-            return (ERROR);
-        }
-    } else if (option == 1) {
+        if (!env_path)
+            return (ft_putendl_fd("minishell: cd: HOME not set", 2), ERROR);
+    } 
+    else if (option == 1) 
+    {
         env_path = get_env_path(env, "OLDPWD");
-        if (!env_path) {
-            ft_putendl_fd("minishell: cd: OLDPWD not set", STDERR_FILENO);
+        if (!env_path) 
+        {
             exit_status = 1;
-            return (ERROR);
+            return (ft_putendl_fd("minishell: cd: OLDPWD not set", 2), ERROR);
         }
         update_oldpwd(env);
     }
     ret = chdir(env_path);
     free(env_path);
-    return ret;
+    return (ret);
 }
 
-int cd(char **args, t_env *env) 
+void cd(char **args, t_env *env) 
 {
     int cd_ret;
-
-    if (get_args_nbr(args) > 2)
-    {
-        exit_status = 1;
-        return (ft_putstr_fd("bash: cd: too many arguments\n", 2), 1);
-    }
+    
     if (!args[1])
-        return go_to_path(0, env);
-    if (strcmp(args[1], "-") == 0)
-        cd_ret = go_to_path(1, env);
-    else 
+    {
+        move_to_path(0, env);
+        return ;
+    }
+    if (!ft_strcmp(args[1], "-"))
+        cd_ret = move_to_path(1, env);
+    else
     {
         update_oldpwd(env);
         cd_ret = chdir(args[1]);
         if (cd_ret < 0) 
         {
             print_error(args);
-            return (cd_ret);
+            return ;
         }
         exit_status = 0;
     }
-    return (0);
 }

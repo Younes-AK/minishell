@@ -9,6 +9,7 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 	bool to_expand = true;
     if (is_quote(*eof) || is_quote(eof[ft_strlen(eof) - 1]))
         to_expand = false;
+	delemitre = remove_qoutes(eof, p);
     while (true)
     {
         sig_here_doc(p);
@@ -18,9 +19,9 @@ static void get_and_write_input(int tmp_fd, char *eof, t_prog *p)
             close(tmp_fd);
             break;
         }
-		delemitre = remove_qoutes(eof, p);
-        if (strcmp(input, delemitre) == 0)
+        if (ft_strcmp(input, delemitre) == 0)
         {
+            free(delemitre);
             close(tmp_fd);
             free(input);
             break;
@@ -59,9 +60,9 @@ void here_doc_input(t_exec_node *node, t_prog *p, int j)
 
     while(node->redir[i])
     {
-        filename = generate_name(j);
         if (!ft_strcmp(node->redir[i], "<<"))
         {
+            filename = generate_name(j);
             fd = create_temporary_file(filename);
             get_and_write_input(fd, node->redir[i + 1], p);
             free(node->redir[i + 1]);
