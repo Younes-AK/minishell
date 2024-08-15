@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:10:33 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/07/06 10:03:04 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:48:06 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
+
 	if (!str)
 		return (0);
 	i = 0;

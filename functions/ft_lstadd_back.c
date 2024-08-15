@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 15:00:52 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/01 15:02:43 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:56:30 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,3 @@ void	ft_lstadd_back(t_env **lst, t_env *new)
 		list = list->next;
 	list->next = new;
 }
-
-

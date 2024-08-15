@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 13:50:37 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 13:51:31 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:34:35 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	split_val(char *arg, char **key, char **value)
 		i++;
 	end = i;
 	*key = ft_copy(arg, start, end);
-	*value = ft_copy(arg, end, ft_strlen(arg));	
+	*value = ft_copy(arg, end, ft_strlen(arg));
 }
 
 bool	is_special_char(char *str)
@@ -75,7 +75,7 @@ bool	is_special_char(char *str)
 bool	is_valid_identifier(char *key)
 {
 	if (contain_space(key) || key[0] == '\0'
-        || ft_isdigit(key[0]) || is_special_char(key))
+		|| ft_isdigit(key[0]) || is_special_char(key))
 		return (false);
 	return (true);
 }

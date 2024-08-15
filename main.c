@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 18:47:56 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/15 18:23:43 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	main(int ac, char **av, char **envp)
 	store_secret_env(envp, &prog);
 	g_exit_status = 0;
 	prog.original_stdin = dup(STDIN_FILENO);
+	struct termios termios_p;
+	tcgetattr(STDIN_FILENO, &termios_p);
 	while (true)
 	{
 		prog.expanded_var = NULL;
@@ -59,20 +61,24 @@ int	main(int ac, char **av, char **envp)
 		loop(&prog);
 		ft_free_lists(&prog, "free");
 		free(prog.r_line);
+		tcsetattr(1, TCSANOW, &termios_p);
 	}
 }
 
-// [minishell]~> export x="a  b"
-// [minishell]~> ls >$x
-// ambiguous redirect
-// free(): double free detected in tcache 2
-// Aborted (core dumped)
-
-// $SDFGHJ  $ASDFGHJK => exit stat/
+//  "$jkhkhhkk"
 
 // exportr x="a  b"
 // export x="a  b"$x
-
 // x="export y='cat     main.c'"
 
-// unset _
+// export a=
+// env
+
+// bash-3.2$ ./minishell
+// [minishell]~> cd -
+// minishell: cd: OLDPWD not set
+// [minishell]~> pwd
+// /Users/yakazdao/Desktop/minishell
+// [minishell]~> cd ..
+
+// echo $? : leaks

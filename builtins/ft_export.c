@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/14 21:37:01 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/08/15 15:22:18 by yakazdao         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
-extern int g_exit_status;
+
+extern int	g_exit_status;
 
 static t_env	*get_env(char *key, t_env *env)
 {
-	while(env)
+	while (env)
 	{
 		if (!ft_strcmp(env->key, key))
 			return (env);
@@ -34,7 +47,6 @@ static char	*get_value(char *str1, char *str2)
 	}
 	while (str2 && str2[i])
 		res[j++] = str2[i++];
-
 	res[j] = '\0';
 	return (res);
 }
@@ -48,10 +60,9 @@ void	add_to_export(char *key, char *value, t_env **env)
 	tmp = NULL;
 	if (check_var_exist(key, env))
 		tmp = get_env(key, *env);
-
 	if (value[0] == '+' && tmp)
 		out_val = get_value(tmp->value, value);
-	else if (value[0] == '=' ||  value[0] == '+')
+	else if (value[0] == '=' || value[0] == '+')
 		out_val = get_value(NULL, value);
 	else
 		out_val = NULL;
@@ -99,6 +110,7 @@ void	add_to_env(char *key, t_env **env_export, t_env **env)
 		node = malloc(sizeof(t_env));
 		node->key = ft_strdup(key);
 		node->value = NULL;
+		node->next = NULL;
 		if (tmp->value[0] != '\0')
 			node->value = ft_strdup(tmp->value);
 		ft_lstadd_back(env, node);

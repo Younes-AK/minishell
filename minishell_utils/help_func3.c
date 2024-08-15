@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:21:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 18:51:26 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 19:18:05 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	store_env(char **env, t_prog *p)
 {
 	char	**tmp;
 	t_env	*node;
-	int	i;
+	int		i;
 	char	*str;
 
 	p->env_list = NULL;
@@ -36,12 +36,12 @@ void	store_env(char **env, t_prog *p)
 		tmp = ft_split(env[i], '=', p);
 		if (!tmp)
 			exit(EXIT_FAILURE);
-		str = ft_strdup(tmp[0]); 
-        if (!str)
-        {
-            free_double_ptr(tmp);
-            exit(EXIT_FAILURE);
-        }
+		str = ft_strdup(tmp[0]);
+		if (!str)
+		{
+			free_double_ptr(tmp);
+			exit(EXIT_FAILURE);
+		}
 		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
 		ft_lstadd_back(&p->env_list, node);
 		free_double_ptr(tmp);
@@ -49,25 +49,26 @@ void	store_env(char **env, t_prog *p)
 	}
 }
 
-void store_secret_env(char **env, t_prog *p)
+void	store_secret_env(char **env, t_prog *p)
 {
+	char	**tmp;
+	t_env	*node;
+	int		i;
+	char	*str;
+
 	p->secret_env = NULL;
-	char **tmp;
-	t_env *node;
-	int i;
-	char *str;
 	i = 0;
-	while(env[i])
+	while (env[i])
 	{
 		tmp = ft_split(env[i], '=', p);
-        if (!tmp)
-            exit(EXIT_FAILURE);
-		str = ft_strdup(tmp[0]); 
-        if (!str)
-        {
-            free_double_ptr(tmp);
-            exit(EXIT_FAILURE);
-        }
+		if (!tmp)
+			exit(EXIT_FAILURE);
+		str = ft_strdup(tmp[0]);
+		if (!str)
+		{
+			free_double_ptr(tmp);
+			exit(EXIT_FAILURE);
+		}
 		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
 		ft_lstadd_back(&p->secret_env, node);
 		free_double_ptr(tmp);
@@ -75,30 +76,30 @@ void store_secret_env(char **env, t_prog *p)
 	}
 }
 
-
-bool is_env_var(char *content)
+bool	is_env_var(char *content)
 {
-    int i = 0;
-    while (content[i]) 
-    {
-        if (content[i] == '$')
-            return true;
-        i++;
-    }
-    return false;
+	int	i;
+
+	i = 0;
+	while (content[i])
+	{
+		if (content[i] == '$')
+			return (true);
+		i++;
+	}
+	return (false);
 }
 
-bool check_var_exist(char *str, t_env **env)
+bool	check_var_exist(char *str, t_env **env)
 {
-    t_env *iter;
+	t_env	*iter;
 
-    iter = *env;
-    while (iter)
-    {
-        if (!ft_strcmp(iter->key, str))
-            return (true);
-        iter = iter->next;
-    }
-    return (false);
+	iter = *env;
+	while (iter)
+	{
+		if (!ft_strcmp(iter->key, str))
+			return (true);
+		iter = iter->next;
+	}
+	return (false);
 }
-

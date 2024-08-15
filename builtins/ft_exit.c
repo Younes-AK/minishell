@@ -1,13 +1,24 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/14 21:34:48 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/08/14 21:43:33 by yakazdao         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
-extern int g_exit_status;
+
+extern int	g_exit_status;
 
 long int	modulo(long int nbr)
 {
-	long int result;
+	long int	result;
 
-	result = nbr%256;
+	result = nbr % 256;
 	if (result < 0)
 		result += 256;
 	return (result);
@@ -19,9 +30,10 @@ static int	check_overflow(char *nbr)
 	int		res;
 
 	len = ft_strlen(nbr);
-	res = (nbr[len - 3] - '0') * 100 + (nbr[len - 2] - '0') * 10 + (nbr[len - 1] - '0');
-
-	if ((nbr[0] != '-' && len == 19 && res > 807) || (len > 19 && nbr[0] != '-'))
+	res = (nbr[len - 3] - '0') * 100 + (nbr[len - 2] - '0')
+		* 10 + (nbr[len - 1] - '0');
+	if ((nbr[0] != '-' && len == 19 && res > 807)
+		|| (len > 19 && nbr[0] != '-'))
 		return (1);
 	if ((nbr[0] == '-' && len == 20 && res > 808) || len > 20)
 		return (1);
@@ -41,7 +53,6 @@ static long int	ft_atoi(char *nb)
 	flag = true;
 	sign = 1;
 	nbr = ft_trim(nb);
-	
 	if (nbr[i] == '-' || nbr[i] == '+')
 	{
 		if (nbr[i] == '-')

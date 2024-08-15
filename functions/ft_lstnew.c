@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 14:21:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/06/01 14:21:32 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/14 21:56:03 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,3 @@ t_env	*ft_lstnew(char *key, char *value)
 	new->next = NULL;
 	return (new);
 }
- 
-

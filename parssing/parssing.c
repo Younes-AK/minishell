@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 18:31:55 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/15 11:48:47 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ bool	parssing(t_prog *p)
 	else
 	{
 		write(2, "minishell: syntax error near unexpected quote \n", 48);
-		g_exit_status = 2;
+		g_exit_status = 258;
 		return (false);
 	}
 }
