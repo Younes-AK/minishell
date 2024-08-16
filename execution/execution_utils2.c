@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:59:52 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 21:04:34 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/16 10:23:36 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,7 @@
 
 bool	execute_command(char **redirs, char **cmds, t_prog *p)
 {
-	if (!check_redirects(redirs))
-	{
-		return (false);
-	}
+	check_redirects(redirs);
 	execute(cmds, p);
 	return (true);
 }

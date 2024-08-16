@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:04:53 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 18:29:12 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/15 18:47:37 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,21 @@ void	handle_child_process(t_exec_node *node, t_prog *p)
 	exit(0);
 }
 
-void wait_for_children(void)
+void	wait_for_children(void)
 {
-    int status;
-    void (*orig_sigint_handler)(int);
+	int	status;
+	void	(*orig_sigint_handler)(int);
 
-    orig_sigint_handler = signal(SIGINT, SIG_IGN);
-    while (wait(&status) > 0)
-    {
-        if (g_exit_status != 1)
-        {
-            if (WIFEXITED(status))
-                g_exit_status = WEXITSTATUS(status);
-        }
-    }
-	write(1, "\n", 1);
-    signal(SIGINT, orig_sigint_handler);
+	orig_sigint_handler = signal(SIGINT, SIG_IGN);
+	while (wait(&status) > 0)
+	{
+		if (g_exit_status != 1)
+		{
+			if (WIFEXITED(status))
+				g_exit_status = WEXITSTATUS(status);
+		}
+	}
+	signal(SIGINT, orig_sigint_handler);
 }
 
 void	fork_and_execute(t_exec_node *node, t_prog *p)

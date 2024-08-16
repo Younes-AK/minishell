@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 11:50:04 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/15 20:48:18 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ static void	execute_cmd(char **cmd, t_prog *p)
 	}
 	env_variables = convert_env_list(p->env_list);
 	execve(p->access_path, cmd, env_variables);
-	error_msg2(" : #command not found", cmd[0]);
+	error_msg2(" : command not found", cmd[0]);
 	free(p->access_path);
 	free_double_ptr(env_variables);
 }

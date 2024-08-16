@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 17:04:39 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/16 14:53:14 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,13 @@ typedef struct s_exec_list
 	t_exec_node	*tail;
 }	t_exec_list;
 
+
+typedef struct s_temp_files 
+{
+    char *filename;
+    struct s_temp_files *next;
+}	t_temp_files;
+
 typedef struct s_prog
 {
 	char		*r_line;
@@ -123,6 +130,8 @@ typedef struct s_prog
 	int			dot_count;
 	bool		has_non_dot_or_slash;
 	t_tokenze	*new_tok_list;
+	t_temp_files *temp_files;
+	char	*filename;
 }	t_prog;
 
 typedef struct s_lexer_state
@@ -185,10 +194,9 @@ void		ft_free_lists(t_prog *prog, char *state);
 // =================== start lexer part ==========================
 void		tokenize_word(int *len, char *line, t_prog *p, char *type);
 void		init_lexer_state(t_lexer_state *state, t_prog *p);
+// =================== end lexer part ===========================
 
-// =================== end lexer part ============================
-
-// =================== start expanding part ======================
+// =================== start expanding part =====================
 bool		expand(t_tokenze *list, t_env *env_list, t_prog *p);
 bool		is_env_var(char *content);
 char		*remove_qoutes(char *content, t_prog *p);
@@ -202,11 +210,12 @@ char		*extract_var_name(const char **start);
 bool		to_expand(char *content, t_token type);
 bool		should_expand(const char*command);
 char		*get_env_val(char *str, t_env *env_list);
+void		append_new_token_list(t_prog *p, char *content, int len, t_token type);
 bool		is_ambiguous(const char *filename);
-// =================== end expanding part ======================
+// =================== end expanding part =======================
 
-void		store_env(char **env, t_prog *p);
-void		store_secret_env(char **env, t_prog *p);
+bool		store_env(char **env, t_prog *p);
+bool		store_secret_env(char **env, t_prog *p);
 void		free_envirement(t_prog *p);
 void		ft_putstr_fd(char *s, int fd);
 void		ft_putendl_fd(char *s, int fd);
@@ -228,7 +237,7 @@ bool		is_special_char(char *str);
 void		split_val(char *arg, char **key, char **value);
 bool		contain_space(char *str);
 char		*ft_copy(char *src, size_t start, size_t end);
-// =================== end builtins part ======================
+// =================== end builtins part =========================
 
 // =================== start execution part ======================
 void		execution(t_prog *p, t_exec_list *list);
@@ -239,18 +248,19 @@ char		**convert_env_list(t_env *env_list);
 bool		execute_command(char **redirs, char **cmds, t_prog *p);
 void		exec_builtin_parent(char **cmd, char **redirs, t_prog *p);
 void		close_pipes(t_prog *p);
-// =================== start execution part ======================
-
 void		execute(char **cmd, t_prog *p);
 void		redirect_output(char *file, int flags);
 void		redirect_input(char *file, int flags);
-bool		check_redirects(char **redirs);
+void		check_redirects(char **redirs);
 char		*check_path(char **paths, char *cmd);
 bool		check_is_builtin(char **type, int *index);
 void		exec_builtins(char **cmd, t_prog *p);
 void		ft_heredoc(t_prog *p);
+void		unlink_temp_files(t_temp_files *temp_files_list);
+void		append_temp_file(t_temp_files **lst, t_temp_files *new);
+void		*add_temp_file(char *filename, t_prog *p);
 void		ft_sign(void);
 void		sig_here_doc(t_prog *p);
 void		free_envirement(t_prog *p);
-void		append_node11(t_prog *p, char *content, int len, t_token type);
+// =================== end execution part ======================
 #endif

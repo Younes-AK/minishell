@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:12:48 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 18:45:31 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/16 10:01:14 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ t_exec_list	*init_exec_list(t_prog *p)
 	{
 		free_envirement(p);
 		free_tok_list(p->list_tok);
+		free_tok_list(p->new_tok_list);
 		exit(EXIT_FAILURE);
 	}
 	list->head = NULL;
@@ -78,7 +79,7 @@ void	append_node(t_prog *p, char *content, int len, t_token type)
 	p->list_tok->size++;
 }
 
-void	append_node11(t_prog *p, char *content, int len, t_token type)
+void	append_new_token_list(t_prog *p, char *content, int len, t_token type)
 {
 	t_tok_node	*new_node;
 

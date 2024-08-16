@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 18:21:29 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 18:32:31 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/16 10:05:04 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	init_exec_node(t_exec_node *node, t_prog *p)
 		ft_free_lists(p, "exit");
 	}
 	node->redir = safe_allocation(sizeof(char *) * (p->nbr_redir + 1), 1);
-	if (!node->cmd)
+	if (!node->redir)
 	{
 		free (node);
 		free_double_ptr(node->cmd);

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 11:48:47 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/16 09:48:49 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,14 @@ int	count_new_str(char *line)
 	return (len);
 }
 
-void	add_spaces(t_prog *p, int len)
+bool	add_spaces(t_prog *p, int len)
 {
 	char	quote;
 
 	1 && (p->i = 0, p->j = 0, quote = 0);
 	p->cmd_line = safe_allocation(sizeof(char), len + 1);
 	if (!p->cmd_line)
-		ft_free_lists(p, "exit");
+		return (false);
 	while (p->tmp[p->i] && p->j < len)
 	{
 		if ((p->tmp[p->i] == '\'' || p->tmp[p->i] == '\"') && !quote)
@@ -94,6 +94,7 @@ void	add_spaces(t_prog *p, int len)
 		p->i++;
 	}
 	p->cmd_line[p->j] = '\0';
+	return (true);
 }
 
 char	*inject_spaces(char *input)
@@ -121,7 +122,8 @@ bool	parssing(t_prog *p)
 		if (!p->tmp)
 			ft_free_lists(p, "exit");
 		len = count_new_str(p->tmp);
-		add_spaces(p, len);
+		if (!add_spaces(p, len))
+			return (free(p->tmp), ft_free_lists(p, "exit"), false);
 		free(p->tmp);
 		return (true);
 	}

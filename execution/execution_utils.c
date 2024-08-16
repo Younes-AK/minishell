@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:59:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 15:21:28 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/16 10:21:49 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	redirect_input(char *file, int flags)
 	}
 }
 
-static bool	make_redirect(char *redirect, char *file)
+static void	make_redirect(char *redirect, char *file)
 {
 	if (!ft_strcmp(redirect, ">"))
 		redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
@@ -91,10 +91,9 @@ static bool	make_redirect(char *redirect, char *file)
 		redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
 	else if (!ft_strcmp(redirect, "<") || !ft_strcmp(redirect, "<<"))
 		redirect_input(file, O_RDONLY);
-	return (true);
 }
 
-bool	check_redirects(char **redirs)
+void	check_redirects(char **redirs)
 {
 	int	i;
 
@@ -103,11 +102,8 @@ bool	check_redirects(char **redirs)
 	{
 		if (redirs[i + 1])
 		{
-			if (make_redirect(redirs[i], redirs[i + 1]) == false)
-				return (false);
+			make_redirect(redirs[i], redirs[i + 1]);
 		}
 		i += 2;
-
 	}
-	return (true);
 }

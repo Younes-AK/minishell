@@ -6,12 +6,12 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/15 15:10:43 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/16 13:30:20 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS := -Wall -Werror -Wextra #-g -fsanitize=address
 NAME := minishell
 RM := rm -rf
 
@@ -74,6 +74,7 @@ MAND_SRC := main.c \
             execution/execution_utils.c \
             execution/execution_utils2.c \
             execution/here_doc.c \
+            execution/here_doc_utils.c \
             execution/signal.c 
 
 MAND_OBJ := $(patsubst %.c,$(OBJ_DIR)/%.o,$(MAND_SRC))

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 20:24:33 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/15 21:56:59 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ char	*append_value(char *res, const char *value, size_t *res_size)
 	size_t	new_res_size;
 	size_t	value_len;
 
-	res_len = strlen(res);
-	value_len = strlen(value);
+	res_len = ft_strlen(res);
+	value_len = ft_strlen(value);
 	new_res_size = res_len + value_len + 1;
 	if (new_res_size > *res_size)
 	{
@@ -103,10 +103,10 @@ char	*get_env_value(const char *var_name, t_env *env_list)
 	while (iter)
 	{
 		if (ft_strcmp(iter->key, var_name) == 0)
-			return (iter->value);
+			return (ft_strdup(iter->value));
 		iter = iter->next;
 	}
-	return ("");
+	return (ft_strdup(""));
 }
 
 char	*replace(char *str, t_env *env_list)
@@ -130,6 +130,7 @@ char	*replace(char *str, t_env *env_list)
 			var_value = get_env_value(var_name, env_list);
 			result = append_value(result, var_value, &result_size);
 			free(var_name);
+			free((char*) var_value);
 		}
 		else
 		{
