@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS := #-g -fsanitize=address -Wall -Werror -Wextra 
 NAME := minishell
 RM := rm -rf
 
@@ -63,6 +63,7 @@ MAND_SRC := main.c \
             expand/expand.c \
             expand/expand_utils.c \
             expand/expand_utils2.c \
+            expand/expand_utils3.c \
             builtins/echo.c  builtins/cd.c \
             builtins/ft_exit.c \
             builtins/builtins_utils.c \

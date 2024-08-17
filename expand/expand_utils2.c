@@ -12,45 +12,18 @@
 
 #include "../minishell.h"
 
-char	*replace(char *str, t_env *env_list)
-{
-	size_t		result_size;
-	char		*result;
-	const char	*start;
-	const char	*var_value;
-	char		*var_name;
-	char		quote_type;
 
-	result_size = ft_strlen(str) + 1;
-	result = safe_allocation(sizeof(char), result_size);
-	result[0] = '\0';
-	start = str;
-	quote_type = 0;
-	while (*start)
-	{
-		if (*start == '\'' || *start == '"')
-		{
-			if (quote_type == 0)
-				quote_type = *start;
-			else if (*start == quote_type)
-				quote_type = 0;
-		}
-		if (*start == '$' && *(start + 1) && !is_whait_spaces(*(start + 1))
-			&& *(start + 1) != '"' && *(start + 1) != '\'' && quote_type != '\'')
-		{
-			var_name = extract_var_name(&start);
-			var_value = get_env_value(var_name, env_list);
-			result = append_value(result, var_value, &result_size);
-			free(var_name);
-			free((char *) var_value);
-		}
-		else
-		{
-			result = append_char(result, *start, &result_size);
-			start++;
-		}
-	}
-	return (result);
+char    *replace(char *str, t_env *env_list)
+{
+    size_t  result_size;
+    char    *result;
+
+    result_size = ft_strlen(str) + 1;
+    result = safe_allocation(sizeof(char), result_size);
+    if (!result)
+        return (NULL);
+    result[0] = '\0';
+    return (process_string(str, env_list, result, &result_size));
 }
 
 char	*get_env_val(char *str, t_env *env_list)

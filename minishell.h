@@ -213,6 +213,10 @@ bool		should_expand(const char*command);
 char		*get_env_val(char *str, t_env *env_list);
 void		append_new_token_list(t_prog *p, char *content, \
 			int len, t_token type);
+char *handle_variable(const char **start, t_env *env_list,
+                char *result, size_t *result_size);
+char *process_string(const char *start, t_env *env_list,
+                            char *result, size_t *result_size);
 bool		is_ambiguous(const char *filename);
 // =================== end expanding part =======================
 
