@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 15:04:22 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 18:00:44 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,5 @@ int	main(int ac, char **av, char **envp)
 
 //  "$jkhkhhkk"
 // echo '$USER'$USER
-//exit 42 world 
-// cd $PWD hi 
+//exit 42 world : segfault
+// exit hello : incorrect exit status

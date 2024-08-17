@@ -6,11 +6,13 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:59:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/16 10:21:49 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 18:15:04 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern int	g_exit_status;
 
 char	**convert_env_list(t_env *env_list)
 {
