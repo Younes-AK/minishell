@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/16 14:59:10 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:31:46 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ bool	here_doc_input(t_exec_node *node, t_prog *p, int j)
 	int		i;
 	int		fd;
 	bool	ret;
-	
+
 	i = 0;
 	p->filename = generate_name(j, p);
 	ret = false;
@@ -97,24 +97,25 @@ bool	here_doc_input(t_exec_node *node, t_prog *p, int j)
 
 void	ft_heredoc(t_prog *p)
 {
-	t_exec_node	*node;
-	int			i;
+	t_exec_node		*node;
+	t_temp_files	*tmp_file;
 
-	i = 0;
+	p->i = 0;
 	node = p->exec_list->head;
 	p->temp_files = NULL;
-	t_temp_files *tmp_file;
 	while (node)
 	{
 		if (node->redir)
-			if (here_doc_input(node, p, i))
+		{
+			if (here_doc_input(node, p, p->i))
 			{
 				tmp_file = add_temp_file(p->filename, p);
 				append_temp_file(&p->temp_files, tmp_file);
 			}
+		}
 		free(p->filename);
 		node = node->next;
-		i++;
+		p->i++;
 	}
 	if (p->to_restart_stdin == 1)
 	{

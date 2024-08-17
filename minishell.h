@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/16 14:53:14 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:18:36 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,7 @@ void		*safe_allocation(size_t size, size_t lenght);
 bool		parssing(t_prog *p);
 int			count_orignal_space(char *input, int *index);
 char		*process_spaces(char *input, int *i, int j);
+void		process_characters(t_prog *p, int len, char *quote);
 void		lexer(t_prog *p);
 void		free_tok_list(t_tokenze *list);
 bool		parser(t_prog *p);
@@ -210,7 +211,8 @@ char		*extract_var_name(const char **start);
 bool		to_expand(char *content, t_token type);
 bool		should_expand(const char*command);
 char		*get_env_val(char *str, t_env *env_list);
-void		append_new_token_list(t_prog *p, char *content, int len, t_token type);
+void		append_new_token_list(t_prog *p, char *content, \
+			int len, t_token type);
 bool		is_ambiguous(const char *filename);
 // =================== end expanding part =======================
 

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:35:44 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/16 09:48:49 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:21:20 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,30 +34,31 @@ bool	check_quotes(char *p)
 	return (!in_s_quote && !in_d_quote);
 }
 
-int	count_new_str(char *line)
+int	count_new_str(char *line, t_prog *p)
 {
-	int		i;
 	int		len;
 	char	quote;
 
-	1 && (i = 0, len = 0, quote = 0);
-	while (line[i] && is_whait_spaces(line[i]))
-		i++;
-	while (line[i])
+	1 && (p->i = 0, len = 0, quote = 0);
+	while (line[p->i] && is_whait_spaces(line[p->i]))
+		p->i++;
+	while (line[p->i])
 	{
-		if ((line[i] == '\'' || line[i] == '\"') && !quote)
-			quote = line[i];
-		else if (line[i] == quote)
+		if ((line[p->i] == '\'' || line[p->i] == '\"') && !quote)
+			quote = line[p->i];
+		else if (line[p->i] == quote)
 			quote = 0;
-		if (!quote && is_operator(line[i]))
+		if (!quote && is_operator(line[p->i]))
 		{
-			if (i > 0 && !is_whait_spaces(line[i - 1]) && !is_operator(line[i - 1]))
+			if (p->i > 0 && !is_whait_spaces(line[p->i - 1])
+				&& !is_operator(line[p->i - 1]))
 				len++;
-			if (!is_whait_spaces(line[i + 1]) && !is_operator(line[i + 1]) && line[i + 1])
+			if (!is_whait_spaces(line[p->i + 1])
+				&& !is_operator(line[p->i + 1]) && line[p->i + 1])
 				len++;
 		}
 		len++;
-		i++;
+		p->i++;
 	}
 	return (len);
 }
@@ -66,34 +67,13 @@ bool	add_spaces(t_prog *p, int len)
 {
 	char	quote;
 
-	1 && (p->i = 0, p->j = 0, quote = 0);
+	p->i = 0;
+	p->j = 0;
+	quote = 0;
 	p->cmd_line = safe_allocation(sizeof(char), len + 1);
 	if (!p->cmd_line)
 		return (false);
-	while (p->tmp[p->i] && p->j < len)
-	{
-		if ((p->tmp[p->i] == '\'' || p->tmp[p->i] == '\"') && !quote)
-			quote = p->tmp[p->i];
-		else if (p->tmp[p->i] == quote)
-			quote = 0;
-		if (!quote && is_operator(p->tmp[p->i]))
-		{
-			if (p->i != 0 && !is_whait_spaces(p->tmp[p->i - 1]) && !is_operator(p->tmp[p->i - 1]))
-				p->cmd_line[p->j++] = ' ';
-			p->cmd_line[p->j++] = p->tmp[p->i];
-			if (!is_whait_spaces(p->tmp[p->i + 1]) && !is_operator(p->tmp[p->i + 1]) && p->tmp[p->i + 1])
-				p->cmd_line[p->j++] = ' ';
-		}
-		else
-		{
-			if (!quote && is_whait_spaces(p->tmp[p->i]))
-				p->cmd_line[p->j++] = ' ';
-			else
-				p->cmd_line[p->j++] = p->tmp[p->i];
-		}
-		p->i++;
-	}
-	p->cmd_line[p->j] = '\0';
+	process_characters(p, len, &quote);
 	return (true);
 }
 
@@ -121,7 +101,7 @@ bool	parssing(t_prog *p)
 		p->tmp = inject_spaces(p->r_line);
 		if (!p->tmp)
 			ft_free_lists(p, "exit");
-		len = count_new_str(p->tmp);
+		len = count_new_str(p->tmp, p);
 		if (!add_spaces(p, len))
 			return (free(p->tmp), ft_free_lists(p, "exit"), false);
 		free(p->tmp);

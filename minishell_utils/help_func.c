@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 12:12:48 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/16 10:01:14 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:27:04 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,15 +101,4 @@ void	append_new_token_list(t_prog *p, char *content, int len, t_token type)
 		p->new_tok_list->head = new_node;
 	p->new_tok_list->tail = new_node;
 	p->new_tok_list->size++;
-}
-
-void	append_exec(t_exec_list *list, t_exec_node *new_node)
-{
-	if (list->tail)
-		list->tail->next = new_node;
-	else
-	{
-		list->head = new_node;
-	}
-	list->tail = new_node;
 }

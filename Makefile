@@ -6,12 +6,12 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/16 13:30:20 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/17 11:28:48 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra #-g -fsanitize=address
+CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
 NAME := minishell
 RM := rm -rf
 
@@ -51,14 +51,15 @@ MAND_SRC := main.c \
             functions/ft_trim.c \
             minishell_utils/errors_free.c \
             minishell_utils/help_func.c \
+            minishell_utils/help_func2.c \
+            minishell_utils/help_func3.c \
+            minishell_utils/help_func4.c \
             parssing/parssing.c \
             parssing/parssing_utils.c \
             parssing/create_exec_list.c \
             parssing/lexer.c  \
             parssing/lexer_utils.c  \
             parssing/parser.c \
-            minishell_utils/help_func2.c \
-            minishell_utils/help_func3.c \
             expand/expand.c \
             expand/expand_utils.c \
             expand/expand_utils2.c \
