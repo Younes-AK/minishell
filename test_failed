@@ -1,0 +1,14 @@
+export a="l's"
+run : $a
+	expected: l's: command not found
+	output: ls
+
+run minishell undeder minishell then CTR_D
+	run echo $?
+	expected: 0
+	outupe: 1
+
+run: echo "$\?"
+  expected: $\?
+  output: \?
+

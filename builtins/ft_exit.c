@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:34:48 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 21:43:33 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 02:21:59 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ static long int	ft_atoi(char *nb)
 	}
 	while (nbr[i])
 	{
+		printf("i: %zu\n", i);
 		flag = false;
 		if (ft_isdigit(nbr[i]))
 			result = result * 10 + nbr[i] - '0';

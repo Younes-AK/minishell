@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
+#    By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/15 15:10:43 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/18 02:22:47 by oel-asri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS := -Wall -Werror -Wextra -g #-fsanitize=address
 NAME := minishell
 RM := rm -rf
 
@@ -78,8 +78,8 @@ MAND_SRC := main.c \
 
 MAND_OBJ := $(patsubst %.c,$(OBJ_DIR)/%.o,$(MAND_SRC))
 
-    READLINE_L = ~/.brew/opt/readline/lib
-    READLINE_I = ~/.brew/opt/readline/include
+    READLINE_L = /Users/oel-asri/homebrew/lib
+    READLINE_I = /Users/oel-asri/homebrew/include
 
 .PHONY: all clean fclean re
 
