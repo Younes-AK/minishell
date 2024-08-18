@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 11:57:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 18:43:15 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:26:15 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,22 +79,4 @@ void	free_env_list(t_env *env_list)
 		free(current);
 		current = next;
 	}
-}
-
-void free_tok_list(t_tokenze *list) 
-{
-	t_tok_node	*curr;
-	t_tok_node	*next;
-
-	if (!list)
-		return ;
-	curr = list->head;
-	while (curr)
-	{
-		next = curr->next;
-		free(curr->content);
-		free(curr);
-		curr = next;
-	}
-	free(list);
 }

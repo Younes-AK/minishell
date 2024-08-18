@@ -6,37 +6,24 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:25:23 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 20:38:02 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:49:04 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*extract_var_name(const char **start)
-{
-	const char	*end;
-	char		*var_name;
-	size_t		var_size;
 
-	end = *start + 1;
-	if (*end == '$' || *end == '@' || *end == '*' || *end == '#'
-		|| *end == '?' || *end == '-' || *end == '!' || ft_isdigit(*end))
-	{
-		var_name = safe_allocation(sizeof(char), 3);
-		var_name[0] = '$';
-		var_name[1] = *end;
-		var_name[2] = '\0';
-		*start = end + 1;
-		return (var_name);
-	}
-	while (*end && (ft_isalpha(*end) || *end == '_'))
-		end++;
-	var_size = end - *start - 1;
-	var_name = safe_allocation(sizeof(char), var_size + 1);
-	ft_strncpy(var_name, *start + 1, var_size);
-	var_name[var_size] = '\0';
-	*start = end;
-	return (var_name);
+char    *replace(char *str, t_env *env_list)
+{
+    size_t  result_size;
+    char    *result;
+
+    result_size = ft_strlen(str) + 1;
+    result = safe_allocation(sizeof(char), result_size);
+    if (!result)
+        return (NULL);
+    result[0] = '\0';
+    return (process_string(str, env_list, result, &result_size));
 }
 
 char	*get_env_val(char *str, t_env *env_list)

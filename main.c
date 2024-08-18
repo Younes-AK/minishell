@@ -6,7 +6,7 @@
 /*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/16 00:30:23 by oel-asri         ###   ########.fr       */
+/*   Updated: 2024/08/18 02:33:15 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,18 @@ void	loop(t_prog *prog)
 		{
 			lexer(prog);
 			if (parser(prog))
+			{
 				execution(prog, prog->exec_list);
+				unlink_temp_files(prog->temp_files);
+			}
 		}
 	}
 }
 
 int	main(int ac, char **av, char **envp)
 {
-	t_prog	prog;
+	t_prog			prog;
+	struct termios	termios_p;
 
 	rl_catch_signals = 0;
 	(void)ac;
@@ -47,7 +51,6 @@ int	main(int ac, char **av, char **envp)
 	store_secret_env(envp, &prog);
 	g_exit_status = 0;
 	prog.original_stdin = dup(STDIN_FILENO);
-	struct termios termios_p;
 	tcgetattr(STDIN_FILENO, &termios_p);
 	while (true)
 	{
@@ -66,19 +69,6 @@ int	main(int ac, char **av, char **envp)
 }
 
 //  "$jkhkhhkk"
-
-// exportr x="a  b"
-// export x="a  b"$x
-// x="export y='cat     main.c'"
-
-// export a=
-// env
-
-// bash-3.2$ ./minishell
-// [minishell]~> cd -
-// minishell: cd: OLDPWD not set
-// [minishell]~> pwd
-// /Users/yakazdao/Desktop/minishell
-// [minishell]~> cd ..
-
-// echo $? : leaks
+// echo '$USER'$USER
+//exit 42 world 
+// cd $PWD hi 

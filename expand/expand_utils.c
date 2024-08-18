@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 20:24:33 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 12:39:12 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ char	*append_value(char *res, const char *value, size_t *res_size)
 	size_t	new_res_size;
 	size_t	value_len;
 
-	res_len = strlen(res);
-	value_len = strlen(value);
+	res_len = ft_strlen(res);
+	value_len = ft_strlen(value);
 	new_res_size = res_len + value_len + 1;
 	if (new_res_size > *res_size)
 	{
@@ -103,39 +103,35 @@ char	*get_env_value(const char *var_name, t_env *env_list)
 	while (iter)
 	{
 		if (ft_strcmp(iter->key, var_name) == 0)
-			return (iter->value);
+			return (ft_strdup(iter->value));
 		iter = iter->next;
 	}
-	return ("");
+	return (ft_strdup(""));
 }
 
-char	*replace(char *str, t_env *env_list)
+char	*extract_var_name(const char **start)
 {
-	size_t		result_size;
-	char		*result;
-	const char	*start;
-	const char	*var_value;
+	const char	*end;
 	char		*var_name;
+	size_t		var_size;
 
-	result_size = ft_strlen(str) + 1;
-	result = safe_allocation(sizeof(char), result_size);
-	result[0] = '\0';
-	start = str;
-	while (*start)
+	end = *start + 1;
+	if (*end == '$' || *end == '@' || *end == '*' || *end == '#'
+		|| *end == '?' || *end == '-' || *end == '!' || ft_isdigit(*end))
 	{
-		if (*start == '$' && *(start + 1) && !is_whait_spaces(*(start + 1))
-			&& *(start + 1) != '"' && *(start + 1) != '\'')
-		{
-			var_name = extract_var_name(&start);
-			var_value = get_env_value(var_name, env_list);
-			result = append_value(result, var_value, &result_size);
-			free(var_name);
-		}
-		else
-		{
-			result = append_char(result, *start, &result_size);
-			start++;
-		}
+		var_name = safe_allocation(sizeof(char), 3);
+		var_name[0] = '$';
+		var_name[1] = *end;
+		var_name[2] = '\0';
+		*start = end + 1;
+		return (var_name);
 	}
-	return (result);
+	while (*end && (ft_isalpha(*end) || *end == '_'))
+		end++;
+	var_size = end - *start - 1;
+	var_name = safe_allocation(sizeof(char), var_size + 1);
+	ft_strncpy(var_name, *start + 1, var_size);
+	var_name[var_size] = '\0';
+	*start = end;
+	return (var_name);
 }

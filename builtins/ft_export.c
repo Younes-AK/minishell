@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:37:01 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 15:22:18 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 18:16:58 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	add_to_export(char *key, char *value, t_env **env)
 {
 	t_env	*tmp;
 	char	*out_val;
-	t_env	*node;
 
 	tmp = NULL;
 	if (check_var_exist(key, env))
@@ -75,13 +74,7 @@ void	add_to_export(char *key, char *value, t_env **env)
 		}
 	}
 	else
-	{
-		node = malloc(sizeof(t_env));
-		node->key = ft_strdup(key);
-		node->value = ft_strdup(out_val);
-		node->next = NULL;
-		ft_lstadd_back(env, node);
-	}
+		__ft_add(env, key, out_val);
 	free(out_val);
 }
 
@@ -107,25 +100,10 @@ void	add_to_env(char *key, t_env **env_export, t_env **env)
 	}
 	else if (tmp->value)
 	{
-		node = malloc(sizeof(t_env));
-		node->key = ft_strdup(key);
-		node->value = NULL;
-		node->next = NULL;
 		if (tmp->value[0] != '\0')
-			node->value = ft_strdup(tmp->value);
-		ft_lstadd_back(env, node);
-	}
-}
-
-void	print_envi(t_env *env)
-{
-	while (env)
-	{
-		if (env->value)
-			printf("declare -x %s=\"%s\"\n", env->key, env->value);
+			__ft_add(env, key, ft_strdup(tmp->value));
 		else
-			printf("declare -x %s\n", env->key);
-		env = env->next;
+			__ft_add(env, key, NULL);
 	}
 }
 

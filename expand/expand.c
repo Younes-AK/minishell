@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 09:05:28 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:34:05 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	append_expanded_tokens(t_tok_node *iter, char **tokens, t_prog *p)
 	token_start = tokens;
 	while (*tokens)
 	{
-		append_node11(p, *tokens, ft_strlen(*tokens), iter->type);
+		append_new_token_list(p, *tokens, ft_strlen(*tokens), iter->type);
 		tokens++;
 	}
 	free_double_ptr(token_start);
@@ -52,7 +52,8 @@ static bool	handle_ambiguous(t_tok_node *prev, char *expanded_var, t_prog *p)
 	return (true);
 }
 
-static bool	process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t_prog *p)
+static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
+	t_env *env_list, t_prog *p)
 {
 	if (is_env_var(iter->content))
 		p->is_env_cmd = true;
@@ -69,10 +70,12 @@ static bool	process_token(t_tok_node *iter, t_tok_node *prev, t_env *env_list, t
 		p->expanded_var = remove_qoutes(iter->content, p);
 		free(iter->content);
 		iter->content = p->expanded_var;
-		append_node11(p, iter->content, ft_strlen(iter->content), iter->type);
+		append_new_token_list(p, iter->content, \
+			ft_strlen(iter->content), iter->type);
 	}
 	else
-		append_node11(p, iter->content, ft_strlen(iter->content), iter->type);
+		append_new_token_list(p, iter->content, \
+			ft_strlen(iter->content), iter->type);
 	return (p->is_valid);
 }
 

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 11:42:24 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:31:46 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #define TMP_FILE	"/tmp/minihell_temporary_file"
 
-static void	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
+static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 {
 	char	*input;
 	char	*delemitre;
@@ -29,22 +29,17 @@ static void	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-		{
-			close(tmp_fd);
-			break ;
-		}
+			return (close(tmp_fd), true);
 		if (ft_strcmp(input, delemitre) == 0)
 		{
-			free(delemitre);
-			close(tmp_fd);
-			free(input);
-			break ;
+			return (free(delemitre), close(tmp_fd), free(input), true);
 		}
 		if (to_expand && is_env_var(input))
 			input = replace(input, p->env_list);
 		ft_putendl_fd(input, tmp_fd);
 		free(input);
 	}
+	return (true);
 }
 
 static int	create_temporary_file(char *filename)
@@ -53,56 +48,74 @@ static int	create_temporary_file(char *filename)
 
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (fd == -1)
+	{
 		ft_putstr_fd("Error creating temporary file\n", 2);
+		return (-1);
+	}
 	return (fd);
 }
 
-char	*generate_name(int i)
+char	*generate_name(int i, t_prog *p)
 {
 	char	*ret;
 	char	*ka_pa;
 
 	ka_pa = ft_itoa(i);
 	ret = ft_strjoin(TMP_FILE, ka_pa);
+	if (!ret)
+		ft_free_lists(p, "exit");
 	free(ka_pa);
 	return (ret);
 }
 
-void	here_doc_input(t_exec_node *node, t_prog *p, int j)
+bool	here_doc_input(t_exec_node *node, t_prog *p, int j)
 {
 	int		i;
 	int		fd;
-	char	*filename;
+	bool	ret;
 
 	i = 0;
+	p->filename = generate_name(j, p);
+	ret = false;
 	while (node->redir[i])
 	{
 		if (!ft_strcmp(node->redir[i], "<<"))
 		{
-			filename = generate_name(j);
-			fd = create_temporary_file(filename);
+			fd = create_temporary_file(p->filename);
+			if (fd < 0)
+				return (false);
 			get_and_write_input(fd, node->redir[i + 1], p);
 			free(node->redir[i + 1]);
-			node->redir[i + 1] = filename;
+			node->redir[i + 1] = ft_strdup(p->filename);
 			close(fd);
+			ret = true;
 		}
 		i += 2;
 	}
+	return (ret);
 }
 
 void	ft_heredoc(t_prog *p)
 {
-	t_exec_node	*node;
-	int			i;
+	t_exec_node		*node;
+	t_temp_files	*tmp_file;
 
-	i = 0;
+	p->i = 0;
 	node = p->exec_list->head;
+	p->temp_files = NULL;
 	while (node)
 	{
 		if (node->redir)
-			here_doc_input(node, p, i);
+		{
+			if (here_doc_input(node, p, p->i))
+			{
+				tmp_file = add_temp_file(p->filename, p);
+				append_temp_file(&p->temp_files, tmp_file);
+			}
+		}
+		free(p->filename);
 		node = node->next;
-		i++;
+		p->i++;
 	}
 	if (p->to_restart_stdin == 1)
 	{

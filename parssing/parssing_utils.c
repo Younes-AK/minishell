@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:19:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 17:19:51 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/17 11:16:09 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,32 @@ char	*process_spaces(char *input, int *i, int j)
 		j--;
 	ret[j] = '\0';
 	return (ret);
+}
+
+void	process_characters(t_prog *p, int len, char *quote)
+{
+	while (p->tmp[p->i] && p->j < len)
+	{
+		if ((p->tmp[p->i] == '\'' || p->tmp[p->i] == '\"') && !*quote)
+			*quote = p->tmp[p->i];
+		else if (p->tmp[p->i] == *quote)
+			*quote = 0;
+		if (!*quote && is_operator(p->tmp[p->i]))
+		{
+			if (p->i != 0 && !is_whait_spaces(p->tmp[p->i - 1])
+				&& !is_operator(p->tmp[p->i - 1]))
+				p->cmd_line[p->j++] = ' ';
+			p->cmd_line[p->j++] = p->tmp[p->i];
+			if (!is_whait_spaces(p->tmp[p->i + 1])
+				&& !is_operator(p->tmp[p->i + 1]) && p->tmp[p->i + 1])
+				p->cmd_line[p->j++] = ' ';
+		}
+		else
+			p->cmd_line[p->j++] = (!*quote && is_whait_spaces(p->tmp[p->i]))
+				? ' ' : p->tmp[p->i];
+		p->i++;
+	}
+	p->cmd_line[p->j] = '\0';
 }
 
 void	free_envirement(t_prog	*p)

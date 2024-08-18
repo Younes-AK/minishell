@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:21:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 19:18:05 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/16 09:39:05 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	get_args_nbr(char **args)
 	return (i);
 }
 
-void	store_env(char **env, t_prog *p)
+bool	store_env(char **env, t_prog *p)
 {
 	char	**tmp;
 	t_env	*node;
@@ -38,18 +38,18 @@ void	store_env(char **env, t_prog *p)
 			exit(EXIT_FAILURE);
 		str = ft_strdup(tmp[0]);
 		if (!str)
-		{
-			free_double_ptr(tmp);
-			exit(EXIT_FAILURE);
-		}
-		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
+			return (free_double_ptr(tmp), exit(EXIT_FAILURE), false);
+		node = ft_lstnew(str, ft_strdup(strchr(env[i], '=') + 1));
+		if (!node)
+			return (free(str), free_double_ptr(tmp), exit(EXIT_FAILURE), false);
 		ft_lstadd_back(&p->env_list, node);
 		free_double_ptr(tmp);
 		i++;
 	}
+	return (true);
 }
 
-void	store_secret_env(char **env, t_prog *p)
+bool	store_secret_env(char **env, t_prog *p)
 {
 	char	**tmp;
 	t_env	*node;
@@ -62,18 +62,20 @@ void	store_secret_env(char **env, t_prog *p)
 	{
 		tmp = ft_split(env[i], '=', p);
 		if (!tmp)
-			exit(EXIT_FAILURE);
+			return (free_env_list(p->env_list), exit(EXIT_FAILURE), false);
 		str = ft_strdup(tmp[0]);
 		if (!str)
-		{
-			free_double_ptr(tmp);
-			exit(EXIT_FAILURE);
-		}
-		node = ft_lstnew(str, strdup(strchr(env[i], '=') + 1));
+			return (free_env_list(p->env_list) \
+				, free_double_ptr(tmp), exit(EXIT_FAILURE), false);
+		node = ft_lstnew(str, ft_strdup(strchr(env[i], '=') + 1));
+		if (!node)
+			return (free_env_list(p->env_list), free(str) \
+				, free_double_ptr(tmp), exit(EXIT_FAILURE), false);
 		ft_lstadd_back(&p->secret_env, node);
 		free_double_ptr(tmp);
 		i++;
 	}
+	return (true);
 }
 
 bool	is_env_var(char *content)
