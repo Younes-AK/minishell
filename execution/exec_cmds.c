@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 18:09:44 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:59:51 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,59 +51,53 @@ char	*get_path(t_env *env_list, char *key)
 	return (NULL);
 }
 
-bool	check_dir(const char *content, t_prog *p)
+static int	check_command_status(const char *cmd)
 {
-	p->has_non_dot_or_slash = false;
-	1 && (p->i = 0, p->dot_count = 0);
-	if (strlen(content) == 0)
-		return (false);
-	while (p->i < (int)strlen(content))
+	struct stat	st;
+
+	if (is_all_slashes(cmd))
+		return (1);
+	if (stat(cmd, &st) == 0)
 	{
-		if (content[p->i] == '.')
-		{
-			if (p->dot_count < 2)
-				p->dot_count++;
-		}
-		else if (content[p->i] != '/' && (p->has_non_dot_or_slash = true))
-			break ;
-		else if (p->dot_count > 0)
-			break ;
-		p->i++;
+		if (S_ISDIR(st.st_mode))
+			return (1); // Is a directory
+		else if (st.st_mode & S_IXUSR)
+			return (0); // Is executable
+		else
+			return (2); // Exists but not executable
 	}
-	if (p->has_non_dot_or_slash)
-		return (false);
-	if (p->dot_count == 0 || p->dot_count <= 2)
-		return (true);
-	return (false);
+	else if (errno == ENOENT)
+		return (3); // Does not exist
+	else
+		return (4); // Other error
 }
 
 static void	execute_cmd(char **cmd, t_prog *p)
 {
-	char	**env_variables;
-
 	if (!cmd || !*cmd)
 		return ;
-	if (!ft_strcmp(*cmd, "."))
+	p->cmd_status = check_command_status(cmd[0]);
+	if (p->cmd_status == 1)
+		error_msg1(": is a directory", cmd[0], 126);
+	else if (p->cmd_status == 2)
+		error_msg1(": Permission denied", cmd[0], 126);
+	else if (p->cmd_status == 0)
+		p->access_path = ft_strdup(cmd[0]);
+	else if (p->cmd_status == 3)
 	{
-		error_msg2(" : filename argument required", cmd[0]);
-		exit(2);
+		if (ft_strchr(cmd[0], '/'))
+			error_msg1(": No such file or directory", cmd[0], 127);
+		p->access_path = check_path(p->all_paths, cmd[0]);
+		if (!p->access_path)
+			error_msg1(": command not found", cmd[0], 127);
 	}
-	p->access_path = check_path(p->all_paths, cmd[0]);
-	if (!p->access_path || !ft_strcmp(*cmd, ".."))
-	{
-		error_msg2(" : command not found", cmd[0]);
-		exit(127);
-	}
-	if (check_dir(*cmd, p) && ft_strcmp(*cmd, "./minishell"))
-	{
-		error_msg2(" : Is a directory", cmd[0]);
-		exit(126);
-	}
-	env_variables = convert_env_list(p->env_list);
-	execve(p->access_path, cmd, env_variables);
-	error_msg2(" : command not found", cmd[0]);
+	else
+		error_msg1(": Error accessing file", cmd[0], 126);
+	p->env_variables = convert_env_list(p->env_list, p);
+	execve(p->access_path, cmd, p->env_variables);
 	free(p->access_path);
-	free_double_ptr(env_variables);
+	free_double_ptr(p->env_variables);
+	error_msg1(": execve failed", cmd[0], 126);
 }
 
 void	execute(char **cmd, t_prog *p)

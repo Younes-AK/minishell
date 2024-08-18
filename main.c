@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 18:00:44 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:48:55 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void	loop(t_prog *prog)
 int	main(int ac, char **av, char **envp)
 {
 	t_prog			prog;
-	struct termios	termios_p;
 
 	rl_catch_signals = 0;
 	(void)ac;
@@ -51,7 +50,7 @@ int	main(int ac, char **av, char **envp)
 	store_secret_env(envp, &prog);
 	g_exit_status = 0;
 	prog.original_stdin = dup(STDIN_FILENO);
-	tcgetattr(STDIN_FILENO, &termios_p);
+	tcgetattr(STDIN_FILENO, &g_termios_p);
 	while (true)
 	{
 		prog.expanded_var = NULL;
@@ -64,11 +63,6 @@ int	main(int ac, char **av, char **envp)
 		loop(&prog);
 		ft_free_lists(&prog, "free");
 		free(prog.r_line);
-		tcsetattr(1, TCSANOW, &termios_p);
+		tcsetattr(STDIN_FILENO, TCSANOW, &g_termios_p);
 	}
 }
-
-//  "$jkhkhhkk"
-// echo '$USER'$USER
-//exit 42 world : segfault
-// exit hello : incorrect exit status

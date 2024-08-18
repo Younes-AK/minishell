@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 11:18:36 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:48:06 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,17 @@
 # include <limits.h>
 # include <string.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <fcntl.h>
 # include <signal.h>
-#include <termios.h>
+# include <termios.h>
 
 # define BUFF_SIZE 1024
 # define PROMPT "\033[34m[minishell]~> \033[0m"
 # define ERROR -1
 # define SUCCESS 0
+
+struct termios	g_termios_p;
 
 typedef enum e_token
 {
@@ -82,11 +85,10 @@ typedef struct s_exec_list
 	t_exec_node	*tail;
 }	t_exec_list;
 
-
-typedef struct s_temp_files 
+typedef struct s_temp_files
 {
-    char *filename;
-    struct s_temp_files *next;
+	char	*filename;
+	struct s_temp_files	*next;
 }	t_temp_files;
 
 typedef struct s_prog
@@ -125,13 +127,14 @@ typedef struct s_prog
 	bool		is_first;
 	bool		is_last;
 	char		**env_variables;
+	int			cmd_status;
 	char		*expanded_var;
 	bool		is_valid;
 	int			dot_count;
 	bool		has_non_dot_or_slash;
 	t_tokenze	*new_tok_list;
-	t_temp_files *temp_files;
-	char	*filename;
+	t_temp_files	*temp_files;
+	char		*filename;
 }	t_prog;
 
 typedef struct s_lexer_state
@@ -167,6 +170,7 @@ int			ft_strncmp(const char *s1, const char *s2, size_t n);
 char		*ft_itoa(int n);
 char		*ft_trim(char *str);
 void		error_msg(char *msg);
+void		error_msg1(char *msg, char *arg, int exit_status);
 void		error_msg2(char *msg, char *arg);
 bool		is_whait_spaces(char c);
 bool		is_str_spaces(char *line);
@@ -239,6 +243,10 @@ bool		is_special_char(char *str);
 void		split_val(char *arg, char **key, char **value);
 bool		contain_space(char *str);
 char		*ft_copy(char *src, size_t start, size_t end);
+char		*create_env_entry(t_env *iter);
+long int	modulo(long int nbr);
+void		__ft_add(t_env **env, char *key, char *value);
+void		print_envi(t_env *env);
 // =================== end builtins part =========================
 
 // =================== start execution part ======================
@@ -246,7 +254,7 @@ void		execution(t_prog *p, t_exec_list *list);
 char		*ft_strjoin2(char *s1, char *s2);
 int			ft_found_newline(char *str);
 bool		exec_cmds(t_prog *path, t_exec_list *exec_list, t_env *env_list);
-char		**convert_env_list(t_env *env_list);
+char		**convert_env_list(t_env *env_list, t_prog *p);
 bool		execute_command(char **redirs, char **cmds, t_prog *p);
 void		exec_builtin_parent(char **cmd, char **redirs, t_prog *p);
 void		close_pipes(t_prog *p);
@@ -263,6 +271,7 @@ void		append_temp_file(t_temp_files **lst, t_temp_files *new);
 void		*add_temp_file(char *filename, t_prog *p);
 void		ft_sign(void);
 void		sig_here_doc(t_prog *p);
+int			is_all_slashes(const char *cmd);
 void		free_envirement(t_prog *p);
 // =================== end execution part ======================
 #endif

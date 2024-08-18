@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:59:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 18:15:04 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:57:57 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,37 +14,29 @@
 
 extern int	g_exit_status;
 
-char	**convert_env_list(t_env *env_list)
+char	**convert_env_list(t_env *env_list, t_prog *p)
 {
-	size_t	env_size;
-	char	**env_array;
+	int		env_size;
 	t_env	*iter;
-	size_t	i;
-	size_t	key_len;
-	size_t	value_len;
+	char	**env_array;
 
 	env_size = ft_lstsize(env_list);
 	env_array = malloc((env_size + 1) * sizeof(char *));
+	iter = env_list;
+	p->i = 0;
 	if (!env_array)
 		return (NULL);
-	iter = env_list;
-	i = 0;
-	while (iter && i < env_size)
+	while (iter && p->i < env_size)
 	{
-		key_len = ft_strlen(iter->key);
-		value_len = ft_strlen(iter->value);
-		env_array[i] = malloc(key_len + value_len + 2);
-		if (!env_array[i])
+		env_array[p->i] = create_env_entry(iter);
+		if (!env_array[p->i])
 		{
-			while (i > 0)
-				free(env_array[--i]);
+			while (p->i > 0)
+				free(env_array[--p->i]);
 			free(env_array);
 			return (NULL);
 		}
-		ft_strcpy(env_array[i], iter->key);
-		env_array[i][key_len] = '=';
-		ft_strcpy(env_array[i] + key_len + 1, iter->value);
-		i++;
+		p->i++;
 		iter = iter->next;
 	}
 	env_array[env_size] = NULL;

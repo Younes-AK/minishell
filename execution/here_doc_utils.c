@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 11:22:22 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 11:24:11 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:59:39 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,32 @@ void	append_temp_file(t_temp_files **lst, t_temp_files *new)
 	while (list->next != NULL)
 		list = list->next;
 	list->next = new;
+}
+
+char	*create_env_entry(t_env *iter)
+{
+	size_t	key_len;
+	size_t	value_len;
+	char	*entry;
+
+	key_len = ft_strlen(iter->key);
+	value_len = ft_strlen(iter->value);
+	entry = malloc(key_len + value_len + 2);
+	if (!entry)
+		return (NULL);
+	ft_strcpy(entry, iter->key);
+	entry[key_len] = '=';
+	ft_strcpy(entry + key_len + 1, iter->value);
+	return (entry);
+}
+
+int	is_all_slashes(const char *cmd)
+{
+	while (*cmd)
+	{
+		if (*cmd != '/')
+			return (0);
+		cmd++;
+	}
+	return (1);
 }

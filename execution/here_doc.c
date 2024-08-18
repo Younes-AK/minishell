@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 11:31:46 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 23:00:38 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 	char	*input;
 	char	*delemitre;
 	bool	to_expand;
-
+	
 	to_expand = true;
 	if (is_quote(*eof) || is_quote(eof[ft_strlen(eof) - 1]))
 		to_expand = false;
@@ -29,8 +29,8 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-			return (close(tmp_fd), true);
-		if (ft_strcmp(input, delemitre) == 0)
+			return (free(delemitre) ,close(tmp_fd), true);
+		if (ft_strcmp (input, delemitre) == 0)
 		{
 			return (free(delemitre), close(tmp_fd), free(input), true);
 		}
@@ -100,9 +100,8 @@ void	ft_heredoc(t_prog *p)
 	t_exec_node		*node;
 	t_temp_files	*tmp_file;
 
-	p->i = 0;
 	node = p->exec_list->head;
-	p->temp_files = NULL;
+	1 && (p->temp_files = NULL, p->i = 0);
 	while (node)
 	{
 		if (node->redir)
@@ -122,4 +121,5 @@ void	ft_heredoc(t_prog *p)
 		dup2(p->original_stdin, 0);
 		p->to_restart_stdin = 0;
 	}
+	tcgetattr(STDIN_FILENO, &g_termios_p);
 }

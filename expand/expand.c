@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 11:34:05 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/18 10:51:33 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 {
 	if (is_env_var(iter->content))
 		p->is_env_cmd = true;
-	if (to_expand(iter->content, iter->type) && iter->type != REDIR_HEREDOC)
+	if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC)
 	{
 		p->expanded_var = get_env_val(iter->content, env_list);
 		if (!handle_ambiguous(prev, p->expanded_var, p))

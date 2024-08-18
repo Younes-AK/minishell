@@ -26,6 +26,7 @@
         "string": "c",
         "unordered_map": "c",
         "string_view": "c",
-        "initializer_list": "c"
+        "initializer_list": "c",
+        "wait.h": "c"
     }
 }
