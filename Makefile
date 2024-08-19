@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/18 09:41:03 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/19 21:39:02 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,6 @@ MAND_SRC := main.c \
             functions/ft_split.c \
             functions/ft_strlen.c \
             functions/ft_strjoin.c \
-            functions/ft_strjoin_space.c \
             functions/ft_strdup.c \
             functions/ft_strndup.c \
             functions/ft_strcmp.c \

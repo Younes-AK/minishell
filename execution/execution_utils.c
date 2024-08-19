@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:59:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 22:57:57 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 11:08:47 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	**convert_env_list(t_env *env_list, t_prog *p)
 	return (env_array);
 }
 
-void	redirect_output(char *file, int flags)
+bool	redirect_output(char *file, int flags)
 {
 	int	fd_file;
 
@@ -51,16 +51,17 @@ void	redirect_output(char *file, int flags)
 	if (fd_file == -1)
 	{
 		error_msg2(" : Is a directory", file);
-		exit(EXIT_FAILURE);
+		return (false);
 	}
 	else
 	{
 		dup2(fd_file, 1);
 		close(fd_file);
+		return (true);
 	}
 }
 
-void	redirect_input(char *file, int flags)
+bool	redirect_input(char *file, int flags)
 {
 	int	fd_file;
 
@@ -68,26 +69,31 @@ void	redirect_input(char *file, int flags)
 	if (fd_file == -1)
 	{
 		error_msg2(" No such file or directory", file);
-		exit(EXIT_FAILURE);
+		return (false);
 	}
 	else
 	{
 		dup2(fd_file, 0);
 		close(fd_file);
+		return (true);
 	}
 }
 
-static void	make_redirect(char *redirect, char *file)
+static bool	make_redirect(char *redirect, char *file)
 {
+	bool	ret;
+
+	ret = true;
 	if (!ft_strcmp(redirect, ">"))
-		redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
+		ret = redirect_output(file, O_WRONLY | O_CREAT | O_TRUNC);
 	else if (!ft_strcmp(redirect, ">>"))
-		redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
+		ret = redirect_output(file, O_WRONLY | O_CREAT | O_APPEND);
 	else if (!ft_strcmp(redirect, "<") || !ft_strcmp(redirect, "<<"))
-		redirect_input(file, O_RDONLY);
+		ret = redirect_input(file, O_RDONLY);
+	return (ret);
 }
 
-void	check_redirects(char **redirs)
+bool	check_redirects(char **redirs)
 {
 	int	i;
 
@@ -96,8 +102,10 @@ void	check_redirects(char **redirs)
 	{
 		if (redirs[i + 1])
 		{
-			make_redirect(redirs[i], redirs[i + 1]);
+			if (!make_redirect(redirs[i], redirs[i + 1]))
+				return (false);
 		}
 		i += 2;
 	}
+	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:59:52 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 16:08:06 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 11:07:36 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,18 @@
 
 bool	execute_command(char **redirs, char **cmds, t_prog *p)
 {
-	check_redirects(redirs);
+	if (!check_redirects(redirs))
+		return (false);
 	execute(cmds, p);
 	return (true);
 }
 
-void	exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
+bool	exec_builtin_parent(char **cmd, char **redirs, t_prog *p)
 {
-	check_redirects(redirs);
+	if (!check_redirects(redirs))
+		return (false);
 	exec_builtins(cmd, p);
+	return (true);
 }
 
 void	close_pipes(t_prog *p)

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 12:39:12 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 19:43:16 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,12 @@ char	*remove_qoutes(char *content, t_prog *p)
 	int		len;
 	char	*str;
 
-	p->j = 0;
-	p->i = 0;
+	1 && (p->j = 0, p->i = 0, len = ft_strlen(content));
 	in_double_quotes = false;
 	in_single_quotes = false;
-	len = ft_strlen(content);
 	str = safe_allocation(sizeof(char), len + 2);
 	if (!str)
-	{
-		free(content);
-		ft_free_lists(p, "exit");
-	}
+		(free(content), ft_free_lists(p, "exit"));
 	while (content[p->i])
 	{
 		if (content[p->i] == '"' && !in_single_quotes)

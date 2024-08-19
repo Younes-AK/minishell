@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:25:23 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 12:49:04 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:02:58 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,10 @@ char	*replace(char *str, t_env *env_list)
 			var_name = extract_var_name(&start);
 			var_value = get_env_value(var_name, env_list);
 			result = append_value(result, var_value, &result_size);
-			free(var_name);
-			free((char *) var_value);
+			(free(var_name), free((char *) var_value));
 		}
 		else
-		{
-			result = append_char(result, *start, &result_size);
-			start++;
-		}
+			result = append_char(result, *start++, &result_size);
 	}
 	return (result);
 }

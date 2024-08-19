@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 10:51:33 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:36:07 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ static void	expand_and_append(t_tok_node *iter, char *expanded_var, t_prog *p)
 {
 	char	*tmp;
 	char	**all_str;
-
+	
+	if (strcmp(expanded_var, "\"\"") == 0)
+		expanded_var = ft_strdup("	");
 	tmp = remove_qoutes(expanded_var, p);
 	all_str = ft_split(tmp, ' ', p);
 	append_expanded_tokens(iter, all_str, p);

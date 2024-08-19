@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 22:48:55 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 21:43:49 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,27 @@ void	loop(t_prog *prog)
 	}
 }
 
+struct termios	*term_input_output(void)
+{
+	static struct termios	tr;
+
+	return (&tr);
+}
+
+void	set_default_env(t_env *env, t_prog *p)
+{
+	char	*args[3];
+
+	args[2] = NULL;
+	if (!check_var_exist("PATH", &env))
+	{
+		args[0] = "export";
+		args[1] = ft_strdup("PATH=/usr/local/bin:/usr/bin:/bin");
+		ft_export(args, p);
+		free(args[1]);
+	}
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_prog			prog;
@@ -48,9 +69,10 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	store_env(envp, &prog);
 	store_secret_env(envp, &prog);
+	set_default_env(prog.env_list, &prog);
 	g_exit_status = 0;
 	prog.original_stdin = dup(STDIN_FILENO);
-	tcgetattr(STDIN_FILENO, &g_termios_p);
+	tcgetattr(STDIN_FILENO, term_input_output());
 	while (true)
 	{
 		prog.expanded_var = NULL;
@@ -63,6 +85,6 @@ int	main(int ac, char **av, char **envp)
 		loop(&prog);
 		ft_free_lists(&prog, "free");
 		free(prog.r_line);
-		tcsetattr(STDIN_FILENO, TCSANOW, &g_termios_p);
+		tcsetattr(STDIN_FILENO, TCSANOW, term_input_output());
 	}
 }

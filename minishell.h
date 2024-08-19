@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 22:48:06 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 11:09:17 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # define ERROR -1
 # define SUCCESS 0
 
-struct termios	g_termios_p;
+// struct termios	g_termios_p;
 
 typedef enum e_token
 {
@@ -256,12 +256,12 @@ int			ft_found_newline(char *str);
 bool		exec_cmds(t_prog *path, t_exec_list *exec_list, t_env *env_list);
 char		**convert_env_list(t_env *env_list, t_prog *p);
 bool		execute_command(char **redirs, char **cmds, t_prog *p);
-void		exec_builtin_parent(char **cmd, char **redirs, t_prog *p);
+bool		exec_builtin_parent(char **cmd, char **redirs, t_prog *p);
 void		close_pipes(t_prog *p);
 void		execute(char **cmd, t_prog *p);
-void		redirect_output(char *file, int flags);
-void		redirect_input(char *file, int flags);
-void		check_redirects(char **redirs);
+bool		redirect_output(char *file, int flags);
+bool		redirect_input(char *file, int flags);
+bool		check_redirects(char **redirs);
 char		*check_path(char **paths, char *cmd);
 bool		check_is_builtin(char **type, int *index);
 void		exec_builtins(char **cmd, t_prog *p);
@@ -273,5 +273,6 @@ void		ft_sign(void);
 void		sig_here_doc(t_prog *p);
 int			is_all_slashes(const char *cmd);
 void		free_envirement(t_prog *p);
+struct		termios *term_input_output();
 // =================== end execution part ======================
 #endif
