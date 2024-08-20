@@ -6,56 +6,48 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:25:23 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 17:02:58 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 12:17:32 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*replace(char *str, t_env *env_list)
+char	*replace(char *str, t_env *env_list, t_prog *p)
 {
-	size_t		result_size;
-	char		*result;
-	const char	*start;
-	const char	*var_value;
-	char		*var_name;
-	char		quote_type;
-
-	result_size = ft_strlen(str) + 1;
-	result = safe_allocation(sizeof(char), result_size);
-	result[0] = '\0';
-	start = str;
-	quote_type = 0;
-	while (*start)
+	1 && (p->size = ft_strlen(str) + 1, p->start = str, p->quote_type = 0);
+	1 && (p->res = safe_allocation(sizeof(char), p->size), p->res[0] = '\0');
+	while (*p->start)
 	{
-		if (*start == '\'' || *start == '"')
+		if (*p->start == '\'' || *p->start == '"')
 		{
-			if (quote_type == 0)
-				quote_type = *start;
-			else if (*start == quote_type)
-				quote_type = 0;
+			if (p->quote_type == 0)
+				p->quote_type = *p->start;
+			else if (*p->start == p->quote_type)
+				p->quote_type = 0;
 		}
-		if (*start == '$' && *(start + 1) && !is_whait_spaces(*(start + 1))
-			&& *(start + 1) != '"' && *(start + 1) != '\'' && quote_type != '\'')
+		if (*p->start == '$' && *(p->start + 1)
+			&& !is_whait_spaces(*(p->start + 1))
+			&& *(p->start + 1) != '"' && *(p->start + 1) != '\''
+			&& p->quote_type != '\'')
 		{
-			var_name = extract_var_name(&start);
-			var_value = get_env_value(var_name, env_list);
-			result = append_value(result, var_value, &result_size);
-			(free(var_name), free((char *) var_value));
+			p->var_name = extract_var_name(&p->start);
+			p->var_value = get_env_value(p->var_name, env_list);
+			p->res = append_value(p->res, p->var_value, &p->size);
+			(free(p->var_name), free((char *) p->var_value));
 		}
 		else
-			result = append_char(result, *start++, &result_size);
+			p->res = append_char(p->res, *p->start++, &p->size);
 	}
-	return (result);
+	return (p->res);
 }
 
-char	*get_env_val(char *str, t_env *env_list)
+char	*get_env_val(char *str, t_env *env_list, t_prog *p)
 {
 	char	*tmp;
 
 	if (str[0] == '$' && !str[1])
 		return (str);
-	tmp = replace(str, env_list);
+	tmp = replace(str, env_list, p);
 	free(str);
 	return (tmp);
 }

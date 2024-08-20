@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 17:48:08 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 22:10:11 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ static int	check_command_status(const char *cmd)
 
 static void	execute_cmd(char **cmd, t_prog *p)
 {
+	printf("--->|%s|\n", *cmd);
 	if (!cmd || !*cmd)
 		return ;
 	p->cmd_status = check_command_status(cmd[0]);

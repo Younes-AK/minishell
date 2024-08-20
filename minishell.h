@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 11:09:17 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 15:28:35 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,14 @@ typedef struct s_prog
 	bool		has_non_dot_or_slash;
 	t_tokenze	*new_tok_list;
 	t_temp_files	*temp_files;
+	size_t		size;
+	char		*res;
+	const char	*start;
+	const char	*var_value;
+	char		*var_name;
+	char		quote_type;
 	char		*filename;
+	bool		is_export_var;
 }	t_prog;
 
 typedef struct s_lexer_state
@@ -209,12 +216,12 @@ char		*get_env_value(const char *var_name, t_env *env_list);
 char		*extract_var_name(const char **start);
 char		*append_value(char *res, const char *value, size_t *res_size);
 char		*append_char(char *res, char c, size_t *res_size);
-char		*replace(char *str, t_env *env_list);
+char		*replace(char *str, t_env *env_list, t_prog *p);
 bool		check_var_exist(char *str, t_env **env);
 char		*extract_var_name(const char **start);
 bool		to_expand(char *content, t_token type);
 bool		should_expand(const char*command);
-char		*get_env_val(char *str, t_env *env_list);
+char		*get_env_val(char *str, t_env *env_list, t_prog *p);
 void		append_new_token_list(t_prog *p, char *content, \
 			int len, t_token type);
 bool		is_ambiguous(const char *filename);
@@ -273,6 +280,6 @@ void		ft_sign(void);
 void		sig_here_doc(t_prog *p);
 int			is_all_slashes(const char *cmd);
 void		free_envirement(t_prog *p);
-struct		termios *term_input_output();
+struct termios	*term_input_output();
 // =================== end execution part ======================
 #endif

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 17:36:07 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 22:07:45 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	expand_and_append(t_tok_node *iter, char *expanded_var, t_prog *p)
 {
 	char	*tmp;
 	char	**all_str;
-	
+
 	if (strcmp(expanded_var, "\"\"") == 0)
 		expanded_var = ft_strdup("	");
 	tmp = remove_qoutes(expanded_var, p);
@@ -54,6 +54,30 @@ static bool	handle_ambiguous(t_tok_node *prev, char *expanded_var, t_prog *p)
 	return (true);
 }
 
+bool check_d_quotes_exist(char *str)
+{
+	if ((str[0] == '"' && str[ft_strlen(str) - 1] == '"') ||
+		(str[0] == '\'' && str[ft_strlen(str) - 1] == '\''))
+		return (true);
+	return (false);
+}
+char *add_qoutes_if_not_exist(char *str)
+{
+	char *tmp;
+	int		i;
+	int		j;
+	i = 0;
+	j = 0;
+	// if (check_d_quotes_exist(str))
+	// 	return (str);
+	tmp = safe_allocation(sizeof(char), ft_strlen(str) + 3);
+	tmp[i++] = '"';
+	while(str[j])
+		tmp[i++] = str[j++];
+	tmp[i++] = '"';
+	tmp[i] = '\0';
+	return (free(str), tmp);
+}
 static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 	t_env *env_list, t_prog *p)
 {
@@ -61,7 +85,10 @@ static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 		p->is_env_cmd = true;
 	if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC)
 	{
-		p->expanded_var = get_env_val(iter->content, env_list);
+		printf("exp befor = %s\n", iter->content);
+		p->expanded_var = get_env_val(iter->content, env_list, p);
+		p->expanded_var = add_qoutes_if_not_exist(p->expanded_var);
+		printf("exp after  = %s\n",  p->expanded_var);
 		if (!handle_ambiguous(prev, p->expanded_var, p))
 			p->is_valid = false;
 		if (p->expanded_var)
@@ -69,7 +96,9 @@ static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 	}
 	else if (prev->type != REDIR_HEREDOC)
 	{
+		printf("non exp befor = %s\n", iter->content);
 		p->expanded_var = remove_qoutes(iter->content, p);
+		printf("non exp after  = %s\n", p->expanded_var);
 		free(iter->content);
 		iter->content = p->expanded_var;
 		append_new_token_list(p, iter->content, \

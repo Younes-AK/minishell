@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 19:43:16 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 15:31:51 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	*remove_qoutes(char *content, t_prog *p)
 	bool	in_single_quotes;
 	int		len;
 	char	*str;
-
+	// printf("==> %s\n", content);
 	1 && (p->j = 0, p->i = 0, len = ft_strlen(content));
 	in_double_quotes = false;
 	in_single_quotes = false;

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 21:38:40 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/19 22:58:38 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-			return (free(delemitre) ,close(tmp_fd), true);
+			return (free(delemitre), close(tmp_fd), true);
 		if (ft_strcmp (input, delemitre) == 0)
 		{
 			return (free(delemitre), close(tmp_fd), free(input), true);
 		}
 		if (to_expand && is_env_var(input))
-			input = replace(input, p->env_list);
+			input = replace(input, p->env_list, p);
 		ft_putendl_fd(input, tmp_fd);
 		free(input);
 	}
