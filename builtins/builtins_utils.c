@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:11:59 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 22:50:36 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 23:35:49 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	env_add(char *new_var, t_env *env)
 	new_node->key = strndup(new_var, key_len);
 	new_node->value = strdup(delimiter + 1);
 	new_node->next = NULL;
-	free(tmp);
+	// free(tmp);
 	while (env->next)
 		env = env->next;
 	env->next = new_node;

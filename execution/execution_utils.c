@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:59:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 11:08:47 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 23:15:11 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ bool	redirect_output(char *file, int flags)
 	fd_file = open(file, flags, 0777);
 	if (fd_file == -1)
 	{
-		error_msg2(" : Is a directory", file);
+		error_msg2(" :  No such file or directory", file);
+		g_exit_status = 1;
 		return (false);
 	}
 	else
@@ -68,6 +69,7 @@ bool	redirect_input(char *file, int flags)
 	fd_file = open(file, flags);
 	if (fd_file == -1)
 	{
+		g_exit_status = 1;
 		error_msg2(" No such file or directory", file);
 		return (false);
 	}

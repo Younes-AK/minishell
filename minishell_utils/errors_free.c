@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 11:57:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 09:33:16 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:17:07 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	error_msg(char *msg)
 	write(2, msg, ft_strlen(msg));
 	exit(1);
 }
+
 void	error_msg1(char *msg, char *arg, int exit_status)
 {
 	ft_putstr_fd("minishell: ", 2);
@@ -25,6 +26,7 @@ void	error_msg1(char *msg, char *arg, int exit_status)
 	ft_putstr_fd("\n", 2);
 	exit(exit_status);
 }
+
 void	error_msg2(char *msg, char *arg)
 {
 	ft_putstr_fd("minishell: ", 2);
@@ -65,25 +67,4 @@ void	free_exec_list(t_exec_list *exec_list)
 		curr = next;
 	}
 	free(exec_list);
-}
-
-void	free_env_list(t_env *env_list)
-{
-	t_env	*current;
-	t_env	*next;
-
-	current = env_list;
-	if (!env_list)
-		return ;
-	while (current)
-	{
-		if (current->next)
-			next = current->next;
-		else
-			next = NULL;
-		free(current->key);
-		free(current->value);
-		free(current);
-		current = next;
-	}
 }

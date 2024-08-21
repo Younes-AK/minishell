@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 11:25:47 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/17 11:27:19 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:17:50 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,25 @@ void	append_exec(t_exec_list *list, t_exec_node *new_node)
 		list->head = new_node;
 	}
 	list->tail = new_node;
+}
+
+void	free_env_list(t_env *env_list)
+{
+	t_env	*current;
+	t_env	*next;
+
+	current = env_list;
+	if (!env_list)
+		return ;
+	while (current)
+	{
+		if (current->next)
+			next = current->next;
+		else
+			next = NULL;
+		free(current->key);
+		free(current->value);
+		free(current);
+		current = next;
+	}
 }

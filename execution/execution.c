@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:04:53 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 16:20:52 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/21 19:49:34 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	handle_child_process(t_exec_node *node, t_prog *p)
 
 void	wait_for_children(void)
 {
-	int	status;
+	int		status;
 	void	(*orig_sigint_handler)(int);
 
 	orig_sigint_handler = signal(SIGINT, SIG_IGN);

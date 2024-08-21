@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/20 22:10:11 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/20 23:37:00 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,21 +60,20 @@ static int	check_command_status(const char *cmd)
 	if (stat(cmd, &st) == 0)
 	{
 		if (S_ISDIR(st.st_mode))
-			return (1); // Is a directory
+			return (1);
 		else if (st.st_mode & S_IXUSR)
-			return (0); // Is executable
+			return (0);
 		else
-			return (2); // Exists but not executable
+			return (2);
 	}
 	else if (errno == ENOENT)
-		return (3); // Does not exist
+		return (3);
 	else
-		return (4); // Other error
+		return (4);
 }
 
 static void	execute_cmd(char **cmd, t_prog *p)
 {
-	printf("--->|%s|\n", *cmd);
 	if (!cmd || !*cmd)
 		return ;
 	p->cmd_status = check_command_status(cmd[0]);

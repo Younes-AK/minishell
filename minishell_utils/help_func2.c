@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 00:35:47 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 18:48:34 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/21 21:49:23 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,30 @@ bool	is_str_spaces(char *line)
 		i++;
 	}
 	return (true);
+}
+
+bool	check_d_quotes_exist(char *str)
+{
+	if (str[0] == '"' && str[ft_strlen(str) - 1] == '"')
+		return (true);
+	return (false);
+}
+
+char	*add_qoutes_if_not_exist(char *str)
+{
+	char	*tmp;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	if (check_d_quotes_exist(str))
+		return (str);
+	tmp = safe_allocation(sizeof(char), ft_strlen(str) + 3);
+	tmp[i++] = '"';
+	while (str[j])
+		tmp[i++] = str[j++];
+	tmp[i++] = '"';
+	tmp[i] = '\0';
+	return (tmp);
 }
