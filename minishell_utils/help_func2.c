@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   help_func2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 00:35:47 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 21:49:23 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 06:35:47 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,37 @@ bool	check_d_quotes_exist(char *str)
 
 char	*add_qoutes_if_not_exist(char *str)
 {
-	char	*tmp;
-	int		i;
-	int		j;
+	// char	*tmp;
+	// int		i;
+	// int		j;
 
+	// i = 0;
+	// j = 0;
+	// printf("str: [%s]\n", str);
+	// if (check_d_quotes_exist(str))
+	// 	return (str);
+	// tmp = safe_allocation(sizeof(char), ft_strlen(str) + 3);
+	// tmp[i++] = '"';
+	// while (str[j])
+	// 	tmp[i++] = str[j++];
+	// tmp[i++] = '"';
+	// tmp[i] = '\0';
+	// return (tmp);
+	char	*tmp;
+	size_t	i;
+	size_t	j;
+
+	tmp = malloc(ft_strlen(str) + 3);
 	i = 0;
 	j = 0;
-	if (check_d_quotes_exist(str))
-		return (str);
-	tmp = safe_allocation(sizeof(char), ft_strlen(str) + 3);
-	tmp[i++] = '"';
-	while (str[j])
-		tmp[i++] = str[j++];
-	tmp[i++] = '"';
-	tmp[i] = '\0';
+	tmp[j++] = '"';
+	while (str[i])
+	{
+		tmp[j] = str[i];
+		i++;
+		j++;
+	}
+	tmp[j++] = '"';
+	tmp[j] = '\0';
 	return (tmp);
 }
