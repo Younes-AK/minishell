@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 22:28:02 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 02:09:13 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 	}
 	else
 	{
-		// p->expanded_var = add_qoutes_if_not_exist(iter->content);
+		p->expanded_var = add_qoutes_if_not_exist(iter->content);
 		append_new_token_list(p, iter->content, \
 				ft_strlen(iter->content), iter->type);
 	}
@@ -106,13 +106,13 @@ bool	expand(t_tokenze *list, t_env *env_list, t_prog *p)
 	{
 		char *tmp;
 		// printf("bef ==> %s\n", node->content);
-		// node->content = add_qoutes_if_not_exist(node->content);
+		node->content = add_qoutes_if_not_exist(node->content);
 		// printf("after ==> %s\n", node->content);
-		node->content = "l's";
-		printf("=+=> %s\n", node->content);
+		// node->content = "l's";
+		// printf("=+=> %s\n", node->content);
+		printf("after remove ==> %s\n", node->content); 
 		tmp = remove_qoutes(node->content, p);
-		printf("after remove ==> %s\n", tmp); 
-		exit(0);
+		// exit(0);
 		free(node->content);
 		node->content = tmp;
 		node = node->next;
