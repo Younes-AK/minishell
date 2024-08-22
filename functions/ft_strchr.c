@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 16:01:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/05/29 10:35:30 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 19:34:55 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,3 @@ char	*ft_strchr(const char *s, int c)
 	}
 	return (NULL);
 }
-

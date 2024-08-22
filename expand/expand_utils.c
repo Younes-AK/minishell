@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 02:39:29 by oel-asri         ###   ########.fr       */
+/*   Updated: 2024/08/22 18:50:34 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,35 +48,6 @@ char	*append_char(char *res, char c, size_t *res_size)
 	res[len + 1] = '\0';
 	return (res);
 }
-
-// char	*remove_qoutes(char *content, t_prog *p)
-// {
-// 	bool	in_double_quotes;
-// 	bool	in_single_quotes;
-// 	int		len;
-// 	char	*str;
-
-// 	1 && (p->j = 0, p->i = 0, len = ft_strlen(content));
-// 	in_double_quotes = false;
-// 	in_single_quotes = false;
-// 	str = safe_allocation(sizeof(char), len + 2);
-// 	if (!str)
-// 		(free(content), ft_free_lists(p, "exit"));
-// 	while (content[p->i])
-// 	{
-// 		if (content[p->i] == '"' && !in_single_quotes)
-// 			in_double_quotes = !in_double_quotes;
-// 		else if (content[p->i] == '\'' && !in_double_quotes)
-// 			in_single_quotes = !in_single_quotes;
-// 		else if (!(content[p->i] == '$') && in_single_quotes)
-// 			str[p->j++] = content[p->i];
-// 		else if (content[p->i] == '$')
-// 			str[p->j++] = content[p->i];
-// 		p->i++;
-// 	}
-// 	str[p->j] = '\0';
-// 	return (str);
-// }
 
 char	*get_env_value(const char *var_name, t_env *env_list)
 {

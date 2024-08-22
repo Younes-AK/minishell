@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:36:11 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 19:50:55 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:07:43 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,8 @@ bool	parser(t_prog *p)
 		if (!expand(p->list_tok, p->env_list, p))
 			return (false);
 		_init_exec_list(p, p->exec_list);
-		ft_heredoc(p);
+		if (!ft_heredoc(p))
+			return (false);
 		return (true);
 	}
 }

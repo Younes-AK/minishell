@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 20:12:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 09:06:02 by oel-asri         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:27:16 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,6 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	{
 		*d++ = *s++;
 	}
-	*d='\0';
+	*d = '\0';
 	return (dest);
 }

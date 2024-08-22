@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+         #
+#    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/22 02:44:41 by oel-asri         ###   ########.fr        #
+#    Updated: 2024/08/22 22:16:45 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g #-fsanitize=address
+CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
 NAME := minishell
 RM := rm -rf
 
@@ -29,7 +29,6 @@ MAND_SRC := main.c \
             functions/ft_strndup.c \
             functions/ft_strcmp.c \
             functions/ft_strchr.c \
-            functions/ft_strrchr.c \
             functions/ft_substr.c \
             functions/ft_lstadd_back.c \
             functions/ft_lstnew.c \

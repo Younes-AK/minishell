@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:19:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 16:52:17 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:42:19 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,12 @@ void	ft_free_lists(t_prog *prog, char *state)
 	{
 		free_envirement(prog);
 		free_tok_list(prog->list_tok);
-		// free_tok_list(prog->new_tok_list);
+		free_tok_list(prog->new_tok_list);
 		free_exec_list(prog->exec_list);
+		ft_putstr_fd("exit\n", 1);
 		exit(EXIT_FAILURE);
 	}
 	free_tok_list(prog->list_tok);
-	// free_tok_list(prog->new_tok_list);
+	free_tok_list(prog->new_tok_list);
 	free_exec_list(prog->exec_list);
 }

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 09:26:50 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 21:32:39 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:38:35 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_handl_quit(int sig_num)
 	int		status;
 	pid_t	pid;
 
-	g_exit_status = 0;
+	g_exit_status = 131;
 	if (sig_num == SIGQUIT)
 	{
 		pid = wait(&status);

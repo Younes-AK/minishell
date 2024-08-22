@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 10:55:04 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 10:29:40 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 18:46:35 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ static void	update_oldpwd(t_env *env)
 
 	if (getcwd(cwd, PATH_MAX) == NULL)
 		return ;
-	if (!(oldpwd = ft_strjoin("OLDPWD=", cwd)))
+	oldpwd = ft_strjoin("OLDPWD=", cwd);
+	if (!oldpwd)
 		return ;
 	if (is_in_env(env, "OLDPWD") == 0)
 		env_add(oldpwd, env);

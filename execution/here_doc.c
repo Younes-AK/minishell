@@ -6,13 +6,15 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 20:51:52 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:12:57 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 #define TMP_FILE	"/tmp/minihell_temporary_file"
+
+extern int	g_exit_status;
 
 static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 {
@@ -29,11 +31,9 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-			return (free(delemitre), close(tmp_fd), true);
+			return (g_exit_status = 1, free(delemitre), close(tmp_fd), false);
 		if (ft_strcmp (input, delemitre) == 0)
-		{
 			return (free(delemitre), close(tmp_fd), free(input), true);
-		}
 		if (to_expand && is_env_var(input))
 			input = replace(input, p->env_list, p);
 		ft_putendl_fd(input, tmp_fd);
@@ -72,11 +72,9 @@ bool	here_doc_input(t_exec_node *node, t_prog *p, int j)
 {
 	int		i;
 	int		fd;
-	bool	ret;
 
 	i = 0;
 	p->filename = generate_name(j, p);
-	ret = false;
 	while (node->redir[i])
 	{
 		if (!ft_strcmp(node->redir[i], "<<"))
@@ -84,42 +82,42 @@ bool	here_doc_input(t_exec_node *node, t_prog *p, int j)
 			fd = create_temporary_file(p->filename);
 			if (fd < 0)
 				return (false);
-			get_and_write_input(fd, node->redir[i + 1], p);
+			if (!get_and_write_input(fd, node->redir[i + 1], p))
+				return (close(fd), false);
 			free(node->redir[i + 1]);
 			node->redir[i + 1] = ft_strdup(p->filename);
 			close(fd);
-			ret = true;
 		}
 		i += 2;
 	}
-	return (ret);
+	return (true);
 }
 
-void	ft_heredoc(t_prog *p)
+bool	ft_heredoc(t_prog *p)
 {
-	t_exec_node		*node;
-	t_temp_files	*tmp_file;
+	t_var_hold	hold;
 
-	node = p->exec_list->head;
+	1 && (hold.ret = true, hold.node = p->exec_list->head);
 	1 && (p->temp_files = NULL, p->i = 0);
-	while (node)
+	while (hold.node)
 	{
-		if (node->redir)
+		if (hold.node->redir)
 		{
-			if (here_doc_input(node, p, p->i))
+			if (here_doc_input(hold.node, p, p->i))
 			{
-				tmp_file = add_temp_file(p->filename, p);
-				append_temp_file(&p->temp_files, tmp_file);
+				hold.tmp_file = add_temp_file(p->filename, p);
+				append_temp_file(&p->temp_files, hold.tmp_file);
+			}
+			else
+			{
+				hold.ret = false;
+				break ;
 			}
 		}
-		free(p->filename);
-		node = node->next;
-		p->i++;
+		1 && (free(p->filename), hold.node = hold.node->next, p->i++);
 	}
 	if (p->to_restart_stdin == 1)
-	{
-		dup2(p->original_stdin, 0);
-		p->to_restart_stdin = 0;
-	}
+		1 && (dup2(p->original_stdin, 0), p->to_restart_stdin = 0);
 	tcgetattr(STDIN_FILENO, term_input_output());
+	return (hold.ret);
 }

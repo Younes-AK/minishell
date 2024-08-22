@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/20 23:37:00 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:57:16 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ static void	execute_cmd(char **cmd, t_prog *p)
 	execve(p->access_path, cmd, p->env_variables);
 	free(p->access_path);
 	free_double_ptr(p->env_variables);
-	error_msg1(": execve failed", cmd[0], 126);
+	error_msg1(": command not found", cmd[0], 126);
 }
 
 void	execute(char **cmd, t_prog *p)

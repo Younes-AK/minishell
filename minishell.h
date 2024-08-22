@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 20:51:56 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:46:19 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@
 # define PROMPT "\033[34m[minishell]~> \033[0m"
 # define ERROR -1
 # define SUCCESS 0
-
-// struct termios	g_termios_p;
 
 typedef enum e_token
 {
@@ -93,6 +91,7 @@ typedef struct s_temp_files
 
 typedef struct s_prog
 {
+	int				*pids;
 	char			*r_line;
 	int				tokens_len;
 	char			*cmd_line;
@@ -106,7 +105,6 @@ typedef struct s_prog
 	int				nbr_pipe;
 	int				i;
 	int				j;
-	int				pid;
 	int				end[2];
 	char			*line;
 	char			*path;
@@ -153,6 +151,13 @@ typedef struct s_lexer_state
 	char	current_quote;
 }	t_lexer_state;
 
+typedef struct var_hold
+{
+	t_exec_node		*node;
+	t_temp_files	*tmp_file;
+	bool			ret;
+}	t_var_hold;
+
 char			*ft_strchr(const char *s, int c);
 char			*ft_strdup(const char *str);
 char			*ft_strjoin(char const *s1, char const *s2);
@@ -171,7 +176,6 @@ int				ft_isalnum(int c);
 int				ft_isalpha(int c);
 int				ft_isdigit(int c);
 char			*ft_strcpy(char *dest, const char *src);
-char			*ft_strrchr(const char *s, int c);
 char			*ft_strncpy(char *dst, const char *src, size_t len);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 char			*ft_itoa(int n);
@@ -204,13 +208,13 @@ void			ft_free_lists(t_prog *prog, char *state);
 // =================== end parssing part =========================
 
 // =================== start lexer part ==========================
-void			tokenize_word(int *len, char *line, t_prog *p, char *type);
 void			init_lexer_state(t_lexer_state *state, t_prog *p);
 // =================== end lexer part ===========================
 
 // =================== start expanding part =====================
 bool			expand(t_tokenze *list, t_env *env_list, t_prog *p);
 bool			is_env_var(char *content);
+void			ft_remove_q(t_prog *p);
 char			*remove_qoutes(char *content, t_prog *p);
 char			*get_env_value(const char *var_name, t_env *env_list);
 char			*extract_var_name(const char **start);
@@ -226,6 +230,7 @@ void			append_new_token_list(t_prog *p, char *content, \
 				int len, t_token type);
 bool			is_ambiguous(const char *filename);
 char			*add_qoutes_if_not_exist(char *str);
+bool			is_in_d_qoutes(char *str);
 // =================== end expanding part =======================
 
 bool			store_env(char **env, t_prog *p);
@@ -259,10 +264,6 @@ void			print_envi(t_env *env);
 
 // =================== start execution part ======================
 void			execution(t_prog *p, t_exec_list *list);
-char			*ft_strjoin2(char *s1, char *s2);
-int				ft_found_newline(char *str);
-bool			exec_cmds(t_prog *path, t_exec_list *exec_list, \
-				t_env *env_list);
 char			**convert_env_list(t_env *env_list, t_prog *p);
 bool			execute_command(char **redirs, char **cmds, t_prog *p);
 bool			exec_builtin_parent(char **cmd, char **redirs, t_prog *p);
@@ -274,7 +275,7 @@ bool			check_redirects(char **redirs);
 char			*check_path(char **paths, char *cmd);
 bool			check_is_builtin(char **type, int *index);
 void			exec_builtins(char **cmd, t_prog *p);
-void			ft_heredoc(t_prog *p);
+bool			ft_heredoc(t_prog *p);
 void			unlink_temp_files(t_temp_files *temp_files_list);
 void			append_temp_file(t_temp_files **lst, t_temp_files *new);
 void			*add_temp_file(char *filename, t_prog *p);

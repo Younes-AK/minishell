@@ -6,13 +6,13 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:57:04 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/14 22:00:48 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 19:29:44 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_numofdigit(long n)
+int	ft_num(long n)
 {
 	int	i;
 
@@ -34,13 +34,11 @@ int	ft_numofdigit(long n)
 
 char	*ft_itoa(int n)
 {
-	int		num_ofdigit;
+	int		num;
 	char	*str;
 	long	nbr;
 
-	nbr = n;
-	num_ofdigit = ft_numofdigit(nbr);
-	str = malloc(num_ofdigit + 1);
+	1 && (nbr = n, num = ft_num(nbr), str = malloc(num + 1));
 	if (!str)
 		return (NULL);
 	if (nbr == 0)
@@ -54,10 +52,10 @@ char	*ft_itoa(int n)
 		str[0] = '-';
 		nbr *= -1;
 	}
-	str[num_ofdigit] = '\0';
+	str[num] = '\0';
 	while (nbr > 0)
 	{
-		str[--num_ofdigit] = nbr % 10 + 48;
+		str[--num] = nbr % 10 + 48;
 		nbr /= 10;
 	}
 	return (str);

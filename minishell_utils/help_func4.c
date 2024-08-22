@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 11:25:47 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 15:17:50 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:16:26 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,37 @@ void	free_env_list(t_env *env_list)
 		free(current);
 		current = next;
 	}
+}
+
+void	ft_remove_q(t_prog *p)
+{
+	char		*tmp;
+	t_tok_node	*iter;
+	t_tok_node	*prev;
+
+	iter = p->new_tok_list->head;
+	prev = iter;
+	while (iter)
+	{
+		if (!ft_strcmp(iter->content, "\"\"")
+			|| !ft_strcmp(iter->content, "\'\'"))
+			iter->content = ft_strdup("	");
+		if (prev->type != REDIR_HEREDOC)
+		{
+			tmp = remove_qoutes(iter->content, p);
+			free(iter->content);
+		}
+		else
+			tmp = iter->content;
+		iter->content = tmp;
+		prev = iter;
+		iter = iter->next;
+	}
+}
+
+bool	is_in_d_qoutes(char *str)
+{
+	if (str[0] == '"' && str[ft_strlen(str) - 1] == '"')
+		return (true);
+	return (false);
 }

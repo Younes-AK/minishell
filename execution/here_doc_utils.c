@@ -6,11 +6,32 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 11:22:22 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 22:59:39 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:31:24 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+static int	check_status(const char *cmd)
+{
+	struct stat	st;
+
+	if (is_all_slashes(cmd))
+		return (1);
+	if (stat(cmd, &st) == 0)
+	{
+		if (S_ISDIR(st.st_mode))
+			return (1);
+		else if (st.st_mode & S_IXUSR)
+			return (0);
+		else
+			return (2);
+	}
+	else if (errno == ENOENT)
+		return (3);
+	else
+		return (4);
+}
 
 void	unlink_temp_files(t_temp_files *temp_files_list)
 {
@@ -22,7 +43,8 @@ void	unlink_temp_files(t_temp_files *temp_files_list)
 		return ;
 	while (current)
 	{
-		if (unlink(current->filename) == -1)
+		if (check_status(current->filename) == 2 \
+		&& unlink(current->filename) == -1)
 		{
 			ft_putstr_fd("Error unlinking temporary file: ", 2);
 			ft_putstr_fd(current->filename, 2);

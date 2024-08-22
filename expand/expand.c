@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 08:56:44 by oel-asri         ###   ########.fr       */
+/*   Updated: 2024/08/22 19:43:43 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,11 @@ void	append_expanded_tokens(t_tok_node *iter, char **tokens, t_prog *p)
 	}
 	free_double_ptr(token_start);
 }
-bool is_in_d_qoutes(char *str)
-{
-	if (str[0] == '"' && str[ft_strlen(str) - 1] == '"')
-		return (true);
-	return (false);
-}
+
 static void	expand_and_append(t_tok_node *iter, char *expanded_var, t_prog *p)
 {
 	char	**all_str;
-	
+
 	if (!is_in_d_qoutes(expanded_var))
 	{
 		all_str = ft_split(expanded_var, ' ', p);
@@ -43,7 +38,8 @@ static void	expand_and_append(t_tok_node *iter, char *expanded_var, t_prog *p)
 	}
 	else
 	{
-		append_new_token_list(p, expanded_var, ft_strlen(expanded_var), iter->type);
+		append_new_token_list(p, expanded_var, \
+		ft_strlen(expanded_var), iter->type);
 	}
 }
 
@@ -70,22 +66,17 @@ static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 		p->expanded_var = get_env_val(iter->content, env_list, p);
 		if (!handle_ambiguous(prev, p->expanded_var, p))
 			p->is_valid = false;
-		if (p->expanded_var)
-		{
-			iter->content = p->expanded_var;
-		}
-		//p->expanded_var = add_qoutes_if_not_exist(iter->content);
-		expand_and_append(iter, iter->content, p);
+		iter->content = p->expanded_var;
+		expand_and_append(iter, p->expanded_var, p);
 	}
 	else
 	{
-		//p->expanded_var = add_qoutes_if_not_exist(iter->content);
 		append_new_token_list(p, iter->content, \
 				ft_strlen(iter->content), iter->type);
 	}
 	return (p->is_valid);
 }
- 
+
 bool	expand(t_tokenze *list, t_env *env_list, t_prog *p)
 {
 	t_tok_node	*iter;
@@ -100,20 +91,6 @@ bool	expand(t_tokenze *list, t_env *env_list, t_prog *p)
 		prev = iter;
 		iter = iter->next;
 	}
-	t_tok_node *node = p->new_tok_list->head;
-	while (node)
-	{
-		char *tmp;
-		// printf("bef ==> %s\n", node->content);
-		//node->content = add_qoutes_if_not_exist(node->content);
-		// node->content = "l's";
-		// printf("=+=> %s\n", node->content);
-		tmp = remove_qoutes(node->content, p);
-		// printf("after remove ==> %s\n", tmp);
-		// exit(0);
-		free(node->content);
-		node->content = tmp;
-		node = node->next;
-	}
+	ft_remove_q(p);
 	return (true);
 }

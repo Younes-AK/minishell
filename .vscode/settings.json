@@ -27,6 +27,7 @@
         "unordered_map": "c",
         "string_view": "c",
         "initializer_list": "c",
-        "wait.h": "c"
+        "wait.h": "c",
+        "__mutex_base": "c"
     }
 }

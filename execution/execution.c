@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:04:53 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/21 19:49:34 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:26:15 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,32 +52,37 @@ void	handle_child_process(t_exec_node *node, t_prog *p)
 	exit(0);
 }
 
-void	wait_for_children(void)
+void	wait_for_children(t_prog *p)
 {
 	int		status;
 	void	(*orig_sigint_handler)(int);
+	int		i;
 
+	i = 0;
 	orig_sigint_handler = signal(SIGINT, SIG_IGN);
-	while (wait(&status) > 0)
+	while (waitpid(p->pids[i], &status, WUNTRACED) > 0)
 	{
 		if (g_exit_status != 1)
 		{
 			if (WIFEXITED(status))
 				g_exit_status = WEXITSTATUS(status);
+			if (WIFSIGNALED(status))
+				g_exit_status = WTERMSIG(status) + 128;
 		}
+		i++;
 	}
 	signal(SIGINT, orig_sigint_handler);
 }
 
-void	fork_and_execute(t_exec_node *node, t_prog *p)
+void	fork_and_execute(t_exec_node *node, t_prog *p, int *index)
 {
 	pid_t	pid;
 
 	pid = fork();
+	p->pids[*index] = pid;
+	(*index)++;
 	if (pid == 0)
-	{
 		handle_child_process(node, p);
-	}
 	else if (pid < 0)
 	{
 		ft_putstr_fd("fork function fialled\n", 2);
@@ -88,13 +93,13 @@ void	execution(t_prog *p, t_exec_list *list)
 {
 	t_exec_node	*node;
 	int			index;
+	int			pid_index;
 
 	if (!list || !list->head)
 		return ;
-	p->original_stdout = dup(1);
-	p->is_first = true;
-	index = 0;
-	node = list->head;
+	1 && (pid_index = 0, p->original_stdout = dup(1), index = 0);
+	1 && (p->is_first = true, node = list->head);
+	p->pids = safe_allocation(sizeof(int), p->nbr_pipe + 2);
 	while (node)
 	{
 		p->is_last = (node->next == NULL);
@@ -103,12 +108,12 @@ void	execution(t_prog *p, t_exec_list *list)
 		if (check_is_builtin(node->cmd, &index) && p->is_first && p->is_last)
 			exec_builtin_parent(node->cmd + index, node->redir, p);
 		else
-			fork_and_execute(node, p);
+			fork_and_execute(node, p, &pid_index);
 		close_pipes(p);
 		p->is_first = false;
 		node = node->next;
 	}
-	wait_for_children();
+	wait_for_children(p);
 	dup2(p->original_stdout, STDOUT_FILENO);
 	close(p->original_stdout);
 }
