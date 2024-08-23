@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:07 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 21:31:13 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 09:55:33 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ int	main(int ac, char **av, char **envp)
 	t_prog			prog;
 
 	rl_catch_signals = 0;
-	(void)ac;
-	(void)av;
+	((void)ac, (void)av);
 	store_env(envp, &prog);
 	store_secret_env(envp, &prog);
 	set_default_env(prog.env_list, &prog);
@@ -81,6 +80,7 @@ int	main(int ac, char **av, char **envp)
 		prog.new_tok_list = init_token_list(&prog);
 		prog.exec_list = init_exec_list(&prog);
 		prog.nbr_pipe = 0;
+		prog.pids = NULL;
 		ft_sign();
 		loop(&prog);
 		ft_free_lists(&prog, "free");

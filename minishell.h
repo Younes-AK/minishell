@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 21:46:19 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 10:17:22 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,5 +284,6 @@ void			sig_here_doc(t_prog *p);
 int				is_all_slashes(const char *cmd);
 void			free_envirement(t_prog *p);
 struct termios	*term_input_output(void);
+void			free_pids(int *pids);
 // =================== end execution part ======================
 #endif

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 07:55:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 18:50:34 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 10:17:00 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,12 @@ char	*extract_var_name(const char **start)
 	var_name[var_size] = '\0';
 	*start = end;
 	return (var_name);
+}
+
+void	free_pids(int *pids)
+{
+	if (pids != NULL)
+	{
+		free(pids);
+	}
 }

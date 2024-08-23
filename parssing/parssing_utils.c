@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:19:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 22:42:19 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 10:22:55 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,13 @@ void	process_characters(t_prog *p, int len, char *quote)
 				p->cmd_line[p->j++] = ' ';
 		}
 		else
-			p->cmd_line[p->j++] = (!*quote && is_whait_spaces(p->tmp[p->i]))
-				? ' ' : p->tmp[p->i];
+		{
+			if (!*quote && is_whait_spaces(p->tmp[p->i]))
+				p->cmd_line[p->j] = ' ';
+			else
+				p->cmd_line[p->j] = p->tmp[p->i];
+			p->j++;
+		}
 		p->i++;
 	}
 	p->cmd_line[p->j] = '\0';
@@ -107,9 +112,11 @@ void	ft_free_lists(t_prog *prog, char *state)
 		free_tok_list(prog->new_tok_list);
 		free_exec_list(prog->exec_list);
 		ft_putstr_fd("exit\n", 1);
+		free_pids(prog->pids);
 		exit(EXIT_FAILURE);
 	}
 	free_tok_list(prog->list_tok);
 	free_tok_list(prog->new_tok_list);
 	free_exec_list(prog->exec_list);
+	free_pids(prog->pids);
 }

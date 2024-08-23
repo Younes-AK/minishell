@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:34:48 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/18 22:26:38 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 09:35:55 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void	ft_exit(char **args)
 	size_t		args_len;
 	long int	num;
 
+	ft_putstr_fd("exit\n", 1);
 	args_len = count_args(args);
 	num = -3;
 	if (args_len >= 2)

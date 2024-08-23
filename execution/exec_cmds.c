@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 22:57:16 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 10:32:56 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ static void	execute_cmd(char **cmd, t_prog *p)
 	if (!cmd || !*cmd)
 		return ;
 	p->cmd_status = check_command_status(cmd[0]);
+	if (!ft_strcmp(*cmd, "minishell"))
+		error_msg1(": command not found", cmd[0], 127);
 	if (p->cmd_status == 1)
 		error_msg1(": is a directory", cmd[0], 126);
 	else if (p->cmd_status == 2)
@@ -95,8 +97,7 @@ static void	execute_cmd(char **cmd, t_prog *p)
 		error_msg1(": Error accessing file", cmd[0], 126);
 	p->env_variables = convert_env_list(p->env_list, p);
 	execve(p->access_path, cmd, p->env_variables);
-	free(p->access_path);
-	free_double_ptr(p->env_variables);
+	(free(p->access_path), free_double_ptr(p->env_variables));
 	error_msg1(": command not found", cmd[0], 126);
 }
 
