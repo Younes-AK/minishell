@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 10:55:04 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 18:46:35 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 20:06:01 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,34 +39,6 @@ static char	*get_env_path(t_env *env, const char *key)
 	return (NULL);
 }
 
-static void	update_oldpwd(t_env *env)
-{
-	char	cwd[PATH_MAX];
-	char	*oldpwd;
-
-	if (getcwd(cwd, PATH_MAX) == NULL)
-		return ;
-	oldpwd = ft_strjoin("OLDPWD=", cwd);
-	if (!oldpwd)
-		return ;
-	if (is_in_env(env, "OLDPWD") == 0)
-		env_add(oldpwd, env);
-	else
-	{
-		while (env)
-		{
-			if (ft_strcmp(env->key, "OLDPWD") == 0)
-			{
-				free(env->value);
-				env->value = strdup(cwd);
-				break ;
-			}
-			env = env->next;
-		}
-	}
-	free(oldpwd);
-}
-
 static int	move_to_path(int option, t_env *env)
 {
 	int		ret;
@@ -95,6 +67,34 @@ static int	move_to_path(int option, t_env *env)
 	return (ret);
 }
 
+void	update_pwd(t_env *env)
+{
+	char	cwd[PATH_MAX];
+	char	*new_pwd;
+
+	if (getcwd(cwd, PATH_MAX) == NULL)
+		return ;
+	new_pwd = ft_strjoin("PWD=", cwd);
+	if (!new_pwd)
+		return ;
+	if (is_in_env(env, "PWD") == 0)
+		env_add(new_pwd, env);
+	else
+	{
+		while (env)
+		{
+			if (ft_strcmp(env->key, "PWD") == 0)
+			{
+				free(env->value);
+				env->value = strdup(cwd);
+				break ;
+			}
+			env = env->next;
+		}
+	}
+	free(new_pwd);
+}
+
 void	cd(char **args, t_env *env)
 {
 	int	cd_ret;
@@ -117,4 +117,5 @@ void	cd(char **args, t_env *env)
 		}
 		g_exit_status = 0;
 	}
+	update_pwd(env);
 }

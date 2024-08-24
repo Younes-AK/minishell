@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 11:22:22 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 21:31:24 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:16:58 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,15 +106,4 @@ char	*create_env_entry(t_env *iter)
 	entry[key_len] = '=';
 	ft_strcpy(entry + key_len + 1, iter->value);
 	return (entry);
-}
-
-int	is_all_slashes(const char *cmd)
-{
-	while (*cmd)
-	{
-		if (*cmd != '/')
-			return (0);
-		cmd++;
-	}
-	return (1);
 }

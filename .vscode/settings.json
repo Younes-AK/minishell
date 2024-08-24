@@ -28,6 +28,7 @@
         "string_view": "c",
         "initializer_list": "c",
         "wait.h": "c",
-        "__mutex_base": "c"
+        "__mutex_base": "c",
+        "utility": "c"
     }
 }

@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:19:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 10:22:55 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 19:57:34 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,28 +70,7 @@ void	process_characters(t_prog *p, int len, char *quote)
 {
 	while (p->tmp[p->i] && p->j < len)
 	{
-		if ((p->tmp[p->i] == '\'' || p->tmp[p->i] == '\"') && !*quote)
-			*quote = p->tmp[p->i];
-		else if (p->tmp[p->i] == *quote)
-			*quote = 0;
-		if (!*quote && is_operator(p->tmp[p->i]))
-		{
-			if (p->i != 0 && !is_whait_spaces(p->tmp[p->i - 1])
-				&& !is_operator(p->tmp[p->i - 1]))
-				p->cmd_line[p->j++] = ' ';
-			p->cmd_line[p->j++] = p->tmp[p->i];
-			if (!is_whait_spaces(p->tmp[p->i + 1])
-				&& !is_operator(p->tmp[p->i + 1]) && p->tmp[p->i + 1])
-				p->cmd_line[p->j++] = ' ';
-		}
-		else
-		{
-			if (!*quote && is_whait_spaces(p->tmp[p->i]))
-				p->cmd_line[p->j] = ' ';
-			else
-				p->cmd_line[p->j] = p->tmp[p->i];
-			p->j++;
-		}
+		process_quotes_and_operators(p, quote);
 		p->i++;
 	}
 	p->cmd_line[p->j] = '\0';

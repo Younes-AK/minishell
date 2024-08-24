@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 10:17:22 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 21:17:35 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,7 @@ void			append_exec_list(t_prog *p, int index, t_exec_list *exec_list);
 void			append_exec(t_exec_list *list, t_exec_node *new_node);
 void			free_env_list(t_env *list);
 void			ft_free_lists(t_prog *prog, char *state);
+void			process_quotes_and_operators(t_prog *p, char *quote);
 // =================== end parssing part =========================
 
 // =================== start lexer part ==========================
@@ -260,6 +261,7 @@ char			*create_env_entry(t_env *iter);
 long int		modulo(long int nbr);
 void			__ft_add(t_env **env, char *key, char *value);
 void			print_envi(t_env *env);
+void			update_oldpwd(t_env *env);
 // =================== end builtins part =========================
 
 // =================== start execution part ======================
@@ -276,6 +278,7 @@ char			*check_path(char **paths, char *cmd);
 bool			check_is_builtin(char **type, int *index);
 void			exec_builtins(char **cmd, t_prog *p);
 bool			ft_heredoc(t_prog *p);
+int				is_all_slashes(const char *cmd);
 void			unlink_temp_files(t_temp_files *temp_files_list);
 void			append_temp_file(t_temp_files **lst, t_temp_files *new);
 void			*add_temp_file(char *filename, t_prog *p);

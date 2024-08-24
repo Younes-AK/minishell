@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:37:01 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 10:15:46 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/24 01:10:16 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	add_to_env(char *key, t_env **env_export, t_env **env)
 	else if (tmp->value)
 	{
 		if (tmp->value[0] != '\0')
-			__ft_add(env, key, ft_strdup(tmp->value));
+			__ft_add(env, key, tmp->value);
 		else
 			__ft_add(env, key, NULL);
 	}
@@ -127,7 +127,7 @@ void	ft_export(char **cmd, t_prog *p)
 		}
 		else
 		{
-			ft_putstr_fd("not a valid identifier\n", 2);
+			error_msg2(" : not a valid identifier", cmd[1]);
 			g_exit_status = 1;
 		}
 		free(key);

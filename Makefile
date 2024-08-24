@@ -6,7 +6,7 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/23 09:30:14 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/24 01:06:41 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,7 @@ MAND_SRC := main.c \
             parssing/parssing.c \
             parssing/parssing_utils.c \
             parssing/create_exec_list.c \
+            parssing/parssing_utils2.c \
             parssing/lexer.c  \
             parssing/lexer_utils.c  \
             parssing/parser.c \
@@ -69,6 +70,7 @@ MAND_SRC := main.c \
             builtins/ft_export.c \
             builtins/export_utils.c \
             builtins/ft_unset.c \
+            builtins/cd_utils.c \
             execution/execution.c \
             execution/exec_cmds.c \
             execution/execution_utils.c \

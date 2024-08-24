@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 10:32:56 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/23 13:10:16 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	execute_cmd(char **cmd, t_prog *p)
 	else if (p->cmd_status == 3)
 	{
 		if (ft_strchr(cmd[0], '/'))
-			error_msg1(": No such file or directory", cmd[0], 127);
+			error_msg1(" : No such file or directory", cmd[0], 127);
 		p->access_path = check_path(p->all_paths, cmd[0]);
 		if (!p->access_path)
 			error_msg1(": command not found", cmd[0], 127);
