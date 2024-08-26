@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:04:53 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/24 01:32:40 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/24 08:47:12 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,20 @@ void	setup_child_pipes(t_prog *p)
 {
 	if (!p->is_first)
 	{
-		dup2(p->prev_pipe[0], STDIN_FILENO);
+		if (dup2(p->prev_pipe[0], STDIN_FILENO) == -1)
+		{
+			error_msg("dup2 failled");
+			ft_free_lists(p, "exit");
+		}
 		close(p->prev_pipe[0]);
 	}
 	if (!p->is_last)
 	{
-		dup2(p->curr_pipe[1], STDOUT_FILENO);
+		if (dup2(p->curr_pipe[1], STDOUT_FILENO) == -1)
+		{
+			error_msg("dup2 failled");
+			ft_free_lists(p, "exit");
+		}
 		close(p->curr_pipe[1]);
 		close(p->curr_pipe[0]);
 	}
@@ -84,6 +92,7 @@ void	fork_and_execute(t_exec_node *node, t_prog *p, int *index)
 		handle_child_process(node, p);
 	else if (pid < 0)
 	{
+		ft_free_lists(p, "exit");
 		ft_putstr_fd("fork function fialled\n", 2);
 	}
 }

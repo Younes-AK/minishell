@@ -6,12 +6,12 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/24 01:06:41 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/24 10:27:47 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g #-fsanitize=address
+CFLAGS := -Wall -Werror -Wextra
 NAME := minishell
 RM := rm -rf
 

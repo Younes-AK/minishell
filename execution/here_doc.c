@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 22:12:57 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/24 10:14:06 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		if (!input)
 			return (g_exit_status = 1, free(delemitre), close(tmp_fd), false);
 		if (ft_strcmp (input, delemitre) == 0)
+		{
+			g_exit_status = 0;
 			return (free(delemitre), close(tmp_fd), free(input), true);
+		}
 		if (to_expand && is_env_var(input))
 			input = replace(input, p->env_list, p);
 		ft_putendl_fd(input, tmp_fd);

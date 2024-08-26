@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 13:10:16 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/25 23:04:24 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,54 +51,64 @@ char	*get_path(t_env *env_list, char *key)
 	return (NULL);
 }
 
-static int	check_command_status(const char *cmd)
+static int check_command_status(char *cmd, t_prog *p)
 {
-	struct stat	st;
+    struct stat st;
 
-	if (is_all_slashes(cmd))
-		return (1);
-	if (stat(cmd, &st) == 0)
-	{
-		if (S_ISDIR(st.st_mode))
-			return (1);
-		else if (st.st_mode & S_IXUSR)
-			return (0);
-		else
-			return (2);
-	}
-	else if (errno == ENOENT)
-		return (3);
-	else
-		return (4);
+    if (is_all_slashes(cmd))
+        return 1;
+
+    p->access_path = check_path(p->all_paths, cmd);
+    if (stat(cmd, &st) == 0)
+    {
+        if (S_ISDIR(st.st_mode))
+            return 1;
+        if (p->access_path)
+            return 0;
+        else if (st.st_mode & S_IXUSR)
+            return 5;
+        else
+            return 2;
+    }
+    else if (errno == ENOENT)
+    {
+        if (p->access_path)
+            return 0;
+        else
+            return 3;
+    }
+    else
+        return 4;
 }
 
-static void	execute_cmd(char **cmd, t_prog *p)
+static void execute_cmd(char **cmd, t_prog *p)
 {
-	if (!cmd || !*cmd)
-		return ;
-	p->cmd_status = check_command_status(cmd[0]);
-	if (!ft_strcmp(*cmd, "minishell"))
-		error_msg1(": command not found", cmd[0], 127);
-	if (p->cmd_status == 1)
-		error_msg1(": is a directory", cmd[0], 126);
-	else if (p->cmd_status == 2)
-		error_msg1(": Permission denied", cmd[0], 126);
-	else if (p->cmd_status == 0)
-		p->access_path = ft_strdup(cmd[0]);
-	else if (p->cmd_status == 3)
-	{
-		if (ft_strchr(cmd[0], '/'))
-			error_msg1(" : No such file or directory", cmd[0], 127);
-		p->access_path = check_path(p->all_paths, cmd[0]);
-		if (!p->access_path)
-			error_msg1(": command not found", cmd[0], 127);
-	}
-	else
-		error_msg1(": Error accessing file", cmd[0], 126);
-	p->env_variables = convert_env_list(p->env_list, p);
-	execve(p->access_path, cmd, p->env_variables);
-	(free(p->access_path), free_double_ptr(p->env_variables));
-	error_msg1(": command not found", cmd[0], 126);
+    if (!cmd || !*cmd)
+        return;
+    p->cmd_status = check_command_status(cmd[0], p);
+    if (!ft_strcmp(*cmd, "minishell"))
+        error_msg1(": command not found", cmd[0], 127);
+    else if (p->cmd_status == 1)
+        error_msg1(": is a directory", cmd[0], 126);
+    else if (p->cmd_status == 2)
+        error_msg1(": Permission denied", cmd[0], 126);
+    else if (p->cmd_status == 3)
+    {
+        if (ft_strchr(cmd[0], '/'))
+            error_msg1(": No such file or directory", cmd[0], 127);
+        else
+            error_msg1(": command not found", cmd[0], 127);
+    }
+    else if (p->cmd_status == 4)
+        error_msg1(": Error accessing file", cmd[0], 126);
+    else if (p->cmd_status == 5)
+        p->access_path = ft_strdup(cmd[0]);
+    p->env_variables = convert_env_list(p->env_list, p);
+    if (p->access_path)
+        execve(p->access_path, cmd, p->env_variables);
+    free(p->access_path);
+    free_double_ptr(p->env_variables);
+    error_msg1(": command not found", cmd[0], 127);
 }
 
 void	execute(char **cmd, t_prog *p)

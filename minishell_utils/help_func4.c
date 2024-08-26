@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 11:25:47 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 10:29:37 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/24 10:39:19 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ void	ft_remove_q(t_prog *p)
 	{
 		if (!ft_strcmp(iter->content, "\"\"")
 			|| !ft_strcmp(iter->content, "\'\'"))
+		{
+			free(iter->content);
 			iter->content = ft_strdup("	");
+		}
 		if (prev->type != REDIR_HEREDOC)
 		{
 			tmp = remove_qoutes(iter->content, p);
