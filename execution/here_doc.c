@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/24 10:14:06 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/27 23:20:00 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 			return (free(delemitre), close(tmp_fd), free(input), true);
 		}
 		if (to_expand && is_env_var(input))
-			input = replace(input, p->env_list, p);
+			input = expand_herdoc(input, p->env_list, p);
 		ft_putendl_fd(input, tmp_fd);
 		free(input);
 	}

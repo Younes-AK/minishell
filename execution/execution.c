@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:04:53 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/24 08:47:12 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/27 21:51:57 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	handle_child_process(t_exec_node *node, t_prog *p)
 	if (check_is_builtin(node->cmd, &index))
 	{
 		exec_builtins(node->cmd, p);
+		node->cmd++;
 	}
 	if (!execute_command(node->redir, node->cmd, p))
 	{

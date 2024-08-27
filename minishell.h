@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 21:17:35 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/27 23:19:51 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,6 +278,7 @@ char			*check_path(char **paths, char *cmd);
 bool			check_is_builtin(char **type, int *index);
 void			exec_builtins(char **cmd, t_prog *p);
 bool			ft_heredoc(t_prog *p);
+char			*expand_herdoc(char *str, t_env *env_list, t_prog *p);
 int				is_all_slashes(const char *cmd);
 void			unlink_temp_files(t_temp_files *temp_files_list);
 void			append_temp_file(t_temp_files **lst, t_temp_files *new);
