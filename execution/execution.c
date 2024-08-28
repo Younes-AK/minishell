@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:04:53 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/27 21:51:57 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/28 17:01:21 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,17 +45,21 @@ void	handle_child_process(t_exec_node *node, t_prog *p)
 	setup_child_pipes(p);
 	if (check_is_builtin(node->cmd, &index))
 	{
+		if (!check_redirects(node->redir))
+			return ;
 		exec_builtins(node->cmd, p);
-		node->cmd++;
 	}
-	if (!execute_command(node->redir, node->cmd, p))
+	else
 	{
-		if (!p->is_last)
+		if (!execute_command(node->redir, node->cmd, p))
 		{
-			close(p->curr_pipe[1]);
-			dup2(p->curr_pipe[0], STDIN_FILENO);
+			if (!p->is_last)
+			{
+				close(p->curr_pipe[1]);
+				dup2(p->curr_pipe[0], STDIN_FILENO);
+			}
+			exit(1);
 		}
-		exit(1);
 	}
 	exit(0);
 }
