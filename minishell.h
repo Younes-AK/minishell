@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/27 23:19:51 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/29 08:44:04 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ typedef struct s_prog
 	char			quote_type;
 	char			*filename;
 	bool			is_export_var;
+	bool			heredoc_err;
 }	t_prog;
 
 typedef struct s_lexer_state
