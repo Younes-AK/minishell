@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:36:11 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/29 09:05:16 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/30 06:40:04 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,6 @@ void	_init_exec_list(t_prog *p, t_exec_list *exec_list)
 	}
 }
 
-char	*get_delemitre(t_prog *p)
-{
-	t_tok_node	*iter;
-
-	iter = p->list_tok->head;
-	while(iter)
-	{
-		if (iter->next && iter->type == REDIR_HEREDOC)
-			if (iter->next->type == WORD)
-				return (iter->next->content);
-		iter = iter->next;
-	}
-	return (NULL);
-}
 int	check_red_syntax(t_prog *p)
 {
 	bool	check_heredoc;
@@ -78,7 +64,11 @@ int	check_red_syntax(t_prog *p)
 			check_heredoc = true;
 		iter = iter->next;
 	}
-	if (p->list_tok->tail->type == PIPE_LINE  && check_heredoc == true && get_delemitre(p))
+	if ((p->list_tok->tail->type == PIPE_LINE  && check_heredoc && get_delemitre(p))
+		|| (p->list_tok->tail->type == REDIR_APPEND  && check_heredoc && get_delemitre(p))
+		|| (p->list_tok->tail->type == REDIR_IN  && check_heredoc && get_delemitre(p))
+		|| (p->list_tok->tail->type == REDIR_OUT  && check_heredoc && get_delemitre(p))
+		|| (p->list_tok->tail->type == REDIR_HEREDOC  && check_heredoc && get_delemitre(p)))
 		return (2);
 	if (p->list_tok->tail->type == REDIR_HEREDOC || \
 		p->list_tok->tail->type == REDIR_APPEND
@@ -89,48 +79,7 @@ int	check_red_syntax(t_prog *p)
 		return (1);
 	return (0);
 }
-void read_in(char *delemitre)
-{
-	char	*input;
 
-	while (true)
-	{
-		input = readline("> ");
-		if (!input)
-				return ;
-		if (ft_strcmp (input, delemitre) == 0)
-		{
-			g_exit_status = 0;
-			break;
-		}
-		free(input);
-	}	
-}
-void read_herdoc(char **redirs)
-{
-	int		i;
-
-	i = 0;
-	while (redirs[i])
-	{
-		if (!ft_strcmp(redirs[i], "<<"))
-		{
-			read_in(redirs[i + 1]);
-		}
-		i += 2;
-	}
-}
-void heredoc_error(t_prog *p)
-{
-	t_exec_node	*iter;
-
-	iter = p->exec_list->head;
-	while (iter)
-	{
-		read_herdoc(iter->redir);
-		iter = iter->next;
-	}
-}
 bool	check_syntax(t_prog *p)
 {
 	t_tok_node	*iter;

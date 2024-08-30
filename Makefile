@@ -6,12 +6,12 @@
 #    By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/08/27 21:34:49 by yakazdao         ###   ########.fr        #
+#    Updated: 2024/08/30 06:43:28 by yakazdao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS := -Wall -Werror -Wextra #-g -fsanitize=address
 NAME := minishell
 RM := rm -rf
 
@@ -56,6 +56,7 @@ MAND_SRC := main.c \
             parssing/parssing_utils.c \
             parssing/create_exec_list.c \
             parssing/parssing_utils2.c \
+            parssing/herdoc_syntx_err.c \
             parssing/lexer.c  \
             parssing/lexer_utils.c  \
             parssing/parser.c \

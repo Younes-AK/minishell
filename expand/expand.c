@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/22 19:43:43 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/30 07:42:50 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ static void	expand_and_append(t_tok_node *iter, char *expanded_var, t_prog *p)
 	}
 }
 
-static bool	handle_ambiguous(t_tok_node *prev, char *expanded_var, t_prog *p)
+static bool	handle_ambiguous(t_tok_node *prev, char *expanded_var)
 {
 	if ((prev->type == REDIR_OUT || prev->type == REDIR_APPEND)
 		&& (is_ambiguous(expanded_var)
-			|| !ft_strcmp(expanded_var, "")) && p->is_env_cmd)
+			|| !ft_strcmp(expanded_var, "")))
 	{
 		error_msg2(" : ambiguous redirect", expanded_var);
 		g_exit_status = 1;
@@ -59,12 +59,18 @@ static bool	handle_ambiguous(t_tok_node *prev, char *expanded_var, t_prog *p)
 static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 	t_env *env_list, t_prog *p)
 {
-	if (is_env_var(iter->content))
-		p->is_env_cmd = true;
+	char	*temp;
+
+	if (iter->content && iter->content[0] == '$' && iter->content[1] == '"')
+    {
+		temp = ft_strdup(iter->content + 1);
+		free(iter->content);
+		iter->content = temp;
+    }
 	if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC)
 	{
 		p->expanded_var = get_env_val(iter->content, env_list, p);
-		if (!handle_ambiguous(prev, p->expanded_var, p))
+		if (!handle_ambiguous(prev, p->expanded_var))
 			p->is_valid = false;
 		iter->content = p->expanded_var;
 		expand_and_append(iter, p->expanded_var, p);

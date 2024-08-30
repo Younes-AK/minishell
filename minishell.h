@@ -6,7 +6,7 @@
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/29 08:44:04 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/08/30 06:41:48 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,11 @@
 typedef enum e_token
 {
 	WORD,
-	WHITE_SPACE,
-	TO_EXPAND,
 	PIPE_LINE,
 	REDIR_IN,
 	REDIR_OUT,
 	REDIR_HEREDOC,
 	REDIR_APPEND,
-	DOUBLE_QUOTE,
-	SINGLE_QUOTE,
-	NEW_LINE,
 }	t_token;
 
 typedef struct s_tok_node
@@ -110,15 +105,9 @@ typedef struct s_prog
 	char			*path;
 	char			**all_paths;
 	char			*access_path;
-	bool			is_env_cmd;
-	int				heredoc_fd;
-	int				fd_in;
-	int				fd_out;
 	int				original_stdin;
-	int				original_heredoc;
 	int				original_stdout;
 	int				g_exit_status;
-	bool			concatanate;
 	int				to_restart_stdin;
 	int				prev_pipe[2];
 	int				curr_pipe[2];
@@ -128,8 +117,6 @@ typedef struct s_prog
 	int				cmd_status;
 	char			*expanded_var;
 	bool			is_valid;
-	int				dot_count;
-	bool			has_non_dot_or_slash;
 	t_tokenze		*new_tok_list;
 	t_temp_files	*temp_files;
 	size_t			size;
@@ -207,6 +194,10 @@ void			append_exec(t_exec_list *list, t_exec_node *new_node);
 void			free_env_list(t_env *list);
 void			ft_free_lists(t_prog *prog, char *state);
 void			process_quotes_and_operators(t_prog *p, char *quote);
+void			read_in(char *delemitre);
+void			read_herdoc(char **redirs);
+void			heredoc_error(t_prog *p);
+char			*get_delemitre(t_prog *p);
 // =================== end parssing part =========================
 
 // =================== start lexer part ==========================
