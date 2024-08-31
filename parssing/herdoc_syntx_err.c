@@ -57,7 +57,7 @@ void heredoc_error(t_prog *p)
 		iter = iter->next;
 	}
 }
-char	*get_delemitre(t_prog *p)
+char	*get_delm(t_prog *p)
 {
 	t_tok_node	*iter;
 

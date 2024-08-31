@@ -197,7 +197,7 @@ void			process_quotes_and_operators(t_prog *p, char *quote);
 void			read_in(char *delemitre);
 void			read_herdoc(char **redirs);
 void			heredoc_error(t_prog *p);
-char			*get_delemitre(t_prog *p);
+char			*get_delm(t_prog *p);
 // =================== end parssing part =========================
 
 // =================== start lexer part ==========================

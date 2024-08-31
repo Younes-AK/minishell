@@ -53,22 +53,22 @@ void	_init_exec_list(t_prog *p, t_exec_list *exec_list)
 
 int	check_red_syntax(t_prog *p)
 {
-	bool	check_heredoc;
+	bool	is_hdoc;
 	t_tok_node	*iter;
 	
-	check_heredoc = false;
+	is_hdoc = false;
 	iter = p->list_tok->head;
 	while (iter)
 	{
 		if (iter->type == REDIR_HEREDOC)
-			check_heredoc = true;
+			is_hdoc = true;
 		iter = iter->next;
 	}
-	if ((p->list_tok->tail->type == PIPE_LINE  && check_heredoc && get_delemitre(p))
-		|| (p->list_tok->tail->type == REDIR_APPEND  && check_heredoc && get_delemitre(p))
-		|| (p->list_tok->tail->type == REDIR_IN  && check_heredoc && get_delemitre(p))
-		|| (p->list_tok->tail->type == REDIR_OUT  && check_heredoc && get_delemitre(p))
-		|| (p->list_tok->tail->type == REDIR_HEREDOC  && check_heredoc && get_delemitre(p)))
+	if ((p->list_tok->tail->type == PIPE_LINE  && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_APPEND  && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_IN  && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_OUT  && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_HEREDOC  && is_hdoc && get_delm(p)))
 		return (2);
 	if (p->list_tok->tail->type == REDIR_HEREDOC || \
 		p->list_tok->tail->type == REDIR_APPEND

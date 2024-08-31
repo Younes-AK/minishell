@@ -12,6 +12,8 @@
 
 #include "../minishell.h"
 
+extern int	g_exit_status;
+
 int	count_orignal_space(char *input, int *index)
 {
 	int		i;
@@ -92,7 +94,7 @@ void	ft_free_lists(t_prog *prog, char *state)
 		free_exec_list(prog->exec_list);
 		ft_putstr_fd("exit\n", 1);
 		free_pids(prog->pids);
-		exit(EXIT_FAILURE);
+		exit(g_exit_status);
 	}
 	free_tok_list(prog->list_tok);
 	free_tok_list(prog->new_tok_list);
