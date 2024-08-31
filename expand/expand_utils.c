@@ -92,7 +92,7 @@ char	*extract_var_name(const char **start)
 		*start = end + 1;
 		return (var_name);
 	}
-	while (*end && (ft_isalpha(*end) || *end == '_'))
+	while (*end && (ft_isalnum(*end) || *end == '_'))
 		end++;
 	var_size = end - *start - 1;
 	var_name = safe_allocation(sizeof(char), var_size + 1);

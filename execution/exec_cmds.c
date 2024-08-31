@@ -106,9 +106,9 @@ static void execute_cmd(char **cmd, t_prog *p)
     p->env_variables = convert_env_list(p->env_list, p);
     if (p->access_path)
         execve(p->access_path, cmd, p->env_variables);
-    free(p->access_path);
-    free_double_ptr(p->env_variables);
-    error_msg1(": command not found", cmd[0], 127);
+    error_msg2(": command not found", cmd[0]);
+    (free(p->access_path),  free_double_ptr(p->env_variables));
+   exit(127);
 }
 
 void	execute(char **cmd, t_prog *p)
