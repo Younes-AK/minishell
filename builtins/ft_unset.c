@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 void	free_env_var(char *var, t_env **env)
 {
 	t_env	*iter;
@@ -56,11 +54,12 @@ void	unset_env(int nbr_args, t_env **env, char **args)
 		else
 		{
 			error_msg2(" : not a valid identifier", args[i]);
-			g_exit_status = 1;
+			EXIT_STATUS = 1;
 		}
 		i++;
 	}
 }
+
 void	ft_unset(char **args, t_env **env, t_env **s_env)
 {
 	int	nbr_args;
@@ -68,7 +67,6 @@ void	ft_unset(char **args, t_env **env, t_env **s_env)
 
 	nbr_args = get_args_nbr(args);
 	i = 1;
-
 	unset_env(nbr_args, env, args);
 	while (i < nbr_args)
 	{
@@ -76,6 +74,6 @@ void	ft_unset(char **args, t_env **env, t_env **s_env)
 			free_env_var(args[i], s_env);
 		i++;
 	}
-	if (g_exit_status != 1)
-		g_exit_status = 0;
+	if (EXIT_STATUS != 1)
+		EXIT_STATUS = 0;
 }

@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 void	append_expanded_tokens(t_tok_node *iter, char **tokens, t_prog *p)
 {
 	char	**token_start;
@@ -50,7 +48,7 @@ static bool	handle_ambiguous(t_tok_node *prev, char *expanded_var)
 			|| !ft_strcmp(expanded_var, "")))
 	{
 		error_msg2(" : ambiguous redirect", expanded_var);
-		g_exit_status = 1;
+		EXIT_STATUS = 1;
 		return (false);
 	}
 	return (true);
@@ -62,11 +60,11 @@ static bool	process_token(t_tok_node *iter, t_tok_node *prev, \
 	char	*temp;
 
 	if (iter->content && iter->content[0] == '$' && iter->content[1] == '"')
-    {
+	{
 		temp = ft_strdup(iter->content + 1);
 		free(iter->content);
 		iter->content = temp;
-    }
+	}
 	if (to_expand(iter->content, iter->type) && prev->type != REDIR_HEREDOC)
 	{
 		p->expanded_var = get_env_val(iter->content, env_list, p);

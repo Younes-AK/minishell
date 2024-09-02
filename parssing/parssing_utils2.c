@@ -40,6 +40,8 @@ void	process_quotes_and_operators(t_prog *p, char *quote)
 
 int	is_all_slashes(const char *cmd)
 {
+	if (!*cmd)
+		return (0);
 	while (*cmd)
 	{
 		if (*cmd != '/')

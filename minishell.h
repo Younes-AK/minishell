@@ -33,6 +33,8 @@
 # define ERROR -1
 # define SUCCESS 0
 
+int		g_received_signal;
+
 typedef enum e_token
 {
 	WORD,
@@ -173,6 +175,8 @@ void			error_msg1(char *msg, char *arg, int exit_status);
 void			error_msg2(char *msg, char *arg);
 bool			is_whait_spaces(char c);
 bool			is_str_spaces(char *line);
+# define EXIT_STATUS g_received_signal
+
 t_tokenze		*init_token_list(t_prog *p);
 void			append_node(t_prog *p, char *content, int len, t_token type);
 bool			is_operator(char c);

@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
-extern int	g_exit_status;
-
-void read_in(char *delemitre)
+void	read_in(char *delemitre)
 {
 	char	*input;
 
@@ -22,17 +20,18 @@ void read_in(char *delemitre)
 	{
 		input = readline("> ");
 		if (!input)
-				return ;
+			return ;
 		if (ft_strcmp (input, delemitre) == 0)
 		{
-			g_exit_status = 0;
+			EXIT_STATUS = 0;
 			free(input);
-			break;
+			break ;
 		}
 		free(input);
-	}	
+	}
 }
-void read_herdoc(char **redirs)
+
+void	read_herdoc(char **redirs)
 {
 	int		i;
 
@@ -46,7 +45,8 @@ void read_herdoc(char **redirs)
 		i += 1;
 	}
 }
-void heredoc_error(t_prog *p)
+
+void	heredoc_error(t_prog *p)
 {
 	t_exec_node	*iter;
 
@@ -57,12 +57,13 @@ void heredoc_error(t_prog *p)
 		iter = iter->next;
 	}
 }
+
 char	*get_delm(t_prog *p)
 {
 	t_tok_node	*iter;
 
 	iter = p->list_tok->head;
-	while(iter)
+	while (iter)
 	{
 		if (iter->next && iter->type == REDIR_HEREDOC)
 			if (iter->next->type == WORD)

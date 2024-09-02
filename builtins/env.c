@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 void	env(t_env *env)
 {
 	while (env)
@@ -24,5 +22,5 @@ void	env(t_env *env)
 		ft_putstr_fd("\n", 1);
 		env = env->next;
 	}
-	g_exit_status = 0;
+	EXIT_STATUS = 0;
 }

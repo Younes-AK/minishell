@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 char	**convert_env_list(t_env *env_list, t_prog *p)
 {
 	int		env_size;
@@ -51,7 +49,7 @@ bool	redirect_output(char *file, int flags)
 	if (fd_file == -1)
 	{
 		error_msg2(" : No such file or directory", file);
-		g_exit_status = 1;
+		EXIT_STATUS = 1;
 		return (false);
 	}
 	else
@@ -69,7 +67,7 @@ bool	redirect_input(char *file, int flags)
 	fd_file = open(file, flags);
 	if (fd_file == -1)
 	{
-		g_exit_status = 1;
+		EXIT_STATUS = 1;
 		error_msg2(" : No such file or directory", file);
 		return (false);
 	}

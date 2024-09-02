@@ -76,7 +76,7 @@ void	ft_remove_q(t_prog *p)
 			|| !ft_strcmp(iter->content, "\'\'"))
 		{
 			free(iter->content);
-			iter->content = ft_strdup("	");
+			iter->content = ft_strdup("\0");
 		}
 		if (prev->type != REDIR_HEREDOC)
 		{

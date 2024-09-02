@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 bool	check_quotes(char *p)
 {
 	bool	in_d_quote;
@@ -110,7 +108,7 @@ bool	parssing(t_prog *p)
 	else
 	{
 		write(2, "minishell: syntax error near unexpected quote \n", 48);
-		g_exit_status = 258;
+		EXIT_STATUS = 258;
 		return (false);
 	}
 }

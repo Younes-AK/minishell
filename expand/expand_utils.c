@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 char	*append_value(char *res, const char *value, size_t *res_size)
 {
 	size_t	res_len;
@@ -62,7 +60,7 @@ char	*get_env_value(const char *var_name, t_env *env_list)
 	}
 	if (ft_strcmp(var_name, "$?") == 0)
 	{
-		result = ft_itoa(g_exit_status);
+		result = ft_itoa(EXIT_STATUS);
 		return (result);
 	}
 	iter = env_list;

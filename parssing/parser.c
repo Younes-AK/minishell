@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 bool	increment_cmd(t_tok_node *iter, t_tok_node *prev)
 {
 	if (iter->type == WORD && (prev->type != REDIR_OUT && prev->type != REDIR_IN
@@ -53,9 +51,9 @@ void	_init_exec_list(t_prog *p, t_exec_list *exec_list)
 
 int	check_red_syntax(t_prog *p)
 {
-	bool	is_hdoc;
+	bool		is_hdoc;
 	t_tok_node	*iter;
-	
+
 	is_hdoc = false;
 	iter = p->list_tok->head;
 	while (iter)
@@ -64,11 +62,11 @@ int	check_red_syntax(t_prog *p)
 			is_hdoc = true;
 		iter = iter->next;
 	}
-	if ((p->list_tok->tail->type == PIPE_LINE  && is_hdoc && get_delm(p))
-		|| (p->list_tok->tail->type == REDIR_APPEND  && is_hdoc && get_delm(p))
-		|| (p->list_tok->tail->type == REDIR_IN  && is_hdoc && get_delm(p))
-		|| (p->list_tok->tail->type == REDIR_OUT  && is_hdoc && get_delm(p))
-		|| (p->list_tok->tail->type == REDIR_HEREDOC  && is_hdoc && get_delm(p)))
+	if ((p->list_tok->tail->type == PIPE_LINE && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_APPEND && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_IN && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_OUT && is_hdoc && get_delm(p))
+		|| (p->list_tok->tail->type == REDIR_HEREDOC && is_hdoc && get_delm(p)))
 		return (2);
 	if (p->list_tok->tail->type == REDIR_HEREDOC || \
 		p->list_tok->tail->type == REDIR_APPEND
@@ -89,7 +87,7 @@ bool	check_syntax(t_prog *p)
 	{
 		if (check_red_syntax(p) == 1)
 			return (false);
-		else if(check_red_syntax(p) == 2)
+		else if (check_red_syntax(p) == 2)
 			return (p->heredoc_err = true, true);
 		while (iter)
 		{
@@ -114,7 +112,7 @@ bool	parser(t_prog *p)
 	if (!check_syntax(p))
 	{
 		write(2, "minishell: syntax error near unexpected token\n", 47);
-		g_exit_status = 258;
+		EXIT_STATUS = 258;
 		return (false);
 	}
 	else
@@ -126,7 +124,7 @@ bool	parser(t_prog *p)
 		{
 			heredoc_error(p);
 			write(2, "minishell: syntax error near unexpected token\n", 47);
-			g_exit_status = 258;
+			EXIT_STATUS = 258;
 			return (false);
 		}
 		if (!ft_heredoc(p))

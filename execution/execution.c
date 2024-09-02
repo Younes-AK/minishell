@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
+//extern int	g_exit_status;
 
 void	setup_child_pipes(t_prog *p)
 {
@@ -74,12 +74,12 @@ void	wait_for_children(t_prog *p)
 	orig_sigint_handler = signal(SIGINT, SIG_IGN);
 	while (waitpid(p->pids[i], &status, WUNTRACED) > 0)
 	{
-		if (g_exit_status != 1)
+		if (EXIT_STATUS != 1)
 		{
 			if (WIFEXITED(status))
-				g_exit_status = WEXITSTATUS(status);
+				EXIT_STATUS = WEXITSTATUS(status);
 			if (WIFSIGNALED(status))
-				g_exit_status = WTERMSIG(status) + 128;
+				EXIT_STATUS = WTERMSIG(status) + 128;
 		}
 		i++;
 	}

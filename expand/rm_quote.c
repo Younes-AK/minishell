@@ -32,7 +32,7 @@ char	*expand_herdoc(char *str, t_env *env_list, t_prog *p)
 	1 && (p->res = safe_allocation(sizeof(char), p->size), p->res[0] = '\0');
 	while (*p->start)
 	{
-		if ( *p->start == '"')
+		if (*p->start == '"')
 		{
 			if (p->quote_type == 0)
 				p->quote_type = *p->start;

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	g_exit_status;
+//int	g_exit_status;
 
 void	loop(t_prog *prog)
 {
@@ -69,7 +69,7 @@ int	main(int ac, char **av, char **envp)
 	store_env(envp, &prog);
 	store_secret_env(envp, &prog);
 	set_default_env(prog.env_list, &prog);
-	g_exit_status = 0;
+	EXIT_STATUS = 0;
 	prog.original_stdin = dup(STDIN_FILENO);
 	tcgetattr(STDIN_FILENO, term_input_output());
 	while (true)

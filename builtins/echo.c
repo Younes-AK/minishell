@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 static bool	parse_echo(char **args, int *i)
 {
 	bool	option;
@@ -61,5 +59,5 @@ void	echo(char **args)
 	i = 1;
 	option = parse_echo(args, &i);
 	print_echo_args(args, i, option);
-	g_exit_status = 0;
+	EXIT_STATUS = 0;
 }

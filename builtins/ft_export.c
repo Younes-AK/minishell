@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 static t_env	*get_env(char *key, t_env *env)
 {
 	while (env)
@@ -123,12 +121,12 @@ void	ft_export(char **cmd, t_prog *p)
 		{
 			add_to_export(key, value, &p->secret_env);
 			add_to_env(key, &p->secret_env, &p->env_list);
-			g_exit_status = 0;
+			EXIT_STATUS = 0;
 		}
 		else
 		{
 			error_msg2(" : not a valid identifier", cmd[1]);
-			g_exit_status = 1;
+			EXIT_STATUS = 1;
 		}
 		free(key);
 		free(value);

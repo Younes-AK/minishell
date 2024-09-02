@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern int	g_exit_status;
-
 static int	check_overflow(char *nbr)
 {
 	size_t	len;
@@ -99,17 +97,17 @@ void	ft_exit(char **args)
 	if (args_len >= 2)
 		num = ft_atoi(args[1]);
 	else
-		exit(g_exit_status);
+		exit(EXIT_STATUS);
 	if (args_len > 2 && num != -1)
 	{
 		ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
-		g_exit_status = 1;
+		EXIT_STATUS = 1;
 		return ;
 	}
 	else if (num == -1)
 	{
 		ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
-		g_exit_status = 255;
+		EXIT_STATUS = 255;
 		exit(255);
 	}
 	exit(num);

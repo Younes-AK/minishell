@@ -14,8 +14,6 @@
 
 #define TMP_FILE	"/tmp/minihell_temporary_file"
 
-extern int	g_exit_status;
-
 static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 {
 	char	*input;
@@ -31,10 +29,10 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-			return (g_exit_status = 1, free(delemitre), close(tmp_fd), false);
+			return (free(delemitre), close(tmp_fd), false);
 		if (ft_strcmp (input, delemitre) == 0)
 		{
-			g_exit_status = 0;
+			EXIT_STATUS = 0;
 			return (free(delemitre), close(tmp_fd), free(input), true);
 		}
 		if (to_expand && is_env_var(input))
