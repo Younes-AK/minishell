@@ -20,19 +20,18 @@ char	**convert_env_list(t_env *env_list, t_prog *p)
 
 	env_size = ft_lstsize(env_list);
 	env_array = malloc((env_size + 1) * sizeof(char *));
-	iter = env_list;
-	p->i = 0;
 	if (!env_array)
-		return (NULL);
+		ft_free_lists(p, "exit");
+	1 && (p->i = 0, iter = env_list);
 	while (iter && p->i < env_size)
 	{
-		env_array[p->i] = create_env_entry(iter);
+		env_array[p->i] = create_env_entry(iter, p);
 		if (!env_array[p->i])
 		{
 			while (p->i > 0)
 				free(env_array[--p->i]);
 			free(env_array);
-			return (NULL);
+			ft_free_lists(p, "exit");
 		}
 		p->i++;
 		iter = iter->next;

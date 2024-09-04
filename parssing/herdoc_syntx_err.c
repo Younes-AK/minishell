@@ -12,10 +12,12 @@
 
 #include "../minishell.h"
 
-void	read_in(char *delemitre)
+void	read_in(char *eof, t_prog *p)
 {
 	char	*input;
+	char	*delemitre;
 
+	delemitre = remove_qoutes(eof, p);
 	while (true)
 	{
 		input = readline("> ");
@@ -25,13 +27,14 @@ void	read_in(char *delemitre)
 		{
 			EXIT_STATUS = 0;
 			free(input);
+			free (delemitre);
 			break ;
 		}
 		free(input);
 	}
 }
 
-void	read_herdoc(char **redirs)
+void	read_herdoc(char **redirs, t_prog *p)
 {
 	int		i;
 
@@ -40,7 +43,7 @@ void	read_herdoc(char **redirs)
 	{
 		if (!ft_strcmp(redirs[i], "<<") && redirs[i + 1])
 		{
-			read_in(redirs[i + 1]);
+			read_in(redirs[i + 1], p);
 		}
 		i += 1;
 	}
@@ -53,7 +56,7 @@ void	heredoc_error(t_prog *p)
 	iter = p->exec_list->head;
 	while (iter)
 	{
-		read_herdoc(iter->redir);
+		read_herdoc(iter->redir, p);
 		iter = iter->next;
 	}
 }

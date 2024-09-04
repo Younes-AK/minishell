@@ -64,7 +64,7 @@ void	exec_builtins(char **cmd, t_prog *p)
 	if (!(ft_strcmp(cmd[0], "echo")))
 		echo(cmd);
 	else if (!(ft_strcmp(cmd[0], "cd")))
-		cd(cmd, p->env_list);
+		cd(cmd, p->env_list, p);
 	else if (!(ft_strcmp(cmd[0], "pwd")))
 		pwd();
 	else if (!(ft_strcmp(cmd[0], "unset")))

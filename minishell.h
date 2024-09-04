@@ -161,7 +161,8 @@ t_env			*ft_lstnew(char *key, char *value);
 int				ft_lstsize(t_env *lst);
 void			*ft_memcpy(void *dest, const void *src, size_t n);
 char			*ft_strcat(char *restrict s1, const char *restrict s2);
-void			*ft_realloc(void *ptr, size_t original_size, size_t new_size);
+void			*ft_realloc(void *ptr, size_t original_size,
+					size_t new_size, t_prog *p);
 int				ft_isalnum(int c);
 int				ft_isalpha(int c);
 int				ft_isdigit(int c);
@@ -198,8 +199,8 @@ void			append_exec(t_exec_list *list, t_exec_node *new_node);
 void			free_env_list(t_env *list);
 void			ft_free_lists(t_prog *prog, char *state);
 void			process_quotes_and_operators(t_prog *p, char *quote);
-void			read_in(char *delemitre);
-void			read_herdoc(char **redirs);
+void			read_in(char *delemitre, t_prog *p);
+void			read_herdoc(char **redirs, t_prog *p);
 void			heredoc_error(t_prog *p);
 char			*get_delm(t_prog *p);
 // =================== end parssing part =========================
@@ -215,8 +216,9 @@ void			ft_remove_q(t_prog *p);
 char			*remove_qoutes(char *content, t_prog *p);
 char			*get_env_value(const char *var_name, t_env *env_list);
 char			*extract_var_name(const char **start);
-char			*append_value(char *res, const char *value, size_t *res_size);
-char			*append_char(char *res, char c, size_t *res_size);
+char			*append_value(char *res, const char *value,
+					size_t *res_size, t_prog *p);
+char			*append_char(char *res, char c, size_t *res_size, t_prog *p);
 char			*replace(char *str, t_env *env_list, t_prog *p);
 bool			check_var_exist(char *str, t_env **env);
 char			*extract_var_name(const char **start);
@@ -240,24 +242,24 @@ void			ft_putchar_fd(char c, int fd);
 // =================== start builtins part ======================
 int				get_args_nbr(char **args);
 void			echo(char **args);
-void			cd(char **args, t_env *env);
+void			cd(char **args, t_env *env, t_prog *p);
 void			pwd(void);
 void			env(t_env *env);
 void			ft_export(char **args, t_prog *p);
 void			ft_exit(char **args);
 void			ft_unset(char **args, t_env **env, t_env **s_env);
 int				is_in_env(t_env *env, const char *key);
-void			env_add(char *new_var, t_env *env);
+void			env_add(char *new_var, t_env *env, t_prog *p);
 bool			is_valid_identifier(char *key);
 bool			is_special_char(char *str);
-void			split_val(char *arg, char **key, char **value);
+void			split_val(char *arg, char **key, char **value, t_prog *p);
 bool			contain_space(char *str);
-char			*ft_copy(char *src, size_t start, size_t end);
-char			*create_env_entry(t_env *iter);
+char			*ft_copy(char *src, size_t start, size_t end, t_prog *p);
+char			*create_env_entry(t_env *iter, t_prog *p);
 long int		modulo(long int nbr);
-void			__ft_add(t_env **env, char *key, char *value);
+void			__ft_add(t_env **env, char *key, char *value, t_prog *p);
 void			print_envi(t_env *env);
-void			update_oldpwd(t_env *env);
+void			update_oldpwd(t_env *env, t_prog *p);
 // =================== end builtins part =========================
 
 // =================== start execution part ======================
@@ -272,6 +274,8 @@ bool			redirect_input(char *file, int flags);
 bool			check_redirects(char **redirs);
 char			*check_path(char **paths, char *cmd);
 bool			check_is_builtin(char **type, int *index);
+int				check_directory(char *cmd);
+int				check_file_permissions(struct stat *st, t_prog *p);
 void			exec_builtins(char **cmd, t_prog *p);
 bool			ft_heredoc(t_prog *p);
 char			*expand_herdoc(char *str, t_env *env_list, t_prog *p);

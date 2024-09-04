@@ -23,7 +23,7 @@ static t_env	*get_env(char *key, t_env *env)
 	return (NULL);
 }
 
-static char	*get_value(char *str1, char *str2)
+static char	*get_value(char *str1, char *str2, t_prog *p)
 {
 	size_t	len;
 	size_t	i;
@@ -37,6 +37,8 @@ static char	*get_value(char *str1, char *str2)
 		i++;
 	len = ft_strlen(str1) + ft_strlen(str2) - i;
 	res = malloc(sizeof(char) * (len + 1));
+	if (!res)
+		ft_free_lists(p, "exit");
 	j = 0;
 	while (str1 && str1[j])
 	{
@@ -49,7 +51,7 @@ static char	*get_value(char *str1, char *str2)
 	return (res);
 }
 
-void	add_to_export(char *key, char *value, t_env **env)
+void	add_to_export(char *key, char *value, t_env **env, t_prog *p)
 {
 	t_env	*tmp;
 	char	*out_val;
@@ -58,9 +60,9 @@ void	add_to_export(char *key, char *value, t_env **env)
 	if (check_var_exist(key, env))
 		tmp = get_env(key, *env);
 	if (value[0] == '+' && tmp)
-		out_val = get_value(tmp->value, value);
+		out_val = get_value(tmp->value, value, p);
 	else if (value[0] == '=' || value[0] == '+')
-		out_val = get_value(NULL, value);
+		out_val = get_value(NULL, value, p);
 	else
 		out_val = NULL;
 	if (tmp)
@@ -72,11 +74,11 @@ void	add_to_export(char *key, char *value, t_env **env)
 		}
 	}
 	else
-		__ft_add(env, key, out_val);
+		__ft_add(env, key, out_val, p);
 	free(out_val);
 }
 
-void	add_to_env(char *key, t_env **env_export, t_env **env)
+void	add_to_env(char *key, t_env **env_export, t_env **env, t_prog *p)
 {
 	t_env	*tmp;
 	t_env	*node;
@@ -99,9 +101,9 @@ void	add_to_env(char *key, t_env **env_export, t_env **env)
 	else if (tmp->value)
 	{
 		if (tmp->value[0] != '\0')
-			__ft_add(env, key, tmp->value);
+			__ft_add(env, key, tmp->value, p);
 		else
-			__ft_add(env, key, NULL);
+			__ft_add(env, key, NULL, p);
 	}
 }
 
@@ -116,11 +118,11 @@ void	ft_export(char **cmd, t_prog *p)
 		print_envi(p->secret_env);
 	while (cmd[i])
 	{
-		split_val(cmd[i], &key, &value);
+		split_val(cmd[i], &key, &value, p);
 		if (is_valid_identifier(key))
 		{
-			add_to_export(key, value, &p->secret_env);
-			add_to_env(key, &p->secret_env, &p->env_list);
+			add_to_export(key, value, &p->secret_env, p);
+			add_to_env(key, &p->secret_env, &p->env_list, p);
 			EXIT_STATUS = 0;
 		}
 		else

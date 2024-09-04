@@ -32,11 +32,11 @@ char	*replace(char *str, t_env *env_list, t_prog *p)
 		{
 			p->var_name = extract_var_name(&p->start);
 			p->var_value = get_env_value(p->var_name, env_list);
-			p->res = append_value(p->res, p->var_value, &p->size);
+			p->res = append_value(p->res, p->var_value, &p->size, p);
 			(free(p->var_name), free((char *) p->var_value));
 		}
 		else
-			p->res = append_char(p->res, *p->start++, &p->size);
+			p->res = append_char(p->res, *p->start++, &p->size, p);
 	}
 	return (p->res);
 }

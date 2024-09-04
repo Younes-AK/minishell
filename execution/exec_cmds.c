@@ -54,30 +54,24 @@ char	*get_path(t_env *env_list, char *key)
 static int	check_command_status(char *cmd, t_prog *p)
 {
 	struct stat	st;
+	int			dir_check;
 
-	if (is_all_slashes(cmd))
-		return (1);
+	dir_check = check_directory(cmd);
+	if (dir_check)
+		return (dir_check);
+	if (!ft_strcmp(cmd, ".."))
+		return (3);
 	p->access_path = check_path(p->all_paths, cmd);
 	if (stat(cmd, &st) == 0)
-	{
-		if (S_ISDIR(st.st_mode))
-			return (1);
-		if (p->access_path)
-			return (0);
-		else if (st.st_mode & S_IXUSR)
-			return (5);
-		else
-			return (2);
-	}
-	else if (errno == ENOENT)
+		return (check_file_permissions(&st, p));
+	if (errno == ENOENT)
 	{
 		if (p->access_path)
 			return (0);
 		else
 			return (3);
 	}
-	else
-		return (4);
+	return (4);
 }
 
 static void	execute_cmd(char **cmd, t_prog *p)

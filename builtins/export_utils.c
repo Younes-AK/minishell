@@ -12,13 +12,18 @@
 
 #include "../minishell.h"
 
-char	*ft_copy(char *src, size_t start, size_t end)
+char	*ft_copy(char *src, size_t start, size_t end, t_prog *p)
 {
 	char	*res;
 	size_t	i;
 
 	i = 0;
 	res = malloc(sizeof(char) * (end - start + 1));
+	if (!res)
+	{
+		error_msg("Error : malloc fialed allocate memory\n");
+		ft_free_lists(p, "exit");
+	}
 	while (start < end)
 	{
 		res[i] = src[start];
@@ -43,7 +48,7 @@ bool	contain_space(char *str)
 	return (false);
 }
 
-void	split_val(char *arg, char **key, char **value)
+void	split_val(char *arg, char **key, char **value, t_prog *p)
 {
 	size_t	start;
 	size_t	end;
@@ -54,8 +59,8 @@ void	split_val(char *arg, char **key, char **value)
 	while (arg[i] && arg[i] != '=' && !(arg[i] == '+' && arg[i + 1] == '='))
 		i++;
 	end = i;
-	*key = ft_copy(arg, start, end);
-	*value = ft_copy(arg, end, ft_strlen(arg));
+	*key = ft_copy(arg, start, end, p);
+	*value = ft_copy(arg, end, ft_strlen(arg), p);
 }
 
 bool	is_special_char(char *str)

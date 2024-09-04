@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS := -Wall -Werror -Wextra -g #-fsanitize=address
 NAME := minishell
 RM := rm -rf
 
@@ -76,6 +76,7 @@ MAND_SRC := main.c \
             execution/exec_cmds.c \
             execution/execution_utils.c \
             execution/execution_utils2.c \
+            execution/exec_help_func1.c \
             execution/here_doc.c \
             execution/here_doc_utils.c \
             execution/signal.c 

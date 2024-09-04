@@ -91,7 +91,7 @@ void	append_temp_file(t_temp_files **lst, t_temp_files *new)
 	list->next = new;
 }
 
-char	*create_env_entry(t_env *iter)
+char	*create_env_entry(t_env *iter, t_prog *p)
 {
 	size_t	key_len;
 	size_t	value_len;
@@ -101,7 +101,7 @@ char	*create_env_entry(t_env *iter)
 	value_len = ft_strlen(iter->value);
 	entry = malloc(key_len + value_len + 2);
 	if (!entry)
-		return (NULL);
+		ft_free_lists(p, "exit");
 	ft_strcpy(entry, iter->key);
 	entry[key_len] = '=';
 	ft_strcpy(entry + key_len + 1, iter->value);

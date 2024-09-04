@@ -23,7 +23,7 @@ int	is_in_env(t_env *env, const char *key)
 	return (0);
 }
 
-void	env_add(char *new_var, t_env *env)
+void	env_add(char *new_var, t_env *env, t_prog *p)
 {
 	char	*delimiter;
 	size_t	key_len;
@@ -33,7 +33,10 @@ void	env_add(char *new_var, t_env *env)
 	tmp = new_var;
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (!new_node)
-		return ;
+	{
+		error_msg("Error : malloc fialed allocate memory\n");
+		ft_free_lists(p, "exit");
+	}
 	delimiter = ft_strchr(new_var, '=');
 	key_len = delimiter - new_var;
 	new_node->key = strndup(new_var, key_len);
@@ -66,11 +69,16 @@ void	print_envi(t_env *env)
 	}
 }
 
-void	__ft_add(t_env **env, char *key, char *value)
+void	__ft_add(t_env **env, char *key, char *value, t_prog *p)
 {
 	t_env	*node;
 
 	node = malloc(sizeof(t_env));
+	if (!node)
+	{
+		error_msg("Error : malloc fialed allocate memory\n");
+		ft_free_lists(p, "exit");
+	}
 	node->key = ft_strdup(key);
 	node->value = ft_strdup(value);
 	node->next = NULL;

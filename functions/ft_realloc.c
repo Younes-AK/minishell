@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	*ft_realloc(void *ptr, size_t original_size, size_t new_size)
+void	*ft_realloc(void *ptr, size_t original_size, size_t new_size, t_prog *p)
 {
 	void	*new_ptr;
 	size_t	copy_size;
@@ -25,8 +25,8 @@ void	*ft_realloc(void *ptr, size_t original_size, size_t new_size)
 	new_ptr = malloc(new_size + 1);
 	if (!new_ptr)
 	{
-		perror("malloc");
-		exit(1);
+		perror("malloc failled");
+		ft_free_lists(p, "exit");
 	}
 	if (ptr)
 	{

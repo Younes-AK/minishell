@@ -1,41 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd_utils.c                                         :+:      :+:    :+:   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/23 20:05:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 20:09:19 by yakazdao         ###   ########.fr       */
+/*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
+/*   Updated: 2024/08/27 23:20:00 by yakazdao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	update_oldpwd(t_env *env, t_prog *p)
+int	check_directory(char *cmd)
 {
-	char	cwd[PATH_MAX];
-	char	*oldpwd;
+	if (is_all_slashes(cmd))
+		return (1);
+	return (0);
+}
 
-	if (getcwd(cwd, PATH_MAX) == NULL)
-		return ;
-	oldpwd = ft_strjoin("OLDPWD=", cwd);
-	if (!oldpwd)
-		return ;
-	if (is_in_env(env, "OLDPWD") == 0)
-		env_add(oldpwd, env, p);
-	else
-	{
-		while (env)
-		{
-			if (ft_strcmp(env->key, "OLDPWD") == 0)
-			{
-				free(env->value);
-				env->value = strdup(cwd);
-				break ;
-			}
-			env = env->next;
-		}
-	}
-	free(oldpwd);
+int	check_file_permissions(struct stat *st, t_prog *p)
+{
+	if (S_ISDIR(st->st_mode))
+		return (1);
+	if (p->access_path)
+		return (0);
+	if (st->st_mode & S_IXUSR)
+		return (5);
+	return (2);
 }

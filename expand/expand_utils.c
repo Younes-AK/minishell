@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	*append_value(char *res, const char *value, size_t *res_size)
+char	*append_value(char *res, const char *value, size_t *res_size, t_prog *p)
 {
 	size_t	res_len;
 	size_t	new_res_size;
@@ -23,21 +23,21 @@ char	*append_value(char *res, const char *value, size_t *res_size)
 	new_res_size = res_len + value_len + 1;
 	if (new_res_size > *res_size)
 	{
-		res = ft_realloc(res, *res_size, new_res_size);
+		res = ft_realloc(res, *res_size, new_res_size, p);
 		*res_size = new_res_size;
 	}
 	ft_strcat(res, value);
 	return (res);
 }
 
-char	*append_char(char *res, char c, size_t *res_size)
+char	*append_char(char *res, char c, size_t *res_size, t_prog *p)
 {
 	size_t	len;
 
 	len = ft_strlen(res);
 	if (len + 2 > *res_size)
 	{
-		res = ft_realloc(res, *res_size, len + 2);
+		res = ft_realloc(res, *res_size, len + 2, p);
 		if (!res)
 			error_msg("Error\nmalloc failled allocate memory");
 		*res_size = len + 2;

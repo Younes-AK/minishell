@@ -97,8 +97,8 @@ void	fork_and_execute(t_exec_node *node, t_prog *p, int *index)
 		handle_child_process(node, p);
 	else if (pid < 0)
 	{
+		ft_putstr_fd("fork function failed\n", 2);
 		ft_free_lists(p, "exit");
-		ft_putstr_fd("fork function fialled\n", 2);
 	}
 }
 
@@ -117,14 +117,14 @@ void	execution(t_prog *p, t_exec_list *list)
 	{
 		p->is_last = (node->next == NULL);
 		if (!p->is_last)
-			pipe(p->curr_pipe);
+			if (pipe(p->curr_pipe) < 0)
+				(ft_free_lists(p, "exit"), exit(EXIT_FAILURE));
 		if (check_is_builtin(node->cmd, &index) && p->is_first && p->is_last)
 			exec_builtin_parent(node->cmd + index, node->redir, p);
 		else
 			fork_and_execute(node, p, &pid_index);
 		close_pipes(p);
-		p->is_first = false;
-		node = node->next;
+		1 && (p->is_first = false, node = node->next);
 	}
 	wait_for_children(p);
 	dup2(p->original_stdout, STDOUT_FILENO);

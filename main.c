@@ -21,6 +21,7 @@ void	loop(t_prog *prog)
 	{
 		close(prog->original_stdin);
 		rl_clear_history();
+		ft_putstr_fd("exit\n", 1);
 		ft_free_lists(prog, "exit");
 	}
 	if (ft_strlen(prog->r_line) > 0)

@@ -90,7 +90,6 @@ void	ft_free_lists(t_prog *prog, char *state)
 		free_tok_list(prog->list_tok);
 		free_tok_list(prog->new_tok_list);
 		free_exec_list(prog->exec_list);
-		ft_putstr_fd("exit\n", 1);
 		free_pids(prog->pids);
 		exit(EXIT_STATUS);
 	}
