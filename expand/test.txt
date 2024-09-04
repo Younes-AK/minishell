@@ -1,0 +1,6 @@
+export a="ls -l"
+
+ls > "$a"
+here doc temp file
+
+<< $"USER"fgdfg$"$USER"

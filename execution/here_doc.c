@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 08:13:45 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/27 23:20:00 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:24:50 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-			return (free(delemitre), close(tmp_fd), false);
+			return (free(p->filename),free(delemitre), close(tmp_fd), false);
 		if (ft_strcmp (input, delemitre) == 0)
 		{
 			EXIT_STATUS = 0;
