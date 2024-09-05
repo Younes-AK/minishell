@@ -20,7 +20,7 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 	char	*delemitre;
 	bool	to_expand;
 
-	to_expand = true;
+	(1) && (rl_catch_signals = 1, to_expand = true);
 	if (is_quote(*eof) || is_quote(eof[ft_strlen(eof) - 1]))
 		to_expand = false;
 	delemitre = remove_qoutes(eof, p);
@@ -37,9 +37,9 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		}
 		if (to_expand && is_env_var(input))
 			input = expand_herdoc(input, p->env_list, p);
-		ft_putendl_fd(input, tmp_fd);
-		free(input);
+		(ft_putendl_fd(input, tmp_fd), free(input));
 	}
+	rl_catch_signals = 0;
 	return (true);
 }
 
