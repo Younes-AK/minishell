@@ -74,5 +74,5 @@ void	exec_builtins(char **cmd, t_prog *p)
 	else if (!(ft_strcmp(cmd[0], "env")))
 		env(p->env_list);
 	else if (!(ft_strcmp(cmd[0], "exit")))
-		ft_exit(cmd);
+		ft_exit(cmd, p);
 }

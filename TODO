@@ -1,0 +1,48 @@
+[minishell]~> export c="    tab   "
+[minishell]~> $c
+minishell:      : command not found
+-------------------------------------------------------------------
+[minishell]~> mkdir ls
+[minishell]~> ls
+minishell: ls: is a directory
+[minishell]~> ls
+minishell: ls: is a directory
+[minishell]~> 
+-------------------------------------------------------------------
+[minishell]~> exit | exit 100
+exit
+[minishell]~> echo $?
+100
+-------------------------------------------------------------------
+[minishell]~> cat << l
+> 
+[minishell]~> 
+[minishell]~> 
+[minishell]~> 
+[minishell]~> 
+[minishell]~> 
+Makefile        builtins        expand          main.c          minishell.h     obj
+TODO            execution       functions       minishell       minishell_utils parssing
+[minishell]~> 
+Makefile        builtins        expand          main.c          minishell.h     obj
+TODO            execution       functions       minishell       minishell_utils parssing
+[minishell]~> 
+Makefile        builtins        expand          main.c          minishell.h     obj
+TODO            execution       functions       minishell       minishell_utils parssing
+[minishell]~> 
+Makefile        builtins        expand          main.c          minishell.h     obj
+TODO            execution       functions       minishell       minishell_utils parssing
+[minishell]~> 
+minishell: lpwd: command not found
+[minishell]~> 
+/Users/yakazdao/Desktop/minishell
+[minishell]~> 
+-------------------------------------------------------------------
+[minishell]~> ./a.out 
+minishell: ./a.out: command not found
+[minishell]~> echo $?
+127
+[minishell]~> 
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------

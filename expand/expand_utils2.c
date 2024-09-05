@@ -44,12 +44,15 @@ char	*replace(char *str, t_env *env_list, t_prog *p)
 char	*get_env_val(char *str, t_env *env_list, t_prog *p)
 {
 	char	*tmp;
+	char	*tmp2;
 
 	if (str[0] == '$' && !str[1])
 		return (str);
 	tmp = replace(str, env_list, p);
 	free(str);
-	return (tmp);
+	tmp2 = ft_trim(tmp);
+	free(tmp);
+	return (tmp2);
 }
 
 bool	should_expand(const char *command)

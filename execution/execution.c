@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-//extern int	g_exit_status;
-
 void	setup_child_pipes(t_prog *p)
 {
 	if (!p->is_first)

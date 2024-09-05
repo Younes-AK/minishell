@@ -29,7 +29,7 @@ static bool	get_and_write_input(int tmp_fd, char *eof, t_prog *p)
 		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-			return (free(delemitre), close(tmp_fd), false);
+			return (free(p->filename), free(delemitre), close(tmp_fd), false);
 		if (ft_strcmp (input, delemitre) == 0)
 		{
 			EXIT_STATUS = 0;
