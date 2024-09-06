@@ -6,12 +6,12 @@
 #    By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 18:04:20 by yakazdao          #+#    #+#              #
-#    Updated: 2024/09/04 14:44:15 by oel-asri         ###   ########.fr        #
+#    Updated: 2024/09/05 22:31:11 by oel-asri         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS := -Wall -Werror -Wextra -g #-fsanitize=address
 NAME := minishell
 RM := rm -rf
 

@@ -86,12 +86,13 @@ static size_t	count_args(char **args)
 	return (i);
 }
 
-void	ft_exit(char **args)
+void	ft_exit(char **args, t_prog *p)
 {
 	size_t		args_len;
 	long int	num;
 
-	ft_putstr_fd("exit\n", 1);
+	if (p->nbr_pipe == 0)
+		ft_putstr_fd("exit\n", 1);
 	args_len = count_args(args);
 	num = -3;
 	if (args_len >= 2)

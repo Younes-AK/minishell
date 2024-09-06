@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/30 06:41:48 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/06 01:02:40 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,7 @@ void			cd(char **args, t_env *env, t_prog *p);
 void			pwd(void);
 void			env(t_env *env);
 void			ft_export(char **args, t_prog *p);
-void			ft_exit(char **args);
+void			ft_exit(char **args, t_prog *p);
 void			ft_unset(char **args, t_env **env, t_env **s_env);
 int				is_in_env(t_env *env, const char *key);
 void			env_add(char *new_var, t_env *env, t_prog *p);
@@ -274,8 +274,7 @@ bool			redirect_input(char *file, int flags);
 bool			check_redirects(char **redirs);
 char			*check_path(char **paths, char *cmd);
 bool			check_is_builtin(char **type, int *index);
-int				check_directory(char *cmd);
-int				check_file_permissions(struct stat *st, t_prog *p);
+char			*get_path(t_env *env_list, char *key);
 void			exec_builtins(char **cmd, t_prog *p);
 bool			ft_heredoc(t_prog *p);
 char			*expand_herdoc(char *str, t_env *env_list, t_prog *p);
@@ -289,5 +288,6 @@ int				is_all_slashes(const char *cmd);
 void			free_envirement(t_prog *p);
 struct termios	*term_input_output(void);
 void			free_pids(int *pids);
+int				ft_free(void *ptr);
 // =================== end execution part ======================
 #endif

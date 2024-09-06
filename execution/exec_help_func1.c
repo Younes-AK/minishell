@@ -12,20 +12,16 @@
 
 #include "../minishell.h"
 
-int	check_directory(char *cmd)
+char	*get_path(t_env *env_list, char *key)
 {
-	if (is_all_slashes(cmd))
-		return (1);
-	return (0);
-}
+	t_env	*iter;
 
-int	check_file_permissions(struct stat *st, t_prog *p)
-{
-	if (S_ISDIR(st->st_mode))
-		return (1);
-	if (p->access_path)
-		return (0);
-	if (st->st_mode & S_IXUSR)
-		return (5);
-	return (2);
+	iter = env_list;
+	while (iter)
+	{
+		if (!ft_strcmp(iter->key, key))
+			return (iter->value);
+		iter = iter->next;
+	}
+	return (NULL);
 }

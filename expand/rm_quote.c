@@ -52,7 +52,7 @@ char	*expand_herdoc(char *str, t_env *env_list, t_prog *p)
 		else
 			p->res = append_char(p->res, *p->start++, &p->size, p);
 	}
-	return (p->res);
+	return (free(str), p->res);
 }
 
 char	*remove_qoutes(char *content, t_prog *p)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_free.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 11:57:32 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/23 13:12:13 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/06 17:28:03 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	error_msg1(char *msg, char *arg, int exit_status)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(" : ", 2);
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd("\n", 2);
 	exit(exit_status);

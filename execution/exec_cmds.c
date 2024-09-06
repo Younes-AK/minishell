@@ -37,69 +37,68 @@ char	*check_path(char **paths, char *cmd)
 	return (NULL);
 }
 
-char	*get_path(t_env *env_list, char *key)
-{
-	t_env	*iter;
-
-	iter = env_list;
-	while (iter)
-	{
-		if (!ft_strcmp(iter->key, key))
-			return (iter->value);
-		iter = iter->next;
-	}
-	return (NULL);
-}
-
 static int	check_command_status(char *cmd, t_prog *p)
 {
 	struct stat	st;
-	int			dir_check;
 
-	dir_check = check_directory(cmd);
-	if (dir_check)
-		return (dir_check);
-	if (!ft_strcmp(cmd, ".."))
+	if (!ft_strcmp(cmd, ""))
 		return (3);
+	if (is_all_slashes(cmd) || !ft_strcmp(cmd, ".."))
+		return (1);
 	p->access_path = check_path(p->all_paths, cmd);
 	if (stat(cmd, &st) == 0)
-		return (check_file_permissions(&st, p));
-	if (errno == ENOENT)
 	{
-		if (p->access_path)
-			return (0);
-		else
-			return (3);
+		if (S_ISDIR(st.st_mode) && !(access(cmd, X_OK) == 0))
+			return (1);
+		if (access(cmd, X_OK) == 0)
+			return (5);
+		return (2);
 	}
+	if (p->access_path)
+		return (0);
+	if (errno == ENOENT)
+		return (3);
 	return (4);
+}
+
+static void	handle_command_errors(char **cmd, int cmd_status)
+{
+	if (cmd_status == 1)
+		error_msg1("is a directory", cmd[0], 126);
+	else if (cmd_status == 2)
+		error_msg1("Permission denied", cmd[0], 126);
+	else if (cmd_status == 3)
+	{
+		if (ft_strchr(cmd[0], '/'))
+			error_msg1("No such file or directory", cmd[0], 127);
+		else
+			error_msg1("command not found", cmd[0], 127);
+	}
+	else if (cmd_status == 4)
+		error_msg1(strerror(errno), cmd[0], 126);
+	else
+		return ;
 }
 
 static void	execute_cmd(char **cmd, t_prog *p)
 {
 	if (!cmd || !*cmd)
 		return ;
+	if (!ft_strcmp(*cmd, "minishell") || !ft_strcmp(*cmd, ".."))
+		error_msg1("command not found", cmd[0], 127);
 	p->cmd_status = check_command_status(cmd[0], p);
-	if (!ft_strcmp(*cmd, "minishell"))
-		error_msg1(": command not found", cmd[0], 127);
-	else if (p->cmd_status == 1)
-		error_msg1(": is a directory", cmd[0], 126);
-	else if (p->cmd_status == 2)
-		error_msg1(": Permission denied", cmd[0], 126);
-	else if (p->cmd_status == 3)
-	{
-		if (ft_strchr(cmd[0], '/'))
-			error_msg1(": No such file or directory", cmd[0], 127);
-		else
-			error_msg1(": command not found", cmd[0], 127);
-	}
-	else if (p->cmd_status == 4)
-		error_msg1(": Error accessing file", cmd[0], 126);
-	else if (p->cmd_status == 5)
+	handle_command_errors(cmd, p->cmd_status);
+	if (p->cmd_status == 2)
 		p->access_path = ft_strdup(cmd[0]);
 	p->env_variables = convert_env_list(p->env_list, p);
 	if (p->access_path)
+	{
 		execve(p->access_path, cmd, p->env_variables);
-	error_msg2(": command not found", cmd[0]);
+		if (p->cmd_status == 5)
+			error_msg1("is a directory", cmd[0], 126);
+		error_msg1(strerror(errno), cmd[0], 127);
+	}
+	error_msg2("command not found12", cmd[0]);
 	(free(p->access_path), free_double_ptr(p->env_variables), exit(127));
 }
 

@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 11:30:09 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/15 09:56:30 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/06 01:02:21 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	ft_free(void *ptr)
+{
+	free(ptr);
+	return (1);
+}
 
 void	env(t_env *env)
 {

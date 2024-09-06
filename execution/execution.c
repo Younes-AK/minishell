@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:04:53 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/28 17:01:21 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/06 17:11:18 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-//extern int	g_exit_status;
 
 void	setup_child_pipes(t_prog *p)
 {
