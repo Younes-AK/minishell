@@ -1,3 +1,0 @@
-
-export x="ls     -la"// tab + space
-export x=2003 x+=30000 b=$x

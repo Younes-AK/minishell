@@ -12,6 +12,12 @@
 
 #include "../minishell.h"
 
+int	ft_free(void *ptr)
+{
+	free(ptr);
+	return (1);
+}
+
 void	env(t_env *env)
 {
 	while (env)

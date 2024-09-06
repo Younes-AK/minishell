@@ -112,8 +112,7 @@ bool	parser(t_prog *p)
 	if (!check_syntax(p))
 	{
 		write(2, "minishell: syntax error near unexpected token\n", 47);
-		EXIT_STATUS = 258;
-		return (false);
+		return (EXIT_STATUS = 258, false);
 	}
 	else
 	{
@@ -123,8 +122,11 @@ bool	parser(t_prog *p)
 		if (p->heredoc_err)
 		{
 			heredoc_error(p);
-			write(2, "minishell: syntax error near unexpected token\n", 47);
-			EXIT_STATUS = 258;
+			if (EXIT_STATUS != 1)
+			{
+				write(2, "minishell: syntax error near unexpected token\n", 47);
+				EXIT_STATUS = 258;
+			}
 			return (false);
 		}
 		if (!ft_heredoc(p))

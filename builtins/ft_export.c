@@ -83,8 +83,7 @@ void	add_to_env(char *key, t_env **env_export, t_env **env, t_prog *p)
 	t_env	*tmp;
 	t_env	*node;
 
-	tmp = NULL;
-	node = NULL;
+	(0) || (tmp = NULL, node = NULL);
 	if (check_var_exist(key, env_export))
 		tmp = get_env(key, *env_export);
 	node = get_env(key, *env);
@@ -92,11 +91,11 @@ void	add_to_env(char *key, t_env **env_export, t_env **env, t_prog *p)
 	{
 		if (tmp->value && tmp->value[0] != '\0')
 		{
-			free(node->value);
+			ft_free(node->value);
 			node->value = ft_strdup(tmp->value);
 		}
 		else if (tmp->value && tmp->value[0] == '\0')
-			node->value = NULL;
+			(1) && (ft_free(node->value), node->value = NULL);
 	}
 	else if (tmp->value)
 	{

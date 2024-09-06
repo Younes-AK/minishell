@@ -98,7 +98,7 @@ static void	execute_cmd(char **cmd, t_prog *p)
 			error_msg1("is a directory", cmd[0], 126);
 		error_msg1(strerror(errno), cmd[0], 127);
 	}
-	error_msg2("command not found12", cmd[0]);
+	error_msg2("execve failled", cmd[0]);
 	(free(p->access_path), free_double_ptr(p->env_variables), exit(127));
 }
 
