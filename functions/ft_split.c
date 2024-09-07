@@ -3,38 +3,52 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 19:31:23 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 23:19:31 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/07 02:29:09 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	ft_numofword(const char *s, char c)
+int	__in__(const char *ifs, char c)
+{
+	int	i;
+
+	i = 0;
+	while (ifs && ifs[i])
+	{
+		if (ifs[i] == c)
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+static int	ft_numofword(const char *s, char *c)
 {
 	int	count;
 
 	count = 0;
 	while (*s)
 	{
-		while (*s && *s == c)
+		while (*s && __in__(c, *s))
 			s++;
 		if (*s)
 			count++;
-		while (*s && *s != c)
+		while (*s && !__in__(c, *s))
 			s++;
 	}
 	return (count);
 }
 
-static int	word_len(char const *s, char c)
+static int	word_len(char const *s, char *c)
 {
 	int	i;
 
 	i = 0;
-	while (*(s + i) && *(s + i) != c)
+	while (*(s + i) && !__in__(c, *(s + i)))
 		i++;
 	return (i);
 }
@@ -49,7 +63,7 @@ static void	free_strings(int i, char **array)
 	free(array);
 }
 
-static char	**ft_word(char const *s, char c, char **array, int words_count)
+static char	**ft_word(char const *s, char *c, char **array, int words_count)
 {
 	int	i;
 	int	j;
@@ -58,7 +72,7 @@ static char	**ft_word(char const *s, char c, char **array, int words_count)
 	j = 0;
 	while (i < words_count)
 	{
-		while (*(s + j) && *(s + j) == c)
+		while (*(s + j) && __in__(c, *(s + j)))
 			j++;
 		*(array + i) = ft_substr(s, j, word_len(&*(s + j), c));
 		if (!*(array + i))
@@ -66,7 +80,7 @@ static char	**ft_word(char const *s, char c, char **array, int words_count)
 			free_strings(i, array);
 			return (NULL);
 		}
-		while (*(s + j) && *(s + j) != c)
+		while (*(s + j) && !__in__(c, *(s + j)))
 			j++;
 		i++;
 	}
@@ -74,7 +88,7 @@ static char	**ft_word(char const *s, char c, char **array, int words_count)
 	return (array);
 }
 
-char	**ft_split(char const *s, char c, t_prog *p)
+char	**ft_split(char const *s, char *c, t_prog *p)
 {
 	char	**strings;
 	int		words;

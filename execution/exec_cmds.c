@@ -6,7 +6,7 @@
 /*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:45:03 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/09/04 16:15:20 by oel-asri         ###   ########.fr       */
+/*   Updated: 2024/09/07 02:29:49 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	execute(char **cmd, t_prog *p)
 	if (!cmd || !*cmd)
 		return ;
 	p->path = get_path(p->env_list, "PATH");
-	p->all_paths = ft_split(p->path, ':', p);
+	p->all_paths = ft_split(p->path, ":", p);
 	execute_cmd(cmd, p);
 	free_double_ptr(p->all_paths);
 }

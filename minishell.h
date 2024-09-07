@@ -6,7 +6,7 @@
 /*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 09:29:35 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/09/06 01:02:40 by oel-asri         ###   ########.fr       */
+/*   Updated: 2024/09/07 02:29:40 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ char			*ft_strjoin(char const *s1, char const *s2);
 size_t			ft_strlen(const char *str);
 int				ft_strcmp(const char *str1, const char *str2);
 char			*ft_substr(const char *s, unsigned int start, size_t len);
-char			**ft_split(char const *s, char c, t_prog *p);
+char			**ft_split(char const *s, char *c, t_prog *p);
 char			*ft_strndup(const char *str, int len);
 void			ft_lstadd_back(t_env **lst, t_env *new);
 t_env			*ft_lstnew(char *key, char *value);

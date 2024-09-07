@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   help_func3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:21:34 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/19 21:21:29 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/07 02:30:35 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	store_env(char **env, t_prog *p)
 	i = 0;
 	while (env[i])
 	{
-		tmp = ft_split(env[i], '=', p);
+		tmp = ft_split(env[i], "=", p);
 		if (!tmp)
 			exit(EXIT_FAILURE);
 		str = ft_strdup(tmp[0]);
@@ -60,7 +60,7 @@ bool	store_secret_env(char **env, t_prog *p)
 	i = 0;
 	while (env[i])
 	{
-		tmp = ft_split(env[i], '=', p);
+		tmp = ft_split(env[i], "=", p);
 		if (!tmp)
 			return (free_env_list(p->env_list), exit(EXIT_FAILURE), false);
 		str = ft_strdup(tmp[0]);

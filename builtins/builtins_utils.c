@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 21:11:59 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/24 10:32:03 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/07 02:25:47 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ void	env_add(char *new_var, t_env *env, t_prog *p)
 	new_node->key = strndup(new_var, key_len);
 	new_node->value = strdup(delimiter + 1);
 	new_node->next = NULL;
-	while (env->next)
+	while (env && env->next)
 		env = env->next;
-	env->next = new_node;
+	if (env)
+		env->next = new_node;
 }
 
 long int	modulo(long int nbr)

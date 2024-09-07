@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yakazdao <yakazdao@student.42.fr>          +#+  +:+       +#+        */
+/*   By: oel-asri <oel-asri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 20:38:43 by yakazdao          #+#    #+#             */
-/*   Updated: 2024/08/30 07:42:50 by yakazdao         ###   ########.fr       */
+/*   Updated: 2024/09/07 02:30:02 by oel-asri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	expand_and_append(t_tok_node *iter, char *expanded_var, t_prog *p)
 
 	if (!is_in_d_qoutes(expanded_var))
 	{
-		all_str = ft_split(expanded_var, ' ', p);
+		all_str = ft_split(expanded_var, " \t", p);
 		append_expanded_tokens(iter, all_str, p);
 	}
 	else
