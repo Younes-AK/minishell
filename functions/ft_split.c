@@ -12,20 +12,6 @@
 
 #include "../minishell.h"
 
-int	__in__(const char *ifs, char c)
-{
-	int	i;
-
-	i = 0;
-	while (ifs && ifs[i])
-	{
-		if (ifs[i] == c)
-			return (true);
-		i++;
-	}
-	return (false);
-}
-
 static int	ft_numofword(const char *s, char *c)
 {
 	int	count;

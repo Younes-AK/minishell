@@ -47,8 +47,7 @@ bool	redirect_output(char *file, int flags)
 	fd_file = open(file, flags, 0777);
 	if (fd_file == -1)
 	{
-		error_msg2(" : No such file or directory", file);
-		EXIT_STATUS = 1;
+		error_msg2(strerror(errno), file);
 		return (false);
 	}
 	else
@@ -66,8 +65,7 @@ bool	redirect_input(char *file, int flags)
 	fd_file = open(file, flags);
 	if (fd_file == -1)
 	{
-		EXIT_STATUS = 1;
-		error_msg2(" : No such file or directory", file);
+		error_msg2(strerror(errno), file);
 		return (false);
 	}
 	else

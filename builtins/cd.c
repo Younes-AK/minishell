@@ -76,7 +76,7 @@ void	update_pwd(t_env *env, t_prog *p)
 	if (!new_pwd)
 		return ;
 	if (is_in_env(env, "PWD") == 0)
-		env_add(new_pwd, env, p);
+		free_and_add(new_pwd, env, p, "PWD");
 	else
 	{
 		while (env)
@@ -97,6 +97,8 @@ void	cd(char **args, t_env *env, t_prog *p)
 {
 	int	cd_ret;
 
+	if (args[1] && !*args[1])
+		return ;
 	if (!args[1])
 	{
 		move_to_path(0, env, p);

@@ -12,6 +12,20 @@
 
 #include "../minishell.h"
 
+void	free_and_add(char *oldpwd, t_env *env, t_prog *p, char *type)
+{
+	while (env)
+	{
+		if (!strcmp(env->key, type))
+		{
+			free(env->value);
+			env_add(oldpwd, env, p);
+			break ;
+		}
+		env = env->next;
+	}
+}
+
 void	update_oldpwd(t_env *env, t_prog *p)
 {
 	char	cwd[PATH_MAX];
@@ -23,7 +37,7 @@ void	update_oldpwd(t_env *env, t_prog *p)
 	if (!oldpwd)
 		return ;
 	if (is_in_env(env, "OLDPWD") == 0)
-		env_add(oldpwd, env, p);
+		free_and_add(oldpwd, env, p, "OLDPWD");
 	else
 	{
 		while (env)

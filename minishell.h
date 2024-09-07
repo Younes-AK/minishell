@@ -130,6 +130,8 @@ typedef struct s_prog
 	char			*filename;
 	bool			is_export_var;
 	bool			heredoc_err;
+	struct stat		st;
+	char			*path_to_check;
 }	t_prog;
 
 typedef struct s_lexer_state
@@ -155,6 +157,7 @@ size_t			ft_strlen(const char *str);
 int				ft_strcmp(const char *str1, const char *str2);
 char			*ft_substr(const char *s, unsigned int start, size_t len);
 char			**ft_split(char const *s, char *c, t_prog *p);
+int				__in__(const char *ifs, char c);
 char			*ft_strndup(const char *str, int len);
 void			ft_lstadd_back(t_env **lst, t_env *new);
 t_env			*ft_lstnew(char *key, char *value);
@@ -260,6 +263,7 @@ long int		modulo(long int nbr);
 void			__ft_add(t_env **env, char *key, char *value, t_prog *p);
 void			print_envi(t_env *env);
 void			update_oldpwd(t_env *env, t_prog *p);
+void			free_and_add(char *oldpwd, t_env *env, t_prog *p, char *type);
 // =================== end builtins part =========================
 
 // =================== start execution part ======================

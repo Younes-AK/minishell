@@ -25,3 +25,17 @@ char	*get_path(t_env *env_list, char *key)
 	}
 	return (NULL);
 }
+
+int	__in__(const char *ifs, char c)
+{
+	int	i;
+
+	i = 0;
+	while (ifs && ifs[i])
+	{
+		if (ifs[i] == c)
+			return (true);
+		i++;
+	}
+	return (false);
+}

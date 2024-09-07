@@ -19,38 +19,41 @@ char	*check_path(char **paths, char *cmd)
 	int		i;
 
 	i = 0;
-	if ((*cmd == '.' && *(cmd + 1) == '/') || *cmd == '/')
-		return (cmd);
+	if ((*cmd == '.' && *(cmd + 1) == '/') || *cmd == '/'
+		|| ft_strchr(cmd, '/'))
+		return (ft_strdup(cmd));
+	if (!paths)
+		return (NULL);
 	cmd_path = ft_strjoin("/", cmd);
-	while (paths && paths[i])
+	while (paths[i])
 	{
 		full_path = ft_strjoin(paths[i], cmd_path);
 		if (access(full_path, X_OK) == 0)
-		{
-			free(cmd_path);
-			return (full_path);
-		}
+			return (free(cmd_path), full_path);
 		free(full_path);
 		i++;
 	}
-	free(cmd_path);
-	return (NULL);
+	return (free(cmd_path), NULL);
 }
 
 static int	check_command_status(char *cmd, t_prog *p)
 {
-	struct stat	st;
-
 	if (!ft_strcmp(cmd, ""))
 		return (3);
 	if (is_all_slashes(cmd) || !ft_strcmp(cmd, ".."))
 		return (1);
 	p->access_path = check_path(p->all_paths, cmd);
-	if (stat(cmd, &st) == 0)
+	if (!p->access_path && ft_strchr(cmd, '/'))
+		p->access_path = ft_strdup(cmd);
+	if (p->access_path)
+		p->path_to_check = p->access_path;
+	else
+		p->path_to_check = cmd;
+	if (stat(p->path_to_check, &p->st) == 0)
 	{
-		if (S_ISDIR(st.st_mode) && !(access(cmd, X_OK) == 0))
+		if (S_ISDIR(p->st.st_mode))
 			return (1);
-		if (access(cmd, X_OK) == 0)
+		if (access(p->path_to_check, X_OK) == 0)
 			return (5);
 		return (2);
 	}
@@ -88,17 +91,18 @@ static void	execute_cmd(char **cmd, t_prog *p)
 		error_msg1("command not found", cmd[0], 127);
 	p->cmd_status = check_command_status(cmd[0], p);
 	handle_command_errors(cmd, p->cmd_status);
-	if (p->cmd_status == 2)
-		p->access_path = ft_strdup(cmd[0]);
+	if (p->cmd_status == 2 || p->cmd_status == 5)
+	{
+		if (!p->access_path)
+			p->access_path = ft_strdup(cmd[0]);
+	}
 	p->env_variables = convert_env_list(p->env_list, p);
 	if (p->access_path)
 	{
 		execve(p->access_path, cmd, p->env_variables);
-		if (p->cmd_status == 5)
-			error_msg1("is a directory", cmd[0], 126);
 		error_msg1(strerror(errno), cmd[0], 127);
 	}
-	error_msg2("execve failled", cmd[0]);
+	error_msg2("execve fialed", cmd[0]);
 	(free(p->access_path), free_double_ptr(p->env_variables), exit(127));
 }
 
@@ -111,3 +115,12 @@ void	execute(char **cmd, t_prog *p)
 	execute_cmd(cmd, p);
 	free_double_ptr(p->all_paths);
 }
+// void	execute(char **cmd, t_prog *p)
+// {
+// 	if (!cmd || !*cmd)
+// 		return ;
+// 	p->path = get_path(p->env_list, "PATH");
+// 	p->all_paths = p->path ? ft_split(p->path, ":", p) : NULL;
+// 	execute_cmd(cmd, p);
+// 	free_double_ptr(p->all_paths);
+// }
