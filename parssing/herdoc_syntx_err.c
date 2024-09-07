@@ -12,26 +12,28 @@
 
 #include "../minishell.h"
 
-void	read_in(char *eof, t_prog *p)
+bool	read_in(char *eof, t_prog *p)
 {
 	char	*input;
 	char	*delemitre;
 
+	rl_catch_signals = 1;
 	delemitre = remove_qoutes(eof, p);
 	while (true)
 	{
+		sig_here_doc(p);
 		input = readline("> ");
 		if (!input)
-			return ;
+			return (free(delemitre), false);
 		if (ft_strcmp (input, delemitre) == 0)
 		{
 			EXIT_STATUS = 0;
-			free(input);
-			free (delemitre);
+			(free(input), free (delemitre));
 			break ;
 		}
 		free(input);
 	}
+	return (rl_catch_signals = 0, true);
 }
 
 void	read_herdoc(char **redirs, t_prog *p)
@@ -43,7 +45,8 @@ void	read_herdoc(char **redirs, t_prog *p)
 	{
 		if (!ft_strcmp(redirs[i], "<<") && redirs[i + 1])
 		{
-			read_in(redirs[i + 1], p);
+			if (!read_in(redirs[i + 1], p))
+				return ;
 		}
 		i += 1;
 	}
@@ -59,6 +62,8 @@ void	heredoc_error(t_prog *p)
 		read_herdoc(iter->redir, p);
 		iter = iter->next;
 	}
+	if (p->to_restart_stdin == 1)
+		1 && (dup2(p->original_stdin, 0), p->to_restart_stdin = 0);
 }
 
 char	*get_delm(t_prog *p)

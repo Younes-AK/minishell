@@ -72,13 +72,10 @@ void	wait_for_children(t_prog *p)
 	orig_sigint_handler = signal(SIGINT, SIG_IGN);
 	while (waitpid(p->pids[i], &status, WUNTRACED) > 0)
 	{
-		if (EXIT_STATUS != 1)
-		{
-			if (WIFEXITED(status))
-				EXIT_STATUS = WEXITSTATUS(status);
-			if (WIFSIGNALED(status))
-				EXIT_STATUS = WTERMSIG(status) + 128;
-		}
+		if (WIFEXITED(status))
+			EXIT_STATUS = WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			EXIT_STATUS = WTERMSIG(status) + 128;
 		i++;
 	}
 	signal(SIGINT, orig_sigint_handler);

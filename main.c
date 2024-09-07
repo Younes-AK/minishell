@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-//int	g_exit_status;
-
 void	loop(t_prog *prog)
 {
 	prog->r_line = readline("\033[34m[minishell]~> \033[0m");
